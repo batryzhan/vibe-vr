@@ -23,8 +23,8 @@
  * adapter indexes the table object, and drizzle already knows each column's real name.
  */
 
-import type { Database } from "@nap/db/client";
-import { accounts, authSessions, users, verifications } from "@nap/db/schema";
+import type { Database } from "@vibe-vr/db/client";
+import { accounts, authSessions, users, verifications } from "@vibe-vr/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { anonymous } from "better-auth/plugins/anonymous";

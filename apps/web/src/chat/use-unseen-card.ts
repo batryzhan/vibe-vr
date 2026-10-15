@@ -31,7 +31,7 @@
  * be silence about a session where something plainly happened.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { useEffect, useRef, useState } from "react";
 import { type UnseenSummary, unseenSummary } from "./unseen-summary.ts";
 

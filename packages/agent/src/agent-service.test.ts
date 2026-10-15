@@ -1,11 +1,11 @@
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { hashSceneSpec } from "@nap/scene-spec/revisions";
-import { towerSpec } from "@nap/scene-spec/tower";
-import { NapEventSchema, type NapEventType } from "@nap/shared/events";
-import type { AgentTurnRequest } from "@nap/shared/ports/agent-service";
-import type { BuiltContext } from "@nap/shared/ports/context-engine";
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
-import type { LLMMessage, LLMToolCall } from "@nap/shared/ports/llm-provider";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { hashSceneSpec } from "@vibe-vr/scene-spec/revisions";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
+import { NapEventSchema, type NapEventType } from "@vibe-vr/shared/events";
+import type { AgentTurnRequest } from "@vibe-vr/shared/ports/agent-service";
+import type { BuiltContext } from "@vibe-vr/shared/ports/context-engine";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import type { LLMMessage, LLMToolCall } from "@vibe-vr/shared/ports/llm-provider";
 import { beforeEach, describe, expect, it } from "vitest";
 import { NapAgentService } from "./agent-service.ts";
 import { ScriptedLLMProvider, type ScriptedTurn } from "./testing/scripted-llm-provider.ts";
@@ -198,6 +198,41 @@ describe("runTurn — event ordering", () => {
 });
 
 describe("runTurn — talking to the model", () => {
+  it("uses the image reference instead of the curated chair shortcut", async () => {
+    const { agent, provider } = service([[{ text: "Built from the reference." }]]);
+    const referenceImage = "data:image/png;base64,aGVsbG8=";
+    await agent.runTurn(
+      request({
+        context: { ...CONTEXT, messages: [{ role: "user", content: "Сделай мне стул" }] },
+        referenceImage,
+        readSessionEvents: async () => [],
+      }),
+    );
+    expect(provider.requests).toHaveLength(1);
+    expect(provider.requests[0]?.referenceImage).toBe(referenceImage);
+    expect(provider.requests[0]?.tools.map((tool) => tool.name)).toEqual([
+      "get_scene",
+      "propose_scene_patch",
+      "propose_desk",
+    ]);
+  });
+  it("creates the curated short-prompt chair without waiting for a model request", async () => {
+    const { agent, provider } = service([[]]);
+    await agent.runTurn(
+      request({
+        context: {
+          ...CONTEXT,
+          messages: [{ role: "user", content: [{ type: "text", text: "Сделай мне стул" }] }],
+        },
+        readSessionEvents: async () => [],
+      }),
+    );
+    expect(provider.requests).toHaveLength(0);
+    expect(recorder.types).toContain("scene.updated");
+    expect(recorder.types.at(-1)).toBe("turn.completed");
+    expect(recorder.types).not.toContain("turn.failed");
+  });
+
   it("declares the nine tools as the entire tool set", async () => {
     const { agent, provider } = service([[{ text: "Nothing to do." }]]);
 
@@ -205,6 +240,28 @@ describe("runTurn — talking to the model", () => {
 
     expect(provider.requests[0]?.tools).toEqual(TOOL_DEFINITIONS);
     expect(provider.requests[0]?.systemPrompt).toBe(CONTEXT.systemPrompt);
+  });
+
+  it("routes 3D scene requests through the validated scene tools", async () => {
+    const { agent, provider } = service([[{ text: "I will build the chair as a scene." }]]);
+
+    await agent.runTurn(
+      request({
+        context: {
+          ...CONTEXT,
+          messages: [{ role: "user", content: "Create a simple wooden chair." }],
+        },
+      }),
+    );
+
+    expect(provider.requests[0]?.systemPrompt).toContain("<3d-scene-editing>");
+    expect(provider.requests[0]?.systemPrompt).toContain("propose_scene_patch");
+    expect(provider.requests[0]?.systemPrompt).toContain("Do not edit application files");
+    expect(provider.requests[0]?.tools.map((tool) => tool.name)).toEqual([
+      "get_scene",
+      "propose_scene_patch",
+      "propose_desk",
+    ]);
   });
 
   it("sends every tool result of a round trip in one user message", async () => {

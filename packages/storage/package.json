@@ -1,5 +1,5 @@
 {
-  "name": "@nap/storage",
+  "name": "@vibe-vr/storage",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,6 +11,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1106.0",
-    "@nap/shared": "workspace:*"
+    "@vibe-vr/shared": "workspace:*"
   }
 }

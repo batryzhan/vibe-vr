@@ -27,7 +27,7 @@
  * the predicate it could renew or settle a request another worker had already claimed.
  */
 
-import { LEASE_GRACE_MS, LEASE_TTL_MS, ORPHAN_SWEEP_LIMIT } from "@nap/shared/lease-windows";
+import { LEASE_GRACE_MS, LEASE_TTL_MS, ORPHAN_SWEEP_LIMIT } from "@vibe-vr/shared/lease-windows";
 import type {
   CancelOutcome,
   EnqueueTurnRequest,
@@ -36,7 +36,7 @@ import type {
   OrphanedTurnRequest,
   TurnQueue,
   TurnRequestSettlement,
-} from "@nap/shared/ports/turn-queue";
+} from "@vibe-vr/shared/ports/turn-queue";
 import { and, asc, eq, inArray, isNull, notInArray, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { turnRequests } from "./schema.ts";
@@ -44,7 +44,7 @@ import { turnRequests } from "./schema.ts";
 /**
  * How long a claim is good for, as a Postgres interval.
  *
- * The number lives in `@nap/shared/lease-windows` beside the renewal interval and the janitor's
+ * The number lives in `@vibe-vr/shared/lease-windows` beside the renewal interval and the janitor's
  * grace, because the three have to agree and a constant in each file would drift.
  */
 const LEASE_TTL = `${LEASE_TTL_MS} milliseconds`;
@@ -54,7 +54,7 @@ const LEASE_TTL = `${LEASE_TTL_MS} milliseconds`;
  *
  * A fence rather than a timeout: renewal is conditional, so a worker that lost its lease has
  * aborted by expiry plus one renewal interval, and reclaiming only after this window is the sole
- * reason two writers on one session are unreachable. See `@nap/shared/lease-windows`.
+ * reason two writers on one session are unreachable. See `@vibe-vr/shared/lease-windows`.
  */
 const LEASE_GRACE = `${LEASE_GRACE_MS} milliseconds`;
 
@@ -95,6 +95,7 @@ export class PostgresTurnQueue implements TurnQueue {
       userId: request.userId,
       kind: request.kind,
       message: request.message,
+      referenceImage: request.referenceImage ?? null,
       model: request.model,
       billsToUser: request.billsToUser,
     });
@@ -187,6 +188,7 @@ export class PostgresTurnQueue implements TurnQueue {
           userId: leased.userId,
           kind: leased.kind,
           message: leased.message,
+          ...(leased.referenceImage === null ? {} : { referenceImage: leased.referenceImage }),
           model: leased.model,
           billsToUser: leased.billsToUser,
         },

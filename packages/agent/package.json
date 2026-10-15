@@ -1,5 +1,5 @@
 {
-  "name": "@nap/agent",
+  "name": "@vibe-vr/agent",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -12,15 +12,15 @@
   "dependencies": {
     "@anthropic-ai/bedrock-sdk": "^0.32.1",
     "@anthropic-ai/sdk": "0.116.0",
-    "@nap/procedural": "workspace:*",
-    "@nap/scene-spec": "workspace:*",
-    "@nap/shared": "workspace:*",
+    "@vibe-vr/procedural": "workspace:*",
+    "@vibe-vr/scene-spec": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
     "diff": "9.0.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@nap/context": "workspace:*",
-    "@nap/procedural": "workspace:*",
-    "@nap/sandbox": "workspace:*"
+    "@vibe-vr/context": "workspace:*",
+    "@vibe-vr/procedural": "workspace:*",
+    "@vibe-vr/sandbox": "workspace:*"
   }
 }

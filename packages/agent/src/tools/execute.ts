@@ -18,16 +18,17 @@
  * the caller feeds the same text back as a tool result block on the next request.
  */
 
-import { buildDeskPlan, replanDesk } from "@nap/procedural/desk";
-import { promoteAssemblyToCreation } from "@nap/procedural/promotion";
-import type { SceneHead } from "@nap/scene-spec/fold";
-import type { AnySceneProposal } from "@nap/scene-spec/proposal";
-import { readSceneHead } from "@nap/scene-spec/scene-events";
-import { type NapEvent, type NapEventOf, type ToolName, ToolNameSchema } from "@nap/shared/events";
-import type { DistributiveOmit, StoredEvent } from "@nap/shared/ports/event-store";
-import type { LLMToolCall } from "@nap/shared/ports/llm-provider";
-import type { SandboxError, SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import { shellQuote } from "@nap/shared/shell";
+import { buildDeskPlan, replanDesk } from "@vibe-vr/procedural/desk";
+import { promoteAssemblyToCreation } from "@vibe-vr/procedural/promotion";
+import type { SceneHead } from "@vibe-vr/scene-spec/fold";
+import { MAX_SCENE_EVENT_BYTES } from "@vibe-vr/scene-spec/limits";
+import type { AnySceneProposal } from "@vibe-vr/scene-spec/proposal";
+import { readSceneHead } from "@vibe-vr/scene-spec/scene-events";
+import { type NapEvent, type NapEventOf, type ToolName, ToolNameSchema } from "@vibe-vr/shared/events";
+import type { DistributiveOmit, StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import type { LLMToolCall } from "@vibe-vr/shared/ports/llm-provider";
+import type { SandboxError, SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import { shellQuote } from "@vibe-vr/shared/shell";
 import type { z } from "zod";
 import { inspectCommand } from "../safety/commands.ts";
 import { PROJECT_ROOT, TOOL_SCHEMAS } from "./definitions.ts";
@@ -90,12 +91,14 @@ export async function executeTool(call: LLMToolCall, ctx: ToolContext): Promise<
     };
   }
 
+  const normalizedCall = normalizeSceneProposalCall(name.data, call);
+
   emit(ctx, {
     type: "tool.call",
-    payload: { toolCallId: call.id, toolName: name.data, input: call.input },
+    payload: { toolCallId: normalizedCall.id, toolName: name.data, input: normalizedCall.input },
   });
 
-  const outcome = await run(name.data, call, ctx);
+  const outcome = await run(name.data, normalizedCall, ctx);
   const capped = { ok: outcome.ok, output: truncate(outcome.output) };
 
   emit(ctx, {
@@ -109,6 +112,24 @@ export async function executeTool(call: LLMToolCall, ctx: ToolContext): Promise<
   });
 
   return capped;
+}
+
+/** Some compatible models stringify a JSON value inside otherwise structured scene arguments. */
+function normalizeSceneProposalCall(name: ToolName, call: LLMToolCall): LLMToolCall {
+  if (name !== "propose_scene_patch") return call;
+  let changed = false;
+  const input = { ...call.input };
+  for (const key of ["spec", "ops"] as const) {
+    const value = input[key];
+    if (typeof value !== "string" || value.length > MAX_SCENE_EVENT_BYTES) continue;
+    try {
+      input[key] = JSON.parse(value) as unknown;
+      changed = true;
+    } catch {
+      // Leave malformed JSON untouched so the normal schema rejection is returned to the model.
+    }
+  }
+  return changed ? { ...call, input } : call;
 }
 
 /**
@@ -162,10 +183,22 @@ async function run(name: ToolName, call: LLMToolCall, ctx: ToolContext): Promise
 
 /** Reports bad arguments by field path — "invalid" alone tells the model nothing to fix. */
 function invalid(name: ToolName, error: z.ZodError): ToolOutcome {
-  const issues = error.issues
-    .map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`)
-    .join("; ");
+  const issues = describeZodIssues(error.issues).slice(0, 12).join("; ");
   return { ok: false, output: `Invalid arguments for ${name} — ${issues}` };
+}
+
+/** Expands union failures to the closest branch so the model gets fixable field paths. */
+function describeZodIssues(issues: readonly z.core.$ZodIssue[]): string[] {
+  const output: string[] = [];
+  for (const issue of issues) {
+    if (issue.code === "invalid_union" && issue.errors.length > 0) {
+      const alternatives = issue.errors.map(describeZodIssues).sort((a, b) => a.length - b.length);
+      output.push(...(alternatives[0] ?? []));
+      continue;
+    }
+    output.push(`${issue.path.join(".") || "(root)"}: ${issue.message}`);
+  }
+  return output;
 }
 
 async function readFile(args: { path: string }, ctx: ToolContext): Promise<ToolOutcome> {

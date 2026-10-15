@@ -163,7 +163,7 @@ work in this slice.
 - Web: viewport derives revisions from a synthetic session log (applies
   `scene.updated`, ignores `scene.rejected`, rebuilds identical history on
   replay-from-zero); `test/architecture.ts` green (no new package, no new
-  `@nap/*` edges beyond the two tool arms' existing imports).
+  `@vibe-vr/*` edges beyond the two tool arms' existing imports).
 - Gates: `bun run test:fast`, `bun run typecheck`, `biome check` on touched
   files — plus the repo's Definition of Done rule that each new guard is seen
   to fail (break the stale-base check, watch the rejection test go red, revert).

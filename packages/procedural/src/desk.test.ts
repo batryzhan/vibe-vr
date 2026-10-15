@@ -1,5 +1,5 @@
-import type { SceneMaterial, SceneSpec } from "@nap/scene-spec/schema";
-import { towerSpec } from "@nap/scene-spec/tower";
+import type { SceneMaterial, SceneSpec } from "@vibe-vr/scene-spec/schema";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
 import { describe, expect, it } from "vitest";
 import type { AssembledObject } from "./component.ts";
 import { buildDeskPlan, replanDesk } from "./desk.ts";

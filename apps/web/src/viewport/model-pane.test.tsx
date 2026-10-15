@@ -1,6 +1,6 @@
-import { hashSceneSpec } from "@nap/scene-spec/revisions";
-import { towerSpec } from "@nap/scene-spec/tower";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { hashSceneSpec } from "@vibe-vr/scene-spec/revisions";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ModelPane } from "./model-pane.tsx";
@@ -147,8 +147,8 @@ describe("ModelPane", () => {
 describe("SceneView renderer lifecycle", () => {
   it("disposes the injected renderer on unmount", async () => {
     const { SceneView } = await import("./scene-view.tsx");
-    const { buildScene } = await import("@nap/procedural/build");
-    const { towerSpec } = await import("@nap/scene-spec/tower");
+    const { buildScene } = await import("@vibe-vr/procedural/build");
+    const { towerSpec } = await import("@vibe-vr/scene-spec/tower");
     const built = buildScene(towerSpec());
     if (!built.ok) throw new Error("fixture failed to build");
 

@@ -19,14 +19,14 @@
  * `async` function that also creates sandboxes is a rule nobody can check.
  */
 
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
-import type { EventStore } from "@nap/shared/ports/event-store";
-import type { Runtime } from "@nap/shared/ports/runtime";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SessionRecord, SessionStore } from "@nap/shared/ports/session-store";
-import type { Result, VoidResult } from "@nap/shared/result";
-import { captureCommandOutput } from "@nap/verify/command-output";
-import { diagnosePreview } from "@nap/verify/preview";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
+import type { EventStore } from "@vibe-vr/shared/ports/event-store";
+import type { Runtime } from "@vibe-vr/shared/ports/runtime";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SessionRecord, SessionStore } from "@vibe-vr/shared/ports/session-store";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
+import { captureCommandOutput } from "@vibe-vr/verify/command-output";
+import { diagnosePreview } from "@vibe-vr/verify/preview";
 import type { AccessibilityCheck } from "./accessibility-check.ts";
 import type { BrowserCheck } from "./browser-check.ts";
 import { runAccessibilityCheck, runBrowserCheck } from "./browser-executor.ts";

@@ -15,8 +15,8 @@
  * three words, said as they are: `CONTEXT.md` picked them for exactly this.
  */
 
-import type { VerifiedCheck } from "@nap/shared/events";
-import { isJobFailed, type JobPhase } from "@nap/shared/job-state";
+import type { VerifiedCheck } from "@vibe-vr/shared/events";
+import { isJobFailed, type JobPhase } from "@vibe-vr/shared/job-state";
 import type { JobSummary } from "./job-summary.ts";
 
 export function CheckList({

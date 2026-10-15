@@ -1,5 +1,5 @@
 {
-  "name": "@nap/api",
+  "name": "@vibe-vr/api",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,22 +13,22 @@
     "loadgen": "bun run scripts/loadgen.ts"
   },
   "dependencies": {
-    "@nap/agent": "workspace:*",
-    "@nap/capture": "workspace:*",
-    "@nap/context": "workspace:*",
-    "@nap/db": "workspace:*",
-    "@nap/runtime": "workspace:*",
-    "@nap/sandbox": "workspace:*",
-    "@nap/shared": "workspace:*",
-    "@nap/storage": "workspace:*",
+    "@vibe-vr/agent": "workspace:*",
+    "@vibe-vr/capture": "workspace:*",
+    "@vibe-vr/context": "workspace:*",
+    "@vibe-vr/db": "workspace:*",
+    "@vibe-vr/runtime": "workspace:*",
+    "@vibe-vr/sandbox": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
+    "@vibe-vr/storage": "workspace:*",
     "better-auth": "1.6.26",
     "hono": "4.13.1",
     "pino": "10.3.1",
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@nap/loadgen": "workspace:*",
-    "@nap/scene-spec": "workspace:*",
+    "@vibe-vr/loadgen": "workspace:*",
+    "@vibe-vr/scene-spec": "workspace:*",
     "@types/bun": "1.3.14",
     "drizzle-orm": "0.45.2",
     "postgres": "3.4.9"

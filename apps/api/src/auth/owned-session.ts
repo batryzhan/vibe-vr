@@ -14,8 +14,8 @@
  * establish. The two cases are answered identically on purpose.
  */
 
-import type { SessionRecord, SessionStore } from "@nap/shared/ports/session-store";
-import type { Result } from "@nap/shared/result";
+import type { SessionRecord, SessionStore } from "@vibe-vr/shared/ports/session-store";
+import type { Result } from "@vibe-vr/shared/result";
 import { parseSessionId } from "../files/params.ts";
 
 export type SessionAccessError = {

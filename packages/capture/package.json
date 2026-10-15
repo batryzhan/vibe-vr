@@ -1,5 +1,5 @@
 {
-  "name": "@nap/capture",
+  "name": "@vibe-vr/capture",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nap/shared": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
     "puppeteer-core": "^24.30.0"
   }
 }

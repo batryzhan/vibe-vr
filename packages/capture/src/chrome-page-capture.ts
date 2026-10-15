@@ -22,8 +22,8 @@ import type {
   PageCapture,
   PageCaptureError,
   PageCaptureOptions,
-} from "@nap/shared/ports/page-capture";
-import type { Result } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/page-capture";
+import type { Result } from "@vibe-vr/shared/result";
 import { launch, TimeoutError } from "puppeteer-core";
 
 /** 16:10, which is the shape of the tile the dashboard draws it in. */

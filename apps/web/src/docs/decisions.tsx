@@ -30,7 +30,7 @@ const DECISIONS = [
   },
   {
     file: "0004-napbench-measures-the-model.md",
-    title: "NapBench measures the model, and Nap's own faults are infrastructure",
+    title: "The evaluation harness measures the model, and Vibe-VR faults are infrastructure",
     body: "Fixes the frame of the whole benchmark: an agent that refused is evidence, and a sandbox that died is not.",
   },
   {

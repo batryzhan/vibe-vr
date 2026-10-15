@@ -12,9 +12,9 @@
  * stays small enough for a second implementation to be worth writing.
  */
 
-import type { SandboxError, SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { Result } from "@nap/shared/result";
-import { shellQuote } from "@nap/shared/shell";
+import type { SandboxError, SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { Result } from "@vibe-vr/shared/result";
+import { shellQuote } from "@vibe-vr/shared/shell";
 import { TEMPLATE_WORKDIR } from "./template.ts";
 
 export type CommitResult = {

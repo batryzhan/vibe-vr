@@ -10,7 +10,7 @@
  * what `postgres-turn-queue.db.test.ts` needs against a real database.
  */
 
-import type { EnqueueTurnRequest, TurnQueue } from "@nap/shared/ports/turn-queue";
+import type { EnqueueTurnRequest, TurnQueue } from "@vibe-vr/shared/ports/turn-queue";
 
 /** Allocates the request's id, writes the row, and answers the id it chose. */
 export async function enqueueRequest(

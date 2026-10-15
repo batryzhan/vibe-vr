@@ -12,7 +12,7 @@
  * that a fixture scores 62 would be this repo's "never assert on model prose" rule broken in
  * numeric form — an exact anchor is the judge's phrasing, and a run one grade lower on two
  * dimensions would fail while having discriminated perfectly well. The claims live in
- * `@nap/bench`'s `CORPUS_EXPECTATIONS` so that the free suite and this one make the identical
+ * `@vibe-vr/bench`'s `CORPUS_EXPECTATIONS` so that the free suite and this one make the identical
  * ones.
  *
  * **What it costs.** Nine fixtures at two images each: eighteen images through a vision model in
@@ -30,16 +30,16 @@ import {
   CORPUS_FIXTURES,
   CORPUS_INTENT,
   corpusSurfaceScreenshots,
-} from "@nap/bench/product/corpus";
+} from "@vibe-vr/bench/product/corpus";
 import {
   checkDiscrimination,
   type DiscriminationStatus,
   describeExpectation,
   summariseDiscrimination,
   unmetExpectations,
-} from "@nap/bench/product/discrimination";
-import { formatGradeMatrix } from "@nap/bench/product/grade-matrix";
-import type { ProductJudgement } from "@nap/bench/product/judgement";
+} from "@vibe-vr/bench/product/discrimination";
+import { formatGradeMatrix } from "@vibe-vr/bench/product/grade-matrix";
+import type { ProductJudgement } from "@vibe-vr/bench/product/judgement";
 import { beforeAll, describe, expect, it } from "vitest";
 import { CORPUS_ROOT, missingCorpusArtefacts } from "./corpus-fixtures.ts";
 import { resolveProductJudge } from "./product-judge.ts";

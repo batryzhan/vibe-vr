@@ -13,8 +13,8 @@ import type {
   PageCapture,
   PageCaptureError,
   PageCaptureOptions,
-} from "@nap/shared/ports/page-capture";
-import type { Result } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/page-capture";
+import type { Result } from "@vibe-vr/shared/result";
 
 /** Not a real PNG, and deliberately: nothing above the port may inspect the pixels. */
 const DEFAULT_BYTES = new Uint8Array([137, 80, 78, 71]);

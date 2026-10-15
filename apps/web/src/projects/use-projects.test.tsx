@@ -1,4 +1,4 @@
-import type { ProjectSummaryPayload } from "@nap/shared/projects-protocol";
+import type { ProjectSummaryPayload } from "@vibe-vr/shared/projects-protocol";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { useProject, useProjects } from "./use-projects.ts";

@@ -11,7 +11,7 @@
  * The real rules are asserted against a real Postgres in `postgres-capacity-reconciler.db.test.ts`.
  */
 
-import type { CapacityReconciler, ReclaimedCapacity } from "@nap/shared/ports/capacity-reconciler";
+import type { CapacityReconciler, ReclaimedCapacity } from "@vibe-vr/shared/ports/capacity-reconciler";
 
 export type SeedReconciliation = {
   reclaimed?: Partial<ReclaimedCapacity>;

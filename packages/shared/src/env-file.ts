@@ -20,7 +20,7 @@ const ASSIGNMENT = /^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/i;
 export function parseEnvFile(contents: string): Record<string, string> {
   const values: Record<string, string> = {};
 
-  for (const line of contents.split("\n")) {
+  for (const line of contents.split(/\r?\n/)) {
     const match = ASSIGNMENT.exec(line);
     if (match === null) continue;
 

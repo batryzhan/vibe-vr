@@ -1,5 +1,5 @@
 {
-  "name": "@nap/web",
+  "name": "@vibe-vr/web",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,9 +10,9 @@
     "start": "next start --port 3000"
   },
   "dependencies": {
-    "@nap/procedural": "workspace:*",
-    "@nap/scene-spec": "workspace:*",
-    "@nap/shared": "workspace:*",
+    "@vibe-vr/procedural": "workspace:*",
+    "@vibe-vr/scene-spec": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
     "@tailwindcss/postcss": "4.3.3",
     "better-auth": "1.6.26",
     "next": "16.3.0",

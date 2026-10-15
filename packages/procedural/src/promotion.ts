@@ -22,8 +22,8 @@
  * call exists to emit from, so failures leave no events and no revision.
  */
 
-import { type SceneSpec, validateSceneSpec } from "@nap/scene-spec/schema";
-import type { Result } from "@nap/shared/result";
+import { type SceneSpec, validateSceneSpec } from "@vibe-vr/scene-spec/schema";
+import type { Result } from "@vibe-vr/shared/result";
 import {
   assembleComponents,
   type BuiltComponent,

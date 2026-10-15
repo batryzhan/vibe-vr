@@ -9,7 +9,7 @@
  * has been silent for two minutes.
  *
  * A file rather than a metric or a port, because it needs no second server inside the process and
- * no scrape: `stat` is the whole reader. Kept out of `@nap/runtime`, which knows nothing about
+ * no scrape: `stat` is the whole reader. Kept out of `@vibe-vr/runtime`, which knows nothing about
  * pods, filesystems or how this deployment is supervised.
  */
 

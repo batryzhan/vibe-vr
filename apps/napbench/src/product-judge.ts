@@ -1,7 +1,7 @@
 /**
  * Where the real product judge is composed, and the one thing that decides whether there is one.
  *
- * `@nap/bench` defines `ProductEvaluation` as a port precisely so that whatever grades screenshots
+ * `@vibe-vr/bench` defines `ProductEvaluation` as a port precisely so that whatever grades screenshots
  * lives out here, in the app, beside the browser adapter and behind the same `--real` flag. This
  * is that end of the seam: a credential, a model id, and the adapter in `vision-judge.ts`.
  *
@@ -17,8 +17,8 @@
  * a benchmark whose grader and subject fail together measures neither.
  */
 
-import type { ProductEvaluation } from "@nap/bench/product/evaluation";
-import type { Result } from "@nap/shared/result";
+import type { ProductEvaluation } from "@vibe-vr/bench/product/evaluation";
+import type { Result } from "@vibe-vr/shared/result";
 import { OpenRouterVisionJudge } from "./vision-judge.ts";
 
 /**
@@ -29,12 +29,12 @@ import { OpenRouterVisionJudge } from "./vision-judge.ts";
  * on any task where the agent's taste and the judge's could agree for reasons other than the
  * screenshots. It is chosen here for cost — a corpus pass is pennies — and the day a funded run
  * is used to compare two models, the judge must be pinned to something neither of them is.
- * `NAP_JUDGE_MODEL` is how that is done without editing code.
+ * `VIBE_VR_JUDGE_MODEL` is how that is done without editing code.
  */
 export const DEFAULT_JUDGE_MODEL = "openai/gpt-5.6-luna";
 
 /** Overrides the model, for the reason above. Verified before use, not after. */
-export const JUDGE_MODEL_ENV = "NAP_JUDGE_MODEL";
+export const JUDGE_MODEL_ENV = "VIBE_VR_JUDGE_MODEL";
 
 export type ProductJudgeOptions = {
   /**

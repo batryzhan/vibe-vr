@@ -7,7 +7,7 @@
  * is exercised by `ScriptedBrowserSession` in the free suite — which is why this file contains
  * no judgement about whether anything *passed*. It clicks, it measures, it reports.
  *
- * **Handed an executable path, refusing to guess**, exactly as `@nap/capture` already does: a
+ * **Handed an executable path, refusing to guess**, exactly as `@vibe-vr/capture` already does: a
  * benchmark that silently found *some* browser would produce numbers nobody could reproduce,
  * and a missing binary is a typed failure rather than a crash because it reaches the gate ladder
  * as an evaluator fault instead of being charged to the agent.
@@ -24,7 +24,7 @@
  * so re-polling here would be a second implementation of a wait that already succeeded.
  *
  * **Requires a browser binary.** Nothing in the default test suite touches this file; its
- * integration test needs a Chrome at `NAP_CHROME_PATH` and skips without one, and driving a real
+ * integration test needs a Chrome at `VIBE_VR_CHROME_PATH` and skips without one, and driving a real
  * preview additionally needs an E2B sandbox and credentials.
  */
 
@@ -42,10 +42,10 @@ import {
   type FailedRequest,
   type PageDiagnostics,
   type Screenshot,
-} from "@nap/bench/browser-session";
-import type { Selector } from "@nap/bench/selector";
-import { VIEWPORT_SIZES, type ViewportSize } from "@nap/bench/viewport";
-import type { Result, VoidResult } from "@nap/shared/result";
+} from "@vibe-vr/bench/browser-session";
+import type { Selector } from "@vibe-vr/bench/selector";
+import { VIEWPORT_SIZES, type ViewportSize } from "@vibe-vr/bench/viewport";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 import { source as AXE_SOURCE, type RunOptions } from "axe-core";
 import {
   type Browser,

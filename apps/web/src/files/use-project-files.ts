@@ -22,8 +22,8 @@ import {
   FileContentSchema,
   type FileListing,
   FileListingSchema,
-} from "@nap/shared/files-protocol";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+} from "@vibe-vr/shared/files-protocol";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { credentialedFetch } from "../api/credentialed-fetch.ts";
 import { changeCount } from "./changed-paths.ts";

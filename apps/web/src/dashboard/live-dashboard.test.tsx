@@ -75,7 +75,7 @@ describe("the dashboard, before there is a session", () => {
     render(<LiveDashboard />);
 
     expect(screen.getByRole("status", { name: "Loading dashboard" })).toBeInTheDocument();
-    expect(document.querySelector(".nap-loader")).toBeInTheDocument();
+    expect(document.querySelector(".vibe-vr-loader")).toBeInTheDocument();
     expect(replace).not.toHaveBeenCalled();
     expect(useProjects).not.toHaveBeenCalled();
   });

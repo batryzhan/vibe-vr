@@ -4,7 +4,7 @@
  * Almost every test above the execution plane needs a sandbox but has no interest in
  * one: an agent-loop test cares that a file was written, not that a container existed.
  * This stands in for the real thing so those tests stay deterministic, free and fast.
- * It is held to the same contract as the E2B adapter by the conformance suite next to
+ * It is held to the same contract as the Docker adapter by the conformance suite next to
  * this file, which both implementations run.
  *
  * The filesystem is a flat `Map` from absolute path to contents; directories are
@@ -17,7 +17,7 @@
  * genuinely do not care pass `defaultExec`.
  */
 
-import type { SandboxInventory, SandboxListing } from "@nap/shared/ports/sandbox-inventory";
+import type { SandboxInventory, SandboxListing } from "@vibe-vr/shared/ports/sandbox-inventory";
 import type {
   ExecOutputHandler,
   ExecResult,
@@ -25,8 +25,8 @@ import type {
   Sandbox,
   SandboxError,
   SandboxManager,
-} from "@nap/shared/ports/sandbox-manager";
-import type { Result, VoidResult } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/sandbox-manager";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 
 /** A scripted answer to one command. Every field has a sensible zero value. */
 export type ScriptedExecResponse = {
@@ -169,7 +169,7 @@ export class InMemorySandboxManager implements SandboxManager, SandboxInventory 
   /**
    * `SandboxInventory`: everything this manager currently holds.
    *
-   * Implemented here as well as on the E2B adapter because the callers that reconcile capacity
+   * Implemented here as well as on the Docker adapter because the callers that reconcile capacity
    * against the provider have to be testable without one, and because a sandbox created through
    * `create` and then lost track of is exactly the situation they exist to clean up.
    */

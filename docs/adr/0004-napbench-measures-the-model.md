@@ -122,7 +122,7 @@ fallback that switched models mid-run — does not make one of the two readings 
 naming only the one that was not hit explains nothing. And they are recorded as resolved numbers:
 a run that left `maxSteps` to its default and one that passed the default explicitly were held at
 the same ceiling, and refusing that pair would be refusing over a difference that does not exist.
-Resolution happens in the app, which owns the defaults — `@nap/bench` may not see them (ADR-0001).
+Resolution happens in the app, which owns the defaults — `@vibe-vr/bench` may not see them (ADR-0001).
 
 **One object configures the agent and is recorded.** Two sources would let a report claim a budget
 the turn was never given, and the guard would then be enforcing a number nobody applied.

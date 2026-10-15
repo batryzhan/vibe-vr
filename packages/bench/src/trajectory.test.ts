@@ -1,4 +1,4 @@
-import type { NapEvent } from "@nap/shared/events";
+import type { NapEvent } from "@vibe-vr/shared/events";
 import { describe, expect, it } from "vitest";
 import {
   type BenchTrajectory,

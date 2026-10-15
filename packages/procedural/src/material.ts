@@ -25,7 +25,7 @@
  * three.js enums. See `docs/PLAN.md §0` for why the seam sits here.
  */
 
-import type { SceneMaterial } from "@nap/scene-spec/schema";
+import type { SceneMaterial } from "@vibe-vr/scene-spec/schema";
 
 /** Renderer-neutral PBR parameters: what the adapter needs, nothing it doesn't. */
 export type ResolvedMaterial = {

@@ -22,11 +22,11 @@
  * after a partial failure finishes the job rather than reporting a new one.
  */
 
-import type { ObjectStore } from "@nap/shared/ports/object-store";
-import type { ProjectStore } from "@nap/shared/ports/project-store";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
-import type { Result } from "@nap/shared/result";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
+import type { ProjectStore } from "@vibe-vr/shared/ports/project-store";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
+import type { Result } from "@vibe-vr/shared/result";
 import { thumbnailKey } from "./turn-thumbnail.ts";
 
 export type DeleteFailureReason =

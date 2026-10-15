@@ -84,7 +84,7 @@ export function PropertyInspector({ className = "" }: PropertyInspectorProps) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `threepod-scene-rev${revision}.json`;
+    link.download = `vibe-vr-scene-rev${revision}.json`;
     link.click();
     URL.revokeObjectURL(url);
   };

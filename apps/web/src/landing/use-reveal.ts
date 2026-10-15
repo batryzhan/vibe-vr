@@ -85,10 +85,10 @@ export function revealProps(
   style: CSSProperties | undefined;
 } {
   return {
-    className: "nap-reveal",
+    className: "vibe-vr-reveal",
     "data-reveal": state === "idle" ? undefined : state,
     // A custom property is not part of `CSSProperties`, and this is the cast React's own types
     // expect for one — the alternative is a stylesheet rule per delay.
-    style: delayMs > 0 ? ({ "--nap-reveal-delay": `${delayMs}ms` } as CSSProperties) : undefined,
+    style: delayMs > 0 ? ({ "--vibe-vr-reveal-delay": `${delayMs}ms` } as CSSProperties) : undefined,
   };
 }

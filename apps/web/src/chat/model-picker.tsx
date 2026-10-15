@@ -2,7 +2,7 @@
 
 /** The deployment-backed model choice used by both prompt composers. */
 
-import type { ModelChoice } from "@nap/shared/models-protocol";
+import type { ModelChoice } from "@vibe-vr/shared/models-protocol";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -98,7 +98,7 @@ export function ModelPicker({
           <ul
             ref={menu}
             aria-label="Model"
-            className="nap-pop fixed z-50 w-52 overflow-hidden rounded-[10px] bg-field p-1 shadow-raised"
+            className="vibe-vr-pop fixed z-50 w-52 overflow-hidden rounded-[10px] bg-field p-1 shadow-raised"
             style={{ ...position, transformOrigin: "bottom right" }}
           >
             {models.map((choice) => (

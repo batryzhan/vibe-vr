@@ -28,9 +28,9 @@
  * quietly.
  */
 
-import { createDatabase } from "@nap/db/client";
-import { purgeDemoUsers } from "@nap/db/purge-demo-users";
-import { E2BSandboxManager } from "@nap/sandbox/e2b-sandbox-manager";
+import { createDatabase } from "@vibe-vr/db/client";
+import { purgeDemoUsers } from "@vibe-vr/db/purge-demo-users";
+import { DockerSandboxManager } from "@vibe-vr/sandbox/docker-sandbox-manager";
 import { z } from "zod";
 
 function flag(name: string): boolean {
@@ -107,22 +107,11 @@ if (!confirmed) {
 }
 
 if (planned.orphanedSandboxIds.length > 0) {
-  if ((process.env.E2B_API_KEY ?? "") === "") {
-    // Refusing is the whole point: deleting these rows without a key leaves running sandboxes
-    // that nothing in the system will ever find again, billing until their TTL.
-    console.error(
-      `E2B_API_KEY is unset and ${planned.orphanedSandboxIds.length} projects still name a sandbox.` +
-        ` Deleting them now would leak every one — set the key, or wait for the reaper to put them away.`,
-    );
-    await close();
-    process.exit(1);
-  }
-
-  const sandboxes = new E2BSandboxManager();
+  const sandboxes = new DockerSandboxManager();
   for (const id of planned.orphanedSandboxIds) {
     const destroyed = await sandboxes.destroy(id);
-    // A sandbox E2B has already reclaimed is the ordinary case an hour after a run, and it is
-    // not a reason to leave the rows: what matters is that nothing is still running.
+    // A container already removed by the local reaper is harmless; what matters is that no
+    // managed project container is left running for a deleted project.
     console.log(
       `  sandbox ${id}: ${destroyed.ok ? "destroyed" : `${destroyed.error.code}: ${destroyed.error.message}`}`,
     );

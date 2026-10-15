@@ -15,8 +15,8 @@
  * mystery into a sentence on the screen where the mistake was made.
  */
 
-import { getLogger } from "@nap/shared/logging";
-import type { UserKeyStore } from "@nap/shared/ports/user-key-store";
+import { getLogger } from "@vibe-vr/shared/logging";
+import type { UserKeyStore } from "@vibe-vr/shared/ports/user-key-store";
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AuthVariables } from "../auth/require-user.ts";

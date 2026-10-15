@@ -19,7 +19,7 @@
  * named before anything raised it, and each now has a producer.
  */
 
-import type { TurnFailureReason } from "@nap/shared/events";
+import type { TurnFailureReason } from "@vibe-vr/shared/events";
 import { z } from "zod";
 
 export const ERROR_KINDS = [

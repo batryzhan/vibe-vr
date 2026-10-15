@@ -144,7 +144,7 @@ anchor spacing rather than from taste. It is left failing and documented.
 ## What this leaves
 
 - `openai/gpt-5.6-luna` is pinned as the default judge, on cost: `terra` bought one anchor for ten
-  times the money. `NAP_JUDGE_MODEL` moves it without editing code.
+  times the money. `VIBE_VR_JUDGE_MODEL` moves it without editing code.
 - **The corpus discrimination suite is red on one expectation, deliberately** — the top-vs-bottom
   margin, and only that. It is not in `bun run test`; it is a paid integration suite, and its
   failing is the finding rather than a bug to route around. Do not make it pass by editing
@@ -156,7 +156,7 @@ anchor spacing rather than from taste. It is left failing and documented.
   reason it took five arms to get there is the bullet below.
 - The judge and the agent are currently the same model, which is a conflict of interest on any
   funded run that compares two models. Pin the judge to something neither arm is before spending
-  on one — that is what `NAP_JUDGE_MODEL` is for.
+  on one — that is what `VIBE_VR_JUDGE_MODEL` is for.
 - **Each of these four arms reported verdicts and threw the grades away.** Seven met-or-unmet lines
   is less than an arm buys, and the fifth had to be paid for to read a matrix any of the four could
   have printed. The paid suite prints one now. If you are about to fund an arm, ask first what it

@@ -18,9 +18,9 @@
  * them is not a planner desk and is refused as such rather than guessed at.
  */
 
-import type { PatchOp } from "@nap/scene-spec/patch";
-import type { SceneMaterial, SceneNode, SceneSpec } from "@nap/scene-spec/schema";
-import type { Result } from "@nap/shared/result";
+import type { PatchOp } from "@vibe-vr/scene-spec/patch";
+import type { SceneMaterial, SceneNode, SceneSpec } from "@vibe-vr/scene-spec/schema";
+import type { Result } from "@vibe-vr/shared/result";
 import type { Bounds } from "./build.ts";
 import {
   type AssembledObject,

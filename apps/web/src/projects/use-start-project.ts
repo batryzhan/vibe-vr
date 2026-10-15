@@ -17,7 +17,7 @@
  * including a refusal — is testable without a network.
  */
 
-import { CreatedProjectSchema } from "@nap/shared/projects-protocol";
+import { CreatedProjectSchema } from "@vibe-vr/shared/projects-protocol";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { credentialedFetch } from "../api/credentialed-fetch.ts";

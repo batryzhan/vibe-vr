@@ -19,7 +19,7 @@
  * something measurable — and everything else about it is a judgement, which the other half makes.
  */
 
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 import { defineTask } from "../task.ts";
 import { TEMPLATE_PREVIEW_PORT, TEMPLATE_PREVIEW_TIMEOUT_MS } from "./template.ts";
 

@@ -19,8 +19,8 @@
  * `undefined` into a prompt.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
-import type { Memory, MemoryProvider } from "@nap/shared/ports/memory-provider";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import type { Memory, MemoryProvider } from "@vibe-vr/shared/ports/memory-provider";
 
 export class NoopMemoryProvider implements MemoryProvider {
   async retrieve(_sessionId: string, _query: string): Promise<Memory[]> {

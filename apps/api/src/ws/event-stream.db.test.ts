@@ -15,12 +15,12 @@
 
 import { randomUUID } from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
-import { PostgresEventStore } from "@nap/db/postgres-event-store";
-import { PostgresNotifyEventBus } from "@nap/db/postgres-notify-event-bus";
-import { PostgresNotifyTransport } from "@nap/db/postgres-notify-transport";
-import { projects, sessions, users } from "@nap/db/schema";
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
-import { type ServerFrame, ServerFrameSchema } from "@nap/shared/ws-protocol";
+import { PostgresEventStore } from "@vibe-vr/db/postgres-event-store";
+import { PostgresNotifyEventBus } from "@vibe-vr/db/postgres-notify-event-bus";
+import { PostgresNotifyTransport } from "@vibe-vr/db/postgres-notify-transport";
+import { projects, sessions, users } from "@vibe-vr/db/schema";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import { type ServerFrame, ServerFrameSchema } from "@vibe-vr/shared/ws-protocol";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeAll, describe, expect, inject, it } from "vitest";

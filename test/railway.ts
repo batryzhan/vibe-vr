@@ -42,7 +42,7 @@ const REQUIRED_START: Record<string, string | null> = {
 };
 
 /**
- * `NAP_DRAIN_TIMEOUT_SECONDS`'s default, from apps/api/src/env.ts. The platform's grace period has
+ * `VIBE_VR_DRAIN_TIMEOUT_SECONDS`'s default, from apps/api/src/env.ts. The platform's grace period has
  * to comfortably exceed it or the worker's drain never finishes.
  */
 const WORKER_DRAIN_TIMEOUT_SECONDS = 600;
@@ -133,7 +133,7 @@ export function findDeploymentViolations(project: ProjectLike): DeploymentViolat
       violations.push({
         service: name,
         rule: "drain",
-        detail: `drains for ${draining}s, which does not exceed NAP_DRAIN_TIMEOUT_SECONDS (${WORKER_DRAIN_TIMEOUT_SECONDS}s)`,
+        detail: `drains for ${draining}s, which does not exceed VIBE_VR_DRAIN_TIMEOUT_SECONDS (${WORKER_DRAIN_TIMEOUT_SECONDS}s)`,
       });
     }
 

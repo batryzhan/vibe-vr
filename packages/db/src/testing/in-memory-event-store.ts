@@ -19,13 +19,13 @@
  * a failure no database would ever reproduce.
  */
 
-import { isSameEvent } from "@nap/shared/event-identity";
+import { isSameEvent } from "@vibe-vr/shared/event-identity";
 import type {
   AppendOptions,
   EventStore,
   PendingEvent,
   StoredEvent,
-} from "@nap/shared/ports/event-store";
+} from "@vibe-vr/shared/ports/event-store";
 import type { EventTailReader, SessionCursors } from "../event-tail-reader.ts";
 
 function copy(event: StoredEvent): StoredEvent {

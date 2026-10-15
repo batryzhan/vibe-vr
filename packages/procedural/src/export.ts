@@ -13,7 +13,7 @@
  * orders of magnitude while still catching any real dimensional error.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import * as THREE from "three";
 import { GLTFExporter } from "three/addons/exporters/GLTFExporter.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";

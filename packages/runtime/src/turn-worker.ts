@@ -39,18 +39,18 @@
  * wait having its own progressing work orphaned out from under it.
  */
 
-import { LEASE_RENEWAL_INTERVAL_MS } from "@nap/shared/lease-windows";
-import { getLogger } from "@nap/shared/logging";
-import type { ModelCredentials } from "@nap/shared/ports/llm-provider";
-import type { Runtime } from "@nap/shared/ports/runtime";
-import type { LeasedTurnRequest, TurnQueue } from "@nap/shared/ports/turn-queue";
+import { LEASE_RENEWAL_INTERVAL_MS } from "@vibe-vr/shared/lease-windows";
+import { getLogger } from "@vibe-vr/shared/logging";
+import type { ModelCredentials } from "@vibe-vr/shared/ports/llm-provider";
+import type { Runtime } from "@vibe-vr/shared/ports/runtime";
+import type { LeasedTurnRequest, TurnQueue } from "@vibe-vr/shared/ports/turn-queue";
 
 /**
  * Where a worker announces the turns it is running, for whatever else in this process needs to
  * know — the cancel route, and the reaper's "is this project busy?".
  *
  * A structural type rather than an import: the thing that implements it lives in the API app, and
- * `@nap/runtime` may not depend on an app. It is deliberately per-process and deliberately not
+ * `@vibe-vr/runtime` may not depend on an app. It is deliberately per-process and deliberately not
  * authoritative — the queue is. What it buys is that a cancel arriving at the pod already running
  * the turn is felt at once instead of at the next renewal.
  */
@@ -148,7 +148,7 @@ const DEFAULT_POLL_INTERVAL_MS = 100;
 /**
  * `docs/scaling-design.md` §15: inside the 900s grace period, with room for the tail.
  *
- * The number a deployment actually runs on is `NAP_DRAIN_TIMEOUT_SECONDS`, which the composition
+ * The number a deployment actually runs on is `VIBE_VR_DRAIN_TIMEOUT_SECONDS`, which the composition
  * passes in; this is only what a caller that named none gets.
  */
 const DEFAULT_DRAIN_TIMEOUT_MS = 600_000;
@@ -278,6 +278,7 @@ export function startTurnWorker(options: TurnWorkerOptions): TurnWorker {
       sessionId: request.sessionId,
       turnId: request.id,
       message: request.message,
+      ...(request.referenceImage === undefined ? {} : { referenceImage: request.referenceImage }),
       signal,
       model: request.model,
       ...(credentials === undefined ? {} : { credentials }),

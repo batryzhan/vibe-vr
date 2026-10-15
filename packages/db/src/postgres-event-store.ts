@@ -25,14 +25,14 @@
  * corruption rather than an expected failure, so it throws.
  */
 
-import { isSameEvent } from "@nap/shared/event-identity";
-import { type NapEvent, NapEventSchema } from "@nap/shared/events";
+import { isSameEvent } from "@vibe-vr/shared/event-identity";
+import { type NapEvent, NapEventSchema } from "@vibe-vr/shared/events";
 import type {
   AppendOptions,
   EventStore,
   PendingEvent,
   StoredEvent,
-} from "@nap/shared/ports/event-store";
+} from "@vibe-vr/shared/ports/event-store";
 import { and, asc, eq, gt, max, or, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type { EventTailReader, SessionCursors } from "./event-tail-reader.ts";

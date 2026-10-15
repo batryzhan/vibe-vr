@@ -9,7 +9,7 @@
  * asserting that replacing a key moved the date.
  */
 
-import type { NewStoredKey, StoredKeyRecord, UserKeyStore } from "@nap/shared/ports/user-key-store";
+import type { NewStoredKey, StoredKeyRecord, UserKeyStore } from "@vibe-vr/shared/ports/user-key-store";
 
 export class InMemoryUserKeyStore implements UserKeyStore {
   readonly #rows = new Map<string, StoredKeyRecord>();

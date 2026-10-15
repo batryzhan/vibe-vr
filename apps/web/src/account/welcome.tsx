@@ -20,7 +20,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 import { SpinnerIcon } from "../ui/icons.tsx";
 import { ApiKeyForm } from "./api-key-form.tsx";
 import { useApiKey } from "./use-api-key.ts";
@@ -97,11 +97,11 @@ export function Welcome() {
     <div className="ai-stage relative flex min-h-dvh flex-col items-center justify-center px-6 py-20">
       <a
         href="/"
-        aria-label="nap, back to the front page"
+        aria-label="Vibe-VR, back to the front page"
         className="absolute top-4 left-6 flex items-center gap-0.5 font-semibold text-[var(--s-text-primary)] text-sm tracking-tight focus-visible:outline focus-visible:outline-1 focus-visible:outline-[var(--s-text-primary)]"
       >
-        <NapMark className="size-10" />
-        nap
+        <VibeVrMark className="size-10" />
+        Vibe-VR
       </a>
 
       <main className="flex w-full max-w-sm flex-col">
@@ -125,7 +125,7 @@ export function Welcome() {
               <span className="font-semibold text-[var(--s-text-primary)]">optional.</span>
             </h1>
             <p className="mt-2.5 text-balance text-center text-[var(--s-text-muted)] text-sm">
-              Nap runs on free models out of the box. Bring your own API key to build with Claude
+              Vibe-VR runs on the configured models out of the box. Bring your own API key to build with Claude
               Opus and the paid GPT models instead.
             </p>
 

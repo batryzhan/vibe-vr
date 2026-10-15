@@ -7,7 +7,7 @@
  * It follows `foldJobs` (`packages/shared/src/job-state.ts:153`) in shape:
  * walk once, accumulate, resolve the phase (here: the head) at the end.
  *
- * Input shapes are owned here, not in `@nap/shared`. M2 maps them onto the
+ * Input shapes are owned here, not in `@vibe-vr/shared`. M2 maps them onto the
  * `NapEvent` union for transport; until then the fold is testable without the
  * event system, which is exactly what lets M1 stay runtime-free.
  *

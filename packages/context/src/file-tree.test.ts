@@ -1,4 +1,4 @@
-import type { FileNode } from "@nap/shared/ports/sandbox-manager";
+import type { FileNode } from "@vibe-vr/shared/ports/sandbox-manager";
 import { describe, expect, it } from "vitest";
 import { buildFileTreeDigest } from "./file-tree.ts";
 import { type FileTree, stubSandbox } from "./testing/stub-sandbox.ts";

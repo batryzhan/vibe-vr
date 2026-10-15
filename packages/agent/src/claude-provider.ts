@@ -41,7 +41,7 @@ import type {
   LLMTurnResult,
   ModelCredentials,
   TokenUsage,
-} from "@nap/shared/ports/llm-provider";
+} from "@vibe-vr/shared/ports/llm-provider";
 import { z } from "zod";
 import { toDirectAnthropicModel } from "./anthropic.ts";
 import { createOpenRouterClient } from "./openrouter.ts";
@@ -144,7 +144,7 @@ export const DEFAULT_MODEL_CONFIG: ModelConfig = {
   model: "openai/gpt-5.6-luna",
   /*
    * `medium`, because it was measured rather than chosen — and because this used to say `xhigh`
-   * while `NAP_EFFORT` said `medium`, so the API and anything falling back to this default were
+   * while `VIBE_VR_EFFORT` said `medium`, so the API and anything falling back to this default were
    * running at different settings.
    *
    * Fifteen turns over five prompts at three levels: `medium` was the cheapest and the fastest,

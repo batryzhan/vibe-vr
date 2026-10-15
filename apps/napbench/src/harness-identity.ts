@@ -1,7 +1,7 @@
 /**
  * Which Nap this invocation is, read from the checkout it is running out of.
  *
- * The impure half of the harness identity: `@nap/bench` defines what the record is and what a
+ * The impure half of the harness identity: `@vibe-vr/bench` defines what the record is and what a
  * comparison makes of it, and cannot see a git repository any more than it can see a filesystem
  * (docs/adr/0001). This asks git, here in the app.
  *
@@ -12,7 +12,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import type { HarnessRecord } from "@nap/bench/run-configuration";
+import type { HarnessRecord } from "@vibe-vr/bench/run-configuration";
 
 /**
  * One git command, answering `null` when git could not.

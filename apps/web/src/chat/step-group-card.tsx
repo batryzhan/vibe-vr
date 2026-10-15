@@ -138,7 +138,7 @@ function Live({ group }: { group: StepGroup }) {
 
   return (
     <>
-      <span className="nap-shimmer">{LIVE_VERBS[step.toolName]}</span>{" "}
+      <span className="vibe-vr-shimmer">{LIVE_VERBS[step.toolName]}</span>{" "}
       <span className="font-mono text-[11.5px] text-muted">{stepTarget(step)}</span>
     </>
   );

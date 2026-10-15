@@ -10,7 +10,7 @@
  * back out of the store.
  */
 
-import type { NapEventType } from "@nap/shared/events";
+import type { NapEventType } from "@vibe-vr/shared/events";
 
 export function expectEventSequence(
   events: readonly { type: NapEventType }[],

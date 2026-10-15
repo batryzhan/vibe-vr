@@ -12,9 +12,9 @@
  * question rather than an architecture one.
  */
 
-import { TEMPLATE_DEV_PORT, TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { TEMPLATE_DEV_PORT, TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 
 /** What the project template declares, so the verifier finds checks to run. */
 const TEMPLATE_MANIFEST = { scripts: { build: "vite build", dev: "vite --host" } };

@@ -1,6 +1,6 @@
-import { hashSceneSpec } from "@nap/scene-spec/revisions";
-import { towerSpec } from "@nap/scene-spec/tower";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { hashSceneSpec } from "@vibe-vr/scene-spec/revisions";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { installViewportTestShims } from "./test-shims.ts";

@@ -1,4 +1,4 @@
-import type { SceneSpec } from "@nap/scene-spec/schema";
+import type { SceneSpec } from "@vibe-vr/scene-spec/schema";
 import { describe, expect, it } from "vitest";
 import type { ComponentSpec } from "./component.ts";
 import { semanticSceneMaterial } from "./material.ts";

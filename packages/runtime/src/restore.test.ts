@@ -1,9 +1,9 @@
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import type { Sandbox, SandboxError } from "@nap/shared/ports/sandbox-manager";
-import type { Result } from "@nap/shared/result";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import type { Sandbox, SandboxError } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { Result } from "@vibe-vr/shared/result";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { openProject } from "./restore.ts";
 

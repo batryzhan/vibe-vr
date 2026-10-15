@@ -29,7 +29,7 @@ Runtime             persists → publishes → commits → verifies → snapshot
   │
 you                 come back to it running`;
 
-export function HowNapWorks() {
+export function HowVibeVrWorks() {
   return (
     <>
       <Lede>
@@ -48,7 +48,7 @@ export function HowNapWorks() {
       <Recording
         src="/demo.mp4"
         poster="/demo-poster.jpg"
-        label="A recorded Nap session, from an empty dashboard to a finished app"
+        label="A recorded Vibe-VR session, from an empty dashboard to a finished scene"
         caption="One session, uncut: a sentence, a sandbox waking up, the agent reading and writing files, the project's own checks run against what it claimed, and the app it left behind."
       />
 

@@ -10,7 +10,7 @@
  * is still true to the request. A test that needs a particular shape passes one.
  */
 
-import type { BuiltContext, ContextEngine, ContextRequest } from "@nap/shared/ports/context-engine";
+import type { BuiltContext, ContextEngine, ContextRequest } from "@vibe-vr/shared/ports/context-engine";
 
 export class StubContextEngine implements ContextEngine {
   /** Every request, in order, for the tests that assert on what the runtime passed down. */

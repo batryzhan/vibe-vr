@@ -2,9 +2,9 @@
  * Asking the project whether the turn's claim is true.
  *
  * `turn.completed` is what the model says it did; this is what the system finds
- * (`docs/adr/0006`). Everything hard about running a check belongs to `@nap/verify` — which
+ * (`docs/adr/0006`). Everything hard about running a check belongs to `@vibe-vr/verify` — which
  * checks a project has, what order is cheapest, where the run stops. What lives here is the
- * composition the runtime needs and the one decision `@nap/verify` cannot make for it: where
+ * composition the runtime needs and the one decision `@vibe-vr/verify` cannot make for it: where
  * the manifest comes from.
  *
  * **The manifest is read from the project, and a manifest nobody can read runs nothing.** Not
@@ -18,18 +18,18 @@
  * does not run. No browser: ADR-0001 keeps that in NapBench alone.
  */
 
-import type { VerifiedCheck } from "@nap/shared/events";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { CommandOutput } from "@nap/verify/command-output";
-import { CHECK_NAMES, discoverChecks } from "@nap/verify/discover-checks";
+import type { VerifiedCheck } from "@vibe-vr/shared/events";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { CommandOutput } from "@vibe-vr/verify/command-output";
+import { CHECK_NAMES, discoverChecks } from "@vibe-vr/verify/discover-checks";
 import {
   PREVIEW_CHECK_NAME,
   type RanCheck,
   type RanCheckName,
   runChecks,
   type VerificationResult,
-} from "@nap/verify/run-checks";
+} from "@vibe-vr/verify/run-checks";
 
 const MANIFEST_PATH = `${PROJECT_ROOT_PATH}/package.json`;
 

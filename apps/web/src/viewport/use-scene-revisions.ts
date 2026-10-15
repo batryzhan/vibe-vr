@@ -16,23 +16,23 @@
  * every remote revision it shows was accepted by the fold, in log order.
  */
 
-import { type BuiltScene, buildScene } from "@nap/procedural/build";
-import { boundsMatch, exportGlb, reimportGlb } from "@nap/procedural/export";
-import { builtSceneToGroup, disposeGroup } from "@nap/procedural/three-adapter";
-import { type AcceptedSceneRevision, collectSceneChain, foldSceneSpec } from "@nap/scene-spec/fold";
-import { MAX_DIMENSION_M, MIN_DIMENSION_M } from "@nap/scene-spec/limits";
-import { applyPatch, type PatchOp } from "@nap/scene-spec/patch";
+import { type BuiltScene, buildScene } from "@vibe-vr/procedural/build";
+import { boundsMatch, exportGlb, reimportGlb } from "@vibe-vr/procedural/export";
+import { builtSceneToGroup, disposeGroup } from "@vibe-vr/procedural/three-adapter";
+import { type AcceptedSceneRevision, collectSceneChain, foldSceneSpec } from "@vibe-vr/scene-spec/fold";
+import { MAX_DIMENSION_M, MIN_DIMENSION_M } from "@vibe-vr/scene-spec/limits";
+import { applyPatch, type PatchOp } from "@vibe-vr/scene-spec/patch";
 import {
   createChildRevision,
   createGenesisRevision,
   hashSceneSpec,
   RevisionLog,
   type SceneRevision,
-} from "@nap/scene-spec/revisions";
-import { sceneLogEvents } from "@nap/scene-spec/scene-events";
-import { validateSceneSpec } from "@nap/scene-spec/schema";
-import { towerSpec } from "@nap/scene-spec/tower";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+} from "@vibe-vr/scene-spec/revisions";
+import { sceneLogEvents } from "@vibe-vr/scene-spec/scene-events";
+import { validateSceneSpec } from "@vibe-vr/scene-spec/schema";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export type ExportStatus =

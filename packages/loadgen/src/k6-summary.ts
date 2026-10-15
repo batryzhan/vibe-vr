@@ -13,7 +13,7 @@
  * arrive as `metric{tag:value}`, which is why this file can split one.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import type { MetricsRollup } from "./metrics.ts";
 import type { Summary } from "./percentiles.ts";

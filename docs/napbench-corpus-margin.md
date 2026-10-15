@@ -150,4 +150,4 @@ were kept absolute for.
   nowhere in the corpus. That may be the dimension a screenshot cannot really answer — nothing here
   measured it, and it is the obvious next thing to look at.
 - The judge and the agent are still the same model, and that is still a conflict of interest on any
-  funded run comparing two models. `NAP_JUDGE_MODEL` moves it.
+  funded run comparing two models. `VIBE_VR_JUDGE_MODEL` moves it.

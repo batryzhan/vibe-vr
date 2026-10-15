@@ -216,8 +216,8 @@ export function secretViolations(manifests: Manifest[]): string[] {
  */
 export function generatedSecretViolations(kustomization: string, file: string): string[] {
   const violations: string[] = [];
-  // Vendor prefixes worth naming: OpenRouter and Anthropic both start `sk-`, E2B's start `e2b_`.
-  const vendorKey = /^(sk-|e2b_|AKIA)/;
+  // Vendor prefixes worth naming: OpenRouter and Anthropic both start `sk-`, AWS access ids start `AKIA`.
+  const vendorKey = /^(sk-|AKIA)/;
 
   for (const rawLine of kustomization.split("\n")) {
     const literal = /^\s*-\s+([A-Z0-9_]+)=(.*)$/.exec(rawLine.trim());
@@ -328,8 +328,8 @@ export function reaperViolations(manifests: Manifest[]): string[] {
 /**
  * Kubernetes must not be able to outrun the thing that bounds the bill.
  *
- * `NAP_MAX_SANDBOXES_TOTAL` is the cluster-wide ceiling on sandboxes, and therefore on E2B spend.
- * A worker runs `NAP_WORKER_CONCURRENCY` turns at once, so past
+ * `VIBE_VR_MAX_SANDBOXES_TOTAL` is the cluster-wide ceiling on sandboxes, and therefore on E2B spend.
+ * A worker runs `VIBE_VR_WORKER_CONCURRENCY` turns at once, so past
  * ceil(total / concurrency) workers every extra pod can only queue behind a capacity refusal —
  * money spent on pods instead of on turns. The autoscaler's target is the same number for the same
  * reason: it is one pod's worth of work, and any other value makes the queue depth mean something
@@ -342,10 +342,10 @@ export function workerCeilingViolations(manifests: Manifest[]): string[] {
   if (scaled === undefined) return ["no ScaledObject named nap-worker"];
 
   const data = at(config.doc, "data");
-  const total = Number(isRecord(data) ? str(data.NAP_MAX_SANDBOXES_TOTAL) : undefined);
-  const concurrency = Number(isRecord(data) ? str(data.NAP_WORKER_CONCURRENCY) : undefined);
+  const total = Number(isRecord(data) ? str(data.VIBE_VR_MAX_SANDBOXES_TOTAL) : undefined);
+  const concurrency = Number(isRecord(data) ? str(data.VIBE_VR_WORKER_CONCURRENCY) : undefined);
   if (!Number.isFinite(total) || !Number.isFinite(concurrency)) {
-    return ["nap-config must set NAP_MAX_SANDBOXES_TOTAL and NAP_WORKER_CONCURRENCY"];
+    return ["nap-config must set VIBE_VR_MAX_SANDBOXES_TOTAL and VIBE_VR_WORKER_CONCURRENCY"];
   }
 
   const violations: string[] = [];
@@ -361,7 +361,7 @@ export function workerCeilingViolations(manifests: Manifest[]): string[] {
     const target = Number(str(at(trigger, "metadata.targetQueryValue")));
     if (target !== concurrency) {
       violations.push(
-        `${scaled.file}: targetQueryValue is ${String(target)}, which is not one worker's NAP_WORKER_CONCURRENCY (${concurrency})`,
+        `${scaled.file}: targetQueryValue is ${String(target)}, which is not one worker's VIBE_VR_WORKER_CONCURRENCY (${concurrency})`,
       );
     }
   }
@@ -453,7 +453,7 @@ export function heartbeatPathViolations(manifests: Manifest[]): string[] {
   for (const container of containers(worker)) {
     const configured = list(container.env)
       .filter(isRecord)
-      .find((entry) => str(entry.name) === "NAP_WORKER_HEARTBEAT_FILE");
+      .find((entry) => str(entry.name) === "VIBE_VR_WORKER_HEARTBEAT_FILE");
     const path = str(configured?.value);
     if (path === undefined) {
       violations.push(
@@ -562,7 +562,7 @@ export function socketMetricViolations(
  *
  * Scaling in is the same event as a crash for whoever's turn was running: the drain in
  * `deployment-worker.yaml` is what makes it survivable, and it takes up to
- * `NAP_DRAIN_TIMEOUT_SECONDS`. If the autoscaler's stabilization window is shorter than that, a
+ * `VIBE_VR_DRAIN_TIMEOUT_SECONDS`. If the autoscaler's stabilization window is shorter than that, a
  * dip in queue depth removes a pod, the pod spends ten minutes draining, and the queue that
  * refilled in the meantime is served by one fewer worker for the whole of it — which reads as
  * latency nobody can attribute to a scaling decision made minutes earlier.
@@ -576,8 +576,8 @@ export function scaleDownViolations(manifests: Manifest[]): string[] {
   if (scaled === undefined) return ["no ScaledObject named nap-worker"];
 
   const data = at(config.doc, "data");
-  const drain = Number(isRecord(data) ? str(data.NAP_DRAIN_TIMEOUT_SECONDS) : undefined);
-  if (!Number.isFinite(drain)) return ["nap-config must set NAP_DRAIN_TIMEOUT_SECONDS"];
+  const drain = Number(isRecord(data) ? str(data.VIBE_VR_DRAIN_TIMEOUT_SECONDS) : undefined);
+  if (!Number.isFinite(drain)) return ["nap-config must set VIBE_VR_DRAIN_TIMEOUT_SECONDS"];
 
   const violations: string[] = [];
   const window = num(

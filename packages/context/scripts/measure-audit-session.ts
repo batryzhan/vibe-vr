@@ -21,7 +21,7 @@
  */
 
 import { readFileSync } from "node:fs";
-import type { NapEvent } from "@nap/shared/events";
+import type { NapEvent } from "@vibe-vr/shared/events";
 import { NapContextEngine } from "../src/context-engine.ts";
 import { NoopMemoryProvider } from "../src/noop-memory-provider.ts";
 import { stubSandbox } from "../src/testing/stub-sandbox.ts";

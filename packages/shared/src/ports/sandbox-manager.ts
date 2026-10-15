@@ -3,7 +3,7 @@
  *
  * Everything the agent does to a user's project — writing files, running commands,
  * exposing a preview — goes through here. It deliberately knows nothing about agents,
- * turns, or events: swapping E2B for Kubernetes must be a change to one package.
+ * turns, or events: changing the sandbox provider must be a change to one package.
  *
  * Every method returns a `Result`. A missing file and an unreachable sandbox are
  * ordinary outcomes on this boundary, and a caller that forgets to handle them should

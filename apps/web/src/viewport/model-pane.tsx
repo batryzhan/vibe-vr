@@ -9,7 +9,7 @@
  * a resizable split: this face has one job and a splitter would be chrome.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { History } from "./history.tsx";
 import { Inspector } from "./inspector.tsx";
 import { SceneTree } from "./scene-tree.tsx";

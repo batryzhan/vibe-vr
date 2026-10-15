@@ -33,7 +33,7 @@ most worth knowing.
 report omits them; the CLI summary prints nothing rather than a zero. `docs/NAPBENCH.md` records why
 and what would make each available.
 
-Estimated cost is **derived**, from a versioned per-model price table held in `@nap/bench`, and
+Estimated cost is **derived**, from a versioned per-model price table held in `@vibe-vr/bench`, and
 labelled in the report as an estimate rather than a measurement. It is absent whenever the token
 counts it depends on are absent.
 

@@ -19,7 +19,7 @@
  */
 
 import { readFileSync } from "node:fs";
-import { discoverChecks } from "@nap/verify/discover-checks";
+import { discoverChecks } from "@vibe-vr/verify/discover-checks";
 import { describe, expect, it } from "vitest";
 
 const TEMPLATE_PACKAGE_JSON = readFileSync(

@@ -13,7 +13,7 @@
  * almost nothing would flatter whatever was averaged in beside it.
  */
 
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 import { defineTask } from "../task.ts";
 
 export const TRACER_TASK = defineTask({

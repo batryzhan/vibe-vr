@@ -1,4 +1,4 @@
-import { TOOL_NAMES } from "@nap/shared/events";
+import { TOOL_NAMES } from "@vibe-vr/shared/events";
 import { describe, expect, it } from "vitest";
 import { PROJECT_ROOT, TOOL_DEFINITIONS, TOOL_SCHEMAS } from "./definitions.ts";
 

@@ -9,15 +9,15 @@
  * reach for while changing the journey itself. The ramp is what answers §23.
  *
  * Only the driving lives here. The percentile maths, the metric rollup, the threshold verdicts
- * and the order of the journey's steps are all in `@nap/loadgen`, where they are tested — a
+ * and the order of the journey's steps are all in `@vibe-vr/loadgen`, where they are tested — a
  * number a report is read through is not one to leave in an untested script.
  */
 
-import type { JourneyClient, JourneyEvent, JourneyStream } from "@nap/loadgen/journey";
-import { runUserJourney } from "@nap/loadgen/journey";
-import { Metrics } from "@nap/loadgen/metrics";
-import { buildReport, formatReport, type Threshold } from "@nap/loadgen/report";
-import { ServerFrameSchema } from "@nap/shared/ws-protocol";
+import type { JourneyClient, JourneyEvent, JourneyStream } from "@vibe-vr/loadgen/journey";
+import { runUserJourney } from "@vibe-vr/loadgen/journey";
+import { Metrics } from "@vibe-vr/loadgen/metrics";
+import { buildReport, formatReport, type Threshold } from "@vibe-vr/loadgen/report";
+import { ServerFrameSchema } from "@vibe-vr/shared/ws-protocol";
 import { bootLoadgenApi } from "./loadgen-composition.ts";
 
 const USERS = Number(

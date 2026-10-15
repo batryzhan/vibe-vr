@@ -29,10 +29,10 @@
  * failed is the one most likely to fail again next tick.
  */
 
-import { STRANDED_GRACE_MS } from "@nap/shared/capacity-windows";
-import type { CapacityReconciler } from "@nap/shared/ports/capacity-reconciler";
-import type { SandboxInventory } from "@nap/shared/ports/sandbox-inventory";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import { STRANDED_GRACE_MS } from "@vibe-vr/shared/capacity-windows";
+import type { CapacityReconciler } from "@vibe-vr/shared/ports/capacity-reconciler";
+import type { SandboxInventory } from "@vibe-vr/shared/ports/sandbox-inventory";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 
 export type ReconcileFailure = {
   /** Which part gave up, so a log line says whether Postgres or the provider is unhappy. */
@@ -100,7 +100,7 @@ export async function reconcileCapacity(options: ReconcileOptions): Promise<Reco
   }
 
   // Shared with the rule that reclaims an `active` row, so the two agree about which acquires
-  // are still in flight — see `@nap/shared/capacity-windows`.
+  // are still in flight — see `@vibe-vr/shared/capacity-windows`.
   const oldest = now() - STRANDED_GRACE_MS;
 
   // Everything still standing after the cheap, local rules: unreferenced, ours by metadata, and

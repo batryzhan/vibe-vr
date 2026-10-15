@@ -11,7 +11,7 @@
  * rather than a disabled control pretending otherwise.
  */
 
-import type { SceneNode } from "@nap/scene-spec/schema";
+import type { SceneNode } from "@vibe-vr/scene-spec/schema";
 import { useEffect, useState } from "react";
 
 export function Inspector({

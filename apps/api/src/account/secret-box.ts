@@ -45,7 +45,7 @@ export type OpenResult =
     };
 
 /**
- * The 32 raw bytes behind `NAP_KEY_ENCRYPTION_SECRET`.
+ * The 32 raw bytes behind `VIBE_VR_KEY_ENCRYPTION_SECRET`.
  *
  * A branded type rather than a bare `Buffer`, so a caller cannot pass the base64 *string* by
  * accident — that mistake type-checks, encrypts fine under a key derived from the wrong bytes,

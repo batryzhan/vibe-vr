@@ -58,13 +58,13 @@ export function WorkingIndicator({
             // where they are, and nothing ever reorders them.
             // biome-ignore lint/suspicious/noArrayIndexKey: the index is the cell's identity
             key={index}
-            className="size-[4px] rounded-[1px] bg-ink nap-pixel"
+            className="size-[4px] rounded-[1px] bg-ink vibe-vr-pixel"
             style={{ animationDelay: `${delay}ms`, animationDuration: `${CYCLE_MS}ms` }}
           />
         ))}
       </span>
 
-      <span aria-hidden="true" className="nap-shimmer font-medium text-[13px]">
+      <span aria-hidden="true" className="vibe-vr-shimmer font-medium text-[13px]">
         {label}
       </span>
 

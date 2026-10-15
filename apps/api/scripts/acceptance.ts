@@ -32,7 +32,7 @@
  */
 const KEEP = process.argv.includes("--keep");
 
-const API = process.env.NAP_API_URL ?? "http://localhost:3001";
+const API = process.env.VIBE_VR_API_URL ?? "http://localhost:3001";
 const WS = API.replace(/^http/, "ws");
 
 /** A turn can legitimately take a couple of minutes on a slow model. */

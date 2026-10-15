@@ -70,7 +70,7 @@ export function ApiKeyPanel({
        * the lift, and one inset highlight along the top edge, which is how a real surface catches
        * the light and the cheapest thing that stops a flat rectangle reading as a cutout.
        */
-      className="nap-dialog ai-stage-dark m-auto w-full max-w-md rounded-[20px] border border-edge bg-panel p-7 text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_32px_64px_-16px_rgba(0,0,0,0.75)] backdrop:bg-black/60 backdrop:backdrop-blur-[3px]"
+      className="vibe-vr-dialog ai-stage-dark m-auto w-full max-w-md rounded-[20px] border border-edge bg-panel p-7 text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_32px_64px_-16px_rgba(0,0,0,0.75)] backdrop:bg-black/60 backdrop:backdrop-blur-[3px]"
     >
       <div className="flex items-start justify-between gap-5">
         <div>

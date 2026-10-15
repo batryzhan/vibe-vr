@@ -11,8 +11,8 @@
  * boundary rather than of this component.
  */
 
-import { toProjectPath } from "@nap/shared/files-protocol";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { toProjectPath } from "@vibe-vr/shared/files-protocol";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 /**
  * Files that exist and changed. A deletion is left out: the file is already gone from the

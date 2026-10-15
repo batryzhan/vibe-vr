@@ -24,7 +24,7 @@
  * lower a score by saying so.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import { describeParseFailure } from "../parse-failure.ts";
 import { ResultsRelativePathSchema } from "../screenshot.ts";

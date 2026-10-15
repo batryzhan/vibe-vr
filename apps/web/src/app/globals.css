@@ -146,26 +146,26 @@ body {
  * `transform-box: fill-box` is load-bearing: without it an SVG transform is measured against
  * the whole viewport rather than the element, and the bob throws the ghost off the canvas.
  */
-.nap-mark-shut,
-.nap-mark-open {
+.vibe-vr-mark-shut,
+.vibe-vr-mark-open {
   transition: opacity 260ms ease;
 }
 
-.nap-mark-open {
+.vibe-vr-mark-open {
   opacity: 0;
 }
 
-.nap-mark:hover .nap-mark-shut {
+.vibe-vr-mark:hover .vibe-vr-mark-shut {
   opacity: 0;
 }
 
-.nap-mark:hover .nap-mark-open {
+.vibe-vr-mark:hover .vibe-vr-mark-open {
   opacity: 1;
 }
 
-.nap-mark-eyes,
-.nap-mark-body,
-.nap-mark-z {
+.vibe-vr-mark-eyes,
+.vibe-vr-mark-body,
+.vibe-vr-mark-z {
   transform-box: fill-box;
   transform-origin: center;
 }
@@ -179,8 +179,8 @@ body {
  * and a half seconds. Anything faster is panting, and anything larger draws the eye away from
  * the page it is sitting on.
  */
-.nap-mark-body {
-  animation: nap-breathe 3600ms ease-in-out infinite;
+.vibe-vr-mark-body {
+  animation: vibe-vr-breathe 3600ms ease-in-out infinite;
 }
 
 /*
@@ -189,34 +189,34 @@ body {
  * is visible at full opacity until its turn comes round, which reads as three of them stuck to
  * the corner.
  */
-.nap-mark-z {
+.vibe-vr-mark-z {
   opacity: 0;
-  animation: nap-z 4200ms ease-out infinite both;
+  animation: vibe-vr-z 4200ms ease-out infinite both;
 }
 
 /* Waking cancels both. Nothing yawns while it is looking at you. */
-.nap-mark:hover .nap-mark-z {
+.vibe-vr-mark:hover .vibe-vr-mark-z {
   animation: none;
   opacity: 0;
 }
 
 /* The glance starts after the eyes have finished opening, so it never happens behind a lid. */
-.nap-mark:hover .nap-mark-eyes {
-  animation: nap-glance 3s ease-in-out 240ms infinite;
+.vibe-vr-mark:hover .vibe-vr-mark-eyes {
+  animation: vibe-vr-glance 3s ease-in-out 240ms infinite;
 }
 
-.nap-mark:hover .nap-mark-body {
-  animation: nap-bob 3s ease-in-out 240ms infinite;
+.vibe-vr-mark:hover .vibe-vr-mark-body {
+  animation: vibe-vr-bob 3s ease-in-out 240ms infinite;
 }
 
 /* The dashboard stickers show Nap mid-task rather than asleep. They borrow the real mark but
    hold its awake face open, because music and coding do not pair well with drifting z's. */
-.nap-sticker-awake .nap-mark-shut,
-.nap-sticker-awake .nap-mark-zzz {
+.vibe-vr-sticker-awake .vibe-vr-mark-shut,
+.vibe-vr-sticker-awake .vibe-vr-mark-zzz {
   display: none;
 }
 
-.nap-sticker-awake .nap-mark-open {
+.vibe-vr-sticker-awake .vibe-vr-mark-open {
   opacity: 1;
 }
 
@@ -236,7 +236,7 @@ body {
  * `transform` moves the sticker around the angle it was pinned at. Writing `rotate()` inside
  * `transform` therefore *adds* to the tilt, which is what the hover flourish wants.
  */
-.nap-sticker {
+.vibe-vr-sticker {
   transition:
     border-color 260ms ease,
     background-color 260ms ease;
@@ -245,7 +245,7 @@ body {
 /* Every card but the wand's brightens under the cursor. His is excluded here rather than
    overridden below, so there is one place that says which cards react and it cannot disagree
    with itself. */
-.nap-sticker:hover:not(.nap-sticker-spark) {
+.vibe-vr-sticker:hover:not(.vibe-vr-sticker-spark) {
   border-color: var(--color-line-strong);
 }
 
@@ -253,13 +253,13 @@ body {
  * The squint ships with the mark and is off everywhere unless something asks for it, so the
  * header, the loader and the favicon are untouched by its existence.
  */
-.nap-mark-squint {
+.vibe-vr-mark-squint {
   display: none;
   transition: opacity 260ms ease;
 }
 
 /* Same deal: off unless a sticker asks for it, so the header and the favicon never see it. */
-.nap-mark-bored {
+.vibe-vr-mark-bored {
   display: none;
 }
 
@@ -275,12 +275,12 @@ body {
  * wrapper because the headphones are positioned against the *card*, and reparenting them into a
  * new element would move the drawing eight pixels off his head.
  */
-.nap-sticker-music > * {
-  animation: nap-nod 2400ms ease-in-out infinite;
+.vibe-vr-sticker-music > * {
+  animation: vibe-vr-nod 2400ms ease-in-out infinite;
 }
 
-.nap-sticker-music:hover > * {
-  animation: nap-nod-loud 1100ms ease-in-out infinite;
+.vibe-vr-sticker-music:hover > * {
+  animation: vibe-vr-nod-loud 1100ms ease-in-out infinite;
 }
 
 /*
@@ -289,20 +289,20 @@ body {
  * The two faces cross-fade on the same 260ms the mark's own waking uses, so this reads as the
  * same character doing the same trick rather than as a second effect bolted on.
  */
-.nap-sticker-music .nap-mark-squint {
+.vibe-vr-sticker-music .vibe-vr-mark-squint {
   display: block;
   opacity: 1;
 }
 
-.nap-sticker-music .nap-mark-open {
+.vibe-vr-sticker-music .vibe-vr-mark-open {
   opacity: 0;
 }
 
-.nap-sticker-music:hover .nap-mark-squint {
+.vibe-vr-sticker-music:hover .vibe-vr-mark-squint {
   opacity: 0;
 }
 
-.nap-sticker-music:hover .nap-mark-open {
+.vibe-vr-sticker-music:hover .vibe-vr-mark-open {
   opacity: 1;
 }
 
@@ -311,14 +311,14 @@ body {
  * shortens the flight: the delays are inline styles and a stylesheet cannot outrank them, so
  * the stagger stays put and the stream simply gets denser.
  */
-.nap-note {
+.vibe-vr-note {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: nap-note 1800ms ease-out infinite both;
+  animation: vibe-vr-note 1800ms ease-out infinite both;
 }
 
-.nap-sticker-music:hover .nap-note {
+.vibe-vr-sticker-music:hover .vibe-vr-note {
   animation-duration: 1000ms;
 }
 
@@ -337,8 +337,8 @@ body {
  * he climbs back up.
  */
 /* He types; the desk he is typing at does not, and neither does the card around both. */
-.nap-sticker-code .nap-mark {
-  animation: nap-type 5200ms linear infinite;
+.vibe-vr-sticker-code .vibe-vr-mark {
+  animation: vibe-vr-type 5200ms linear infinite;
 }
 
 /*
@@ -346,37 +346,37 @@ body {
  * through a trapdoor. A short, sharp curve here reads as a UI element toggling — which is the
  * one thing these are not.
  */
-.nap-sticker-code .nap-hider {
+.vibe-vr-sticker-code .vibe-vr-hider {
   transition: transform 620ms cubic-bezier(0.45, 0.05, 0.25, 1);
 }
 
-.nap-sticker-code .nap-paws {
+.vibe-vr-sticker-code .vibe-vr-paws {
   transition:
     transform 620ms cubic-bezier(0.45, 0.05, 0.25, 1) 40ms,
     opacity 380ms ease 140ms;
 }
 
 /* The typing stops the moment he moves — hands off the keys first, then down. */
-.nap-sticker-code:hover .nap-mark {
+.vibe-vr-sticker-code:hover .vibe-vr-mark {
   animation: none;
 }
 
-.nap-sticker-code:hover .nap-hider {
+.vibe-vr-sticker-code:hover .vibe-vr-hider {
   transform: translateY(19px);
 }
 
-.nap-sticker-code:hover .nap-paws {
+.vibe-vr-sticker-code:hover .vibe-vr-paws {
   transform: translateY(7px);
   opacity: 0;
 }
 
-.nap-sticker-code .nap-screen {
+.vibe-vr-sticker-code .vibe-vr-screen {
   opacity: 0.5;
-  animation: nap-screen 3000ms ease-in-out infinite;
+  animation: vibe-vr-screen 3000ms ease-in-out infinite;
   transition: opacity 200ms ease;
 }
 
-.nap-sticker-code:hover .nap-screen {
+.vibe-vr-sticker-code:hover .vibe-vr-screen {
   animation: none;
   opacity: 0;
 }
@@ -387,38 +387,38 @@ body {
  * the one that is supposed to look like nothing is happening. He sways inside the card; the
  * card itself is a sticker stuck to the page and stickers do not breathe.
  */
-.nap-sticker-sleep > * {
-  animation: nap-snore 5200ms ease-in-out infinite;
+.vibe-vr-sticker-sleep > * {
+  animation: vibe-vr-snore 5200ms ease-in-out infinite;
 }
 
-.nap-sticker-sleep .nap-blanket {
+.vibe-vr-sticker-sleep .vibe-vr-blanket {
   transform-box: fill-box;
   transform-origin: center;
-  animation: nap-blanket 5200ms ease-in-out infinite;
+  animation: vibe-vr-blanket 5200ms ease-in-out infinite;
 }
 
 /* Startled: the z's stop mid-air, the eyes come up, and it hops once and settles rather than
    holding a raised pose — being woken is an event, not a state. */
-.nap-sticker-sleep:hover > * {
-  animation: nap-startle 620ms cubic-bezier(0.2, 0.9, 0.25, 1);
+.vibe-vr-sticker-sleep:hover > * {
+  animation: vibe-vr-startle 620ms cubic-bezier(0.2, 0.9, 0.25, 1);
 }
 
-.nap-sticker-sleep:hover .nap-mark-zzz {
+.vibe-vr-sticker-sleep:hover .vibe-vr-mark-zzz {
   display: none;
 }
 
-.nap-sticker-sleep:hover .nap-mark-shut {
+.vibe-vr-sticker-sleep:hover .vibe-vr-mark-shut {
   opacity: 0;
 }
 
-.nap-sticker-sleep:hover .nap-mark-open {
+.vibe-vr-sticker-sleep:hover .vibe-vr-mark-open {
   opacity: 1;
 }
 
 /* Once the hop is over it looks around, which is the mark's own waking gesture. The delay keeps
    the glance from starting while the eyes are still opening. */
-.nap-sticker-sleep:hover .nap-mark-eyes {
-  animation: nap-glance 3s ease-in-out 620ms infinite;
+.vibe-vr-sticker-sleep:hover .vibe-vr-mark-eyes {
+  animation: vibe-vr-glance 3s ease-in-out 620ms infinite;
 }
 
 /*
@@ -430,22 +430,22 @@ body {
  * head. A character who ignores you is only funny if he *visibly* ignores you, which means every
  * reaction the rest of the set has must be switched off here rather than merely not added.
  */
-.nap-sticker-spark .nap-mark-bored {
+.vibe-vr-sticker-spark .vibe-vr-mark-bored {
   display: block;
 }
 
 /*
  * The lids stay down through the hover, which takes an extra class to say: the mark's own waking
- * rule is `.nap-mark:hover .nap-mark-open`, and a pseudo-class counts as a class, so it outranks
+ * rule is `.vibe-vr-mark:hover .vibe-vr-mark-open`, and a pseudo-class counts as a class, so it outranks
  * a plain two-class selector and pops his eyes open the moment the pointer lands.
  */
-.nap-sticker-spark .nap-mark-open,
-.nap-sticker-spark .nap-mark:hover .nap-mark-open {
+.vibe-vr-sticker-spark .vibe-vr-mark-open,
+.vibe-vr-sticker-spark .vibe-vr-mark:hover .vibe-vr-mark-open {
   opacity: 0;
 }
 
-.nap-sticker-spark .nap-mark:hover .nap-mark-eyes,
-.nap-sticker-spark .nap-mark:hover .nap-mark-body {
+.vibe-vr-sticker-spark .vibe-vr-mark:hover .vibe-vr-mark-eyes,
+.vibe-vr-sticker-spark .vibe-vr-mark:hover .vibe-vr-mark-body {
   animation: none;
 }
 
@@ -454,29 +454,29 @@ body {
  * purpose: instant, it reads as a hover state lighting up, where a pause reads as him having put
  * up with it for a moment and then not.
  */
-.nap-anger {
+.vibe-vr-anger {
   opacity: 0;
   transform: scale(0.4);
   transform-origin: center;
 }
 
-.nap-sticker-spark:hover .nap-anger {
-  animation: nap-anger 900ms cubic-bezier(0.2, 1.3, 0.4, 1) 220ms forwards;
+.vibe-vr-sticker-spark:hover .vibe-vr-anger {
+  animation: vibe-vr-anger 900ms cubic-bezier(0.2, 1.3, 0.4, 1) 220ms forwards;
 }
 
-.nap-sticker-spark .nap-star {
+.vibe-vr-sticker-spark .vibe-vr-star {
   transform-box: fill-box;
   transform-origin: center;
-  animation: nap-twinkle 3000ms ease-in-out infinite;
+  animation: vibe-vr-twinkle 3000ms ease-in-out infinite;
 }
 
-.nap-sticker-spark .nap-wand {
+.vibe-vr-sticker-spark .vibe-vr-wand {
   transform-box: fill-box;
   transform-origin: 30% 70%;
-  animation: nap-wand 3000ms ease-in-out infinite;
+  animation: vibe-vr-wand 3000ms ease-in-out infinite;
 }
 
-@keyframes nap-nod {
+@keyframes vibe-vr-nod {
   0%,
   100% {
     transform: translateY(0) rotate(-1deg);
@@ -486,7 +486,7 @@ body {
   }
 }
 
-@keyframes nap-nod-loud {
+@keyframes vibe-vr-nod-loud {
   0%,
   100% {
     transform: translateY(0) rotate(-3.5deg);
@@ -496,7 +496,7 @@ body {
   }
 }
 
-@keyframes nap-note {
+@keyframes vibe-vr-note {
   0% {
     opacity: 0;
     transform: translate(0, 2px) scale(0.6);
@@ -516,7 +516,7 @@ body {
 
 /* Two bursts of four keystrokes in five seconds, with long flat stretches between them. The
    percentages are the burst; everything else is the pause, which is most of the loop. */
-@keyframes nap-type {
+@keyframes vibe-vr-type {
   0%,
   30% {
     transform: translateY(0);
@@ -549,7 +549,7 @@ body {
   }
 }
 
-@keyframes nap-screen {
+@keyframes vibe-vr-screen {
   0%,
   100% {
     opacity: 0.45;
@@ -559,7 +559,7 @@ body {
   }
 }
 
-@keyframes nap-snore {
+@keyframes vibe-vr-snore {
   0%,
   100% {
     transform: translate(0, 0) rotate(0deg);
@@ -569,7 +569,7 @@ body {
   }
 }
 
-@keyframes nap-blanket {
+@keyframes vibe-vr-blanket {
   0%,
   100% {
     transform: translateY(0);
@@ -579,7 +579,7 @@ body {
   }
 }
 
-@keyframes nap-startle {
+@keyframes vibe-vr-startle {
   0% {
     transform: translateY(0) scale(1);
   }
@@ -594,7 +594,7 @@ body {
   }
 }
 
-@keyframes nap-twinkle {
+@keyframes vibe-vr-twinkle {
   0%,
   100% {
     opacity: 0.5;
@@ -606,7 +606,7 @@ body {
   }
 }
 
-@keyframes nap-wand {
+@keyframes vibe-vr-wand {
   0%,
   100% {
     transform: rotate(-3deg);
@@ -616,7 +616,7 @@ body {
   }
 }
 
-@keyframes nap-anger {
+@keyframes vibe-vr-anger {
   0% {
     opacity: 0;
     transform: scale(0.4);
@@ -645,47 +645,47 @@ body {
  */
 @media (prefers-reduced-motion: reduce) {
   /* `> *` and `> *:hover`-adjacent selectors, because the loops live on the characters now and
-     not on the cards — a rule aimed at `.nap-sticker` would switch off nothing at all. */
-  .nap-sticker > *,
-  .nap-sticker:hover > *,
-  .nap-sticker .nap-mark,
-  .nap-sticker:hover .nap-mark,
-  .nap-sticker .nap-screen,
-  .nap-sticker .nap-blanket,
-  .nap-sticker .nap-star,
-  .nap-sticker .nap-wand,
-  .nap-sticker-sleep:hover .nap-mark-eyes {
+     not on the cards — a rule aimed at `.vibe-vr-sticker` would switch off nothing at all. */
+  .vibe-vr-sticker > *,
+  .vibe-vr-sticker:hover > *,
+  .vibe-vr-sticker .vibe-vr-mark,
+  .vibe-vr-sticker:hover .vibe-vr-mark,
+  .vibe-vr-sticker .vibe-vr-screen,
+  .vibe-vr-sticker .vibe-vr-blanket,
+  .vibe-vr-sticker .vibe-vr-star,
+  .vibe-vr-sticker .vibe-vr-wand,
+  .vibe-vr-sticker-sleep:hover .vibe-vr-mark-eyes {
     animation: none;
   }
 
-  .nap-note,
-  .nap-sticker-music:hover .nap-note {
+  .vibe-vr-note,
+  .vibe-vr-sticker-music:hover .vibe-vr-note {
     animation: none;
     opacity: 0.6;
     transform: none;
   }
 
   /* The temper is a state, so it survives — it simply appears instead of popping. */
-  .nap-sticker-spark:hover .nap-anger {
+  .vibe-vr-sticker-spark:hover .vibe-vr-anger {
     animation: none;
     opacity: 1;
     transform: none;
   }
 
-  .nap-sticker .nap-screen {
+  .vibe-vr-sticker .vibe-vr-screen {
     opacity: 0.75;
   }
 
   /* He still hides — that is the point of the sticker — he just arrives there instead of
      sliding, which is the same bargain the mark's own waking makes. */
-  .nap-sticker-code .nap-hider,
-  .nap-sticker-code .nap-paws,
-  .nap-sticker-code .nap-screen {
+  .vibe-vr-sticker-code .vibe-vr-hider,
+  .vibe-vr-sticker-code .vibe-vr-paws,
+  .vibe-vr-sticker-code .vibe-vr-screen {
     transition: none;
   }
 }
 
-@keyframes nap-glance {
+@keyframes vibe-vr-glance {
   0%,
   14% {
     transform: translateX(0);
@@ -704,7 +704,7 @@ body {
   }
 }
 
-@keyframes nap-bob {
+@keyframes vibe-vr-bob {
   0%,
   100% {
     transform: translateY(0);
@@ -714,7 +714,7 @@ body {
   }
 }
 
-@keyframes nap-breathe {
+@keyframes vibe-vr-breathe {
   0%,
   100% {
     transform: scale(1);
@@ -731,7 +731,7 @@ body {
  * read as rising — a z that travels the whole height instead runs out of headroom and is
  * clipped flat against the top of the box, which is how the first version of this looked.
  */
-@keyframes nap-z {
+@keyframes vibe-vr-z {
   0% {
     opacity: 0;
     transform: translate(0, 1.2px) scale(0.7);
@@ -756,14 +756,14 @@ body {
  * over and over.
  */
 @media (prefers-reduced-motion: reduce) {
-  .nap-mark .nap-mark-eyes,
-  .nap-mark .nap-mark-body,
-  .nap-mark:hover .nap-mark-eyes,
-  .nap-mark:hover .nap-mark-body {
+  .vibe-vr-mark .vibe-vr-mark-eyes,
+  .vibe-vr-mark .vibe-vr-mark-body,
+  .vibe-vr-mark:hover .vibe-vr-mark-eyes,
+  .vibe-vr-mark:hover .vibe-vr-mark-body {
     animation: none;
   }
 
-  .nap-mark-z {
+  .vibe-vr-mark-z {
     animation: none;
     opacity: 0.75;
   }
@@ -782,9 +782,9 @@ body {
  * opposite of what the pane means. Breathing is left running underneath, so between tricks it
  * is still visibly a live thing rather than a paused drawing.
  *
- * Which trick is showing arrives as `data-trick` from `nap-loader.tsx`; between them the
+ * Which trick is showing arrives as `data-trick` from `vibe-vr-loader.tsx`; between them the
  * attribute is absent, which is the still beat and needs no rule of its own. The selectors are
- * deliberately more specific than the mark's own `.nap-mark-body` animation so a trick
+ * deliberately more specific than the mark's own `.vibe-vr-mark-body` animation so a trick
  * overrides the breath while it runs — and the reduced-motion block at the foot of this section
  * matches that specificity, or a ghost that was asked to hold still would hop anyway.
  */
@@ -798,22 +798,22 @@ body {
  * The layers are nested rather than stacked on one element because two animations driving
  * `transform` do not compose — the last declared wins outright.
  *
- *   .nap-loader        float, 2.9s   — the whole thing rising and settling
- *   .nap-loader-sway   sway,  5.3s   — a slow lean, never quite upright
- *   .nap-mark-body     breathe 3.6s  — and whichever trick is showing
- *   .nap-mark-eyes     saccade 7.1s  — small darts with long holds
- *   .nap-mark-open     blink,  6.7s  — two fast closures, unevenly spaced
+ *   .vibe-vr-loader        float, 2.9s   — the whole thing rising and settling
+ *   .vibe-vr-loader-sway   sway,  5.3s   — a slow lean, never quite upright
+ *   .vibe-vr-mark-body     breathe 3.6s  — and whichever trick is showing
+ *   .vibe-vr-mark-eyes     saccade 7.1s  — small darts with long holds
+ *   .vibe-vr-mark-open     blink,  6.7s  — two fast closures, unevenly spaced
  */
-.nap-loader {
+.vibe-vr-loader {
   display: inline-block;
-  animation: nap-float 2900ms ease-in-out infinite;
+  animation: vibe-vr-float 2900ms ease-in-out infinite;
 }
 
-.nap-loader-sway {
+.vibe-vr-loader-sway {
   display: block;
   width: 100%;
   height: 100%;
-  animation: nap-sway 5300ms ease-in-out infinite;
+  animation: vibe-vr-sway 5300ms ease-in-out infinite;
 }
 
 /*
@@ -828,28 +828,28 @@ body {
  * so it is the same drawing doing it, not an overlay. The saccade moves the pair sideways on a
  * *different* property and a different element, which is what lets both run at once.
  */
-.nap-loader .nap-mark-shut {
+.vibe-vr-loader .vibe-vr-mark-shut {
   opacity: 0;
-  animation: nap-lid 6700ms ease-in-out infinite;
+  animation: vibe-vr-lid 6700ms ease-in-out infinite;
 }
 
-.nap-loader .nap-mark-open {
+.vibe-vr-loader .vibe-vr-mark-open {
   opacity: 1;
-  animation: nap-blink 6700ms ease-in-out infinite;
+  animation: vibe-vr-blink 6700ms ease-in-out infinite;
 }
 
-.nap-loader .nap-mark-eyes {
-  animation: nap-saccade 7100ms ease-in-out infinite;
+.vibe-vr-loader .vibe-vr-mark-eyes {
+  animation: vibe-vr-saccade 7100ms ease-in-out infinite;
 }
 
 /* Nothing yawns while it is busy. */
-.nap-loader .nap-mark-z {
+.vibe-vr-loader .vibe-vr-mark-z {
   animation: none;
   opacity: 0;
 }
 
 /* Barely a pixel and a half at 56px. Enough to read as weightless, not enough to be a bounce. */
-@keyframes nap-float {
+@keyframes vibe-vr-float {
   0%,
   100% {
     transform: translateY(2.5%);
@@ -860,7 +860,7 @@ body {
 }
 
 /* Off-centre on purpose: the two ends differ, so the lean never looks like a metronome. */
-@keyframes nap-sway {
+@keyframes vibe-vr-sway {
   0%,
   100% {
     transform: rotate(-2.4deg);
@@ -877,7 +877,7 @@ body {
  * Two blinks per cycle, unevenly spaced, each about 90ms of a 6.7s loop — hence the very tight
  * keyframe percentages. Evenly spaced blinks are a ticking clock; these read as a face.
  */
-@keyframes nap-blink {
+@keyframes vibe-vr-blink {
   0%,
   25.6%,
   27%,
@@ -895,7 +895,7 @@ body {
 }
 
 /* The lids, exactly inverse, so the eyes are never both closed and open at once. */
-@keyframes nap-lid {
+@keyframes vibe-vr-lid {
   0%,
   25.6%,
   27%,
@@ -918,7 +918,7 @@ body {
  * The holds are the point. Eyes that slide continuously read as a scanning machine; eyes that
  * jump and then rest read as something deciding where to look next.
  */
-@keyframes nap-saccade {
+@keyframes vibe-vr-saccade {
   0%,
   18% {
     transform: translateX(0);
@@ -941,24 +941,24 @@ body {
   }
 }
 
-.nap-loader[data-trick="glance"] .nap-mark-eyes {
-  animation: nap-glance 2.4s ease-in-out both;
+.vibe-vr-loader[data-trick="glance"] .vibe-vr-mark-eyes {
+  animation: vibe-vr-glance 2.4s ease-in-out both;
 }
 
-.nap-loader[data-trick="hop"] .nap-mark-body {
-  animation: nap-trick-hop 1.1s cubic-bezier(0.3, 0.9, 0.4, 1) both;
+.vibe-vr-loader[data-trick="hop"] .vibe-vr-mark-body {
+  animation: vibe-vr-trick-hop 1.1s cubic-bezier(0.3, 0.9, 0.4, 1) both;
 }
 
-.nap-loader[data-trick="wobble"] .nap-mark-body {
-  animation: nap-trick-wobble 1.4s ease-in-out both;
+.vibe-vr-loader[data-trick="wobble"] .vibe-vr-mark-body {
+  animation: vibe-vr-trick-wobble 1.4s ease-in-out both;
 }
 
-.nap-loader[data-trick="peek"] .nap-mark-body {
-  animation: nap-trick-peek 1.6s ease-in-out both;
+.vibe-vr-loader[data-trick="peek"] .vibe-vr-mark-body {
+  animation: vibe-vr-trick-peek 1.6s ease-in-out both;
 }
 
-.nap-loader[data-trick="spin"] .nap-mark-body {
-  animation: nap-trick-spin 1.3s cubic-bezier(0.5, 0, 0.3, 1) both;
+.vibe-vr-loader[data-trick="spin"] .vibe-vr-mark-body {
+  animation: vibe-vr-trick-spin 1.3s cubic-bezier(0.5, 0, 0.3, 1) both;
 }
 
 /*
@@ -968,7 +968,7 @@ body {
  * shape being translated upwards — nine tenths of the charm of this is in two keyframes that
  * are barely five per cent wide.
  */
-@keyframes nap-trick-hop {
+@keyframes vibe-vr-trick-hop {
   0%,
   100% {
     transform: translateY(0) scale(1, 1);
@@ -985,7 +985,7 @@ body {
 }
 
 /* A shrug: over, back through centre, over the other way, and settle. */
-@keyframes nap-trick-wobble {
+@keyframes vibe-vr-trick-wobble {
   0%,
   100% {
     transform: rotate(0deg);
@@ -1002,7 +1002,7 @@ body {
 }
 
 /* Ducking out of frame and coming back up, the way somebody checks whether the coast is clear. */
-@keyframes nap-trick-peek {
+@keyframes vibe-vr-trick-peek {
   0%,
   100% {
     transform: translateY(0) scale(1);
@@ -1022,7 +1022,7 @@ body {
  * It dips into the turn and comes out of it slightly small, so the ghost looks like it threw
  * itself round rather than like an image being rotated by a stylesheet.
  */
-@keyframes nap-trick-spin {
+@keyframes vibe-vr-trick-spin {
   0% {
     transform: rotate(0deg) scale(1);
   }
@@ -1041,23 +1041,23 @@ body {
  * hop at somebody who had switched motion off.
  */
 @media (prefers-reduced-motion: reduce) {
-  .nap-loader,
-  .nap-loader-sway,
-  .nap-loader .nap-mark-open,
-  .nap-loader .nap-mark-shut,
-  .nap-loader[data-trick] .nap-mark-body,
-  .nap-loader[data-trick] .nap-mark-eyes,
-  .nap-loader .nap-mark-eyes {
+  .vibe-vr-loader,
+  .vibe-vr-loader-sway,
+  .vibe-vr-loader .vibe-vr-mark-open,
+  .vibe-vr-loader .vibe-vr-mark-shut,
+  .vibe-vr-loader[data-trick] .vibe-vr-mark-body,
+  .vibe-vr-loader[data-trick] .vibe-vr-mark-eyes,
+  .vibe-vr-loader .vibe-vr-mark-eyes {
     animation: none;
   }
 
   /* With the blink switched off, the two groups have to be left in their resting state by
      hand — the crossfade above is what was holding the lids out of the way. */
-  .nap-loader .nap-mark-shut {
+  .vibe-vr-loader .vibe-vr-mark-shut {
     opacity: 0;
   }
 
-  .nap-loader .nap-mark-open {
+  .vibe-vr-loader .vibe-vr-mark-open {
     opacity: 1;
   }
 }
@@ -1070,14 +1070,14 @@ body {
  * and merely brightens reads as one object with light moving through it, which is the thing
  * being drawn.
  */
-.nap-pixel {
+.vibe-vr-pixel {
   opacity: 0.16;
-  animation-name: nap-pixel-on;
+  animation-name: vibe-vr-pixel-on;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
 }
 
-@keyframes nap-pixel-on {
+@keyframes vibe-vr-pixel-on {
   0%,
   100% {
     opacity: 0.16;
@@ -1096,7 +1096,7 @@ body {
 /*
  * A block waiting to be content: a soft fill with a band travelling across it.
  *
- * Separate from `.nap-shimmer` below rather than shared with it, because that one is
+ * Separate from `.vibe-vr-shimmer` below rather than shared with it, because that one is
  * `background-clip: text` — it lights up glyphs and paints nothing at all on an empty element,
  * which is exactly what a skeleton is.
  *
@@ -1104,7 +1104,7 @@ body {
  * arrived broken; one this quiet reads as a space something is about to occupy. The band is the
  * only part with any brightness, and it is what says *loading* rather than *empty*.
  */
-.nap-skeleton {
+.vibe-vr-skeleton {
   display: block;
   background-color: color-mix(in oklab, var(--color-ink) 7%, transparent);
   background-image: linear-gradient(
@@ -1115,15 +1115,15 @@ body {
   );
   background-size: 200% 100%;
   background-repeat: no-repeat;
-  animation: nap-skeleton-sweep 1.6s linear infinite;
+  animation: vibe-vr-skeleton-sweep 1.6s linear infinite;
 }
 
 /*
  * Right to left in source terms, left to right on screen: percentage background positions are
  * resolved against the difference between the image and its box, so with the image at twice the
- * width they run backwards — the same trap documented on `.nap-shimmer` below.
+ * width they run backwards — the same trap documented on `.vibe-vr-shimmer` below.
  */
-@keyframes nap-skeleton-sweep {
+@keyframes vibe-vr-skeleton-sweep {
   from {
     background-position: 150% 0;
   }
@@ -1137,12 +1137,12 @@ body {
  * which is the whole job; it simply stops saying it over and over.
  */
 @media (prefers-reduced-motion: reduce) {
-  .nap-skeleton {
+  .vibe-vr-skeleton {
     animation: none;
   }
 }
 
-.nap-shimmer {
+.vibe-vr-shimmer {
   background-image: linear-gradient(
     90deg,
     var(--color-muted) 35%,
@@ -1152,10 +1152,10 @@ body {
   background-size: 200% 100%;
   background-clip: text;
   color: transparent;
-  animation: nap-shimmer 1.4s linear infinite;
+  animation: vibe-vr-shimmer 1.4s linear infinite;
 }
 
-@keyframes nap-shimmer {
+@keyframes vibe-vr-shimmer {
   from {
     background-position: 100% 0;
   }
@@ -1176,13 +1176,13 @@ body {
  * blur — every word flashing before it arrives. `will-change` is set because the whole passage
  * animates at once and a filter is the expensive half.
  */
-.nap-stream-word {
+.vibe-vr-stream-word {
   display: inline;
-  animation: nap-stream-in 420ms cubic-bezier(0.22, 0.61, 0.25, 1) both;
+  animation: vibe-vr-stream-in 420ms cubic-bezier(0.22, 0.61, 0.25, 1) both;
   will-change: filter, opacity;
 }
 
-@keyframes nap-stream-in {
+@keyframes vibe-vr-stream-in {
   from {
     opacity: 0;
     filter: blur(4px);
@@ -1200,7 +1200,7 @@ body {
  * that says the thought is unfinished — the words alone cannot, since a passage stops growing
  * the same way whether the model paused or moved on.
  */
-.nap-stream-caret {
+.vibe-vr-stream-caret {
   display: inline-block;
   width: 2px;
   height: 0.85em;
@@ -1208,10 +1208,10 @@ body {
   translate: 0 0.1em;
   border-radius: 1px;
   background-color: currentColor;
-  animation: nap-stream-blink 1s steps(2, start) infinite;
+  animation: vibe-vr-stream-blink 1s steps(2, start) infinite;
 }
 
-@keyframes nap-stream-blink {
+@keyframes vibe-vr-stream-blink {
   0%,
   100% {
     opacity: 0.9;
@@ -1235,22 +1235,22 @@ body {
  * media query for these, so there is no second owner to disagree with.
  */
 @media (prefers-reduced-motion: reduce) {
-  .nap-pixel {
+  .vibe-vr-pixel {
     animation: none;
     opacity: 0.4;
   }
 
-  .nap-shimmer {
+  .vibe-vr-shimmer {
     animation: none;
     background-image: none;
     color: var(--color-ink);
   }
 
-  .nap-stream-word {
+  .vibe-vr-stream-word {
     animation: none;
   }
 
-  .nap-stream-caret {
+  .vibe-vr-stream-caret {
     animation: none;
     opacity: 0.9;
   }
@@ -1290,11 +1290,11 @@ body {
  * cascade. Turning off an inline animation needs `!important`, which reverses precedence for
  * every rule after it — an expensive way to pay for a convenience.
  */
-.nap-pop {
+.vibe-vr-pop {
   animation: pop-in 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
-.nap-eq-bar {
+.vibe-vr-eq-bar {
   animation: eq-bounce 640ms ease-in-out infinite;
   transform-origin: center;
 }
@@ -1304,11 +1304,11 @@ body {
    * The menu still appears and the meter still says it is listening — what goes is the travel.
    * A menu that refused to open would read as broken rather than as considerate.
    */
-  .nap-pop {
+  .vibe-vr-pop {
     animation: none;
   }
 
-  .nap-eq-bar {
+  .vibe-vr-eq-bar {
     animation: none;
     transform: scaleY(0.7);
   }
@@ -1480,30 +1480,30 @@ body {
  * sake of 140ms. Reduced motion keeps the fade and drops the movement, rather than turning the
  * whole thing off: a modal that blinks into existence is the harsher of the two results.
  */
-@keyframes nap-dialog-in {
+@keyframes vibe-vr-dialog-in {
   from {
     opacity: 0;
     transform: translateY(8px) scale(0.985);
   }
 }
 
-@keyframes nap-backdrop-in {
+@keyframes vibe-vr-backdrop-in {
   from {
     opacity: 0;
   }
 }
 
-.nap-dialog[open] {
-  animation: nap-dialog-in 140ms cubic-bezier(0.2, 0, 0.2, 1);
+.vibe-vr-dialog[open] {
+  animation: vibe-vr-dialog-in 140ms cubic-bezier(0.2, 0, 0.2, 1);
 }
 
-.nap-dialog[open]::backdrop {
-  animation: nap-backdrop-in 140ms ease-out;
+.vibe-vr-dialog[open]::backdrop {
+  animation: vibe-vr-backdrop-in 140ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nap-dialog[open] {
-    animation-name: nap-backdrop-in;
+  .vibe-vr-dialog[open] {
+    animation-name: vibe-vr-backdrop-in;
   }
 }
 
@@ -1533,7 +1533,7 @@ body {
  * without it they compose as a union, every pixel one of them keeps is kept, and the page ends up
  * with no clearing at all. The `-webkit-` twin spells the same thing `source-in`.
  */
-.nap-doodle-wall {
+.vibe-vr-doodle-wall {
   -webkit-mask-image:
     radial-gradient(ellipse 44% 48% at 50% 50%, transparent 56%, #000 100%),
     radial-gradient(150px 96px at 52px 34px, transparent 42%, #000 100%);
@@ -1701,12 +1701,12 @@ body {
  * every rule after it. It keeps its gap when it stops turning, so the shape still reads as
  * *in progress* rather than as a circle somebody drew.
  */
-.nap-spin {
+.vibe-vr-spin {
   animation: ai-spin 900ms linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nap-spin {
+  .vibe-vr-spin {
     animation: none;
   }
 }
@@ -1723,14 +1723,14 @@ body {
  * The delay is a custom property rather than a rule per position, which is what lets one row
  * stagger its children by handing each a different number.
  */
-.nap-reveal {
+.vibe-vr-reveal {
   transition:
     opacity 520ms cubic-bezier(0.22, 0.61, 0.36, 1),
     transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  transition-delay: var(--nap-reveal-delay, 0ms);
+  transition-delay: var(--vibe-vr-reveal-delay, 0ms);
 }
 
-.nap-reveal[data-reveal="pending"] {
+.vibe-vr-reveal[data-reveal="pending"] {
   opacity: 0;
   transform: translateY(14px);
 }
@@ -1741,11 +1741,11 @@ body {
  * stylesheet cannot stop an observer from writing the attribute.
  */
 @media (prefers-reduced-motion: reduce) {
-  .nap-reveal {
+  .vibe-vr-reveal {
     transition: none;
   }
 
-  .nap-reveal[data-reveal="pending"] {
+  .vibe-vr-reveal[data-reveal="pending"] {
     opacity: 1;
     transform: none;
   }
@@ -1770,11 +1770,11 @@ body {
  * length and the declaration is dropped whole. `--space-w` and `--space-h` stay unitless so they
  * can be an `aspect-ratio` and be multiplied into a width.
  */
-.nap-space-host {
+.vibe-vr-space-host {
   aspect-ratio: var(--space-w) / var(--space-h);
 }
 
-.nap-space {
+.vibe-vr-space {
   position: absolute;
   top: 0;
   left: 0;
@@ -1789,11 +1789,11 @@ body {
  * aspect box around a column of text would be a hole with content spilling out of it.
  */
 @media (min-width: 48rem) {
-  .nap-space-host-md {
+  .vibe-vr-space-host-md {
     aspect-ratio: var(--space-w) / var(--space-h);
   }
 
-  .nap-space-md {
+  .vibe-vr-space-md {
     position: absolute;
     top: 0;
     left: 0;
@@ -1813,21 +1813,21 @@ body {
  * two opacities on every row sixty times a second — and it is what lets reduced motion switch the
  * whole thing off through the cascade rather than through a second copy of the rules in TypeScript.
  */
-.nap-demo-step {
+.vibe-vr-demo-step {
   transition:
     opacity 260ms ease,
     transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 /* A call that has not happened yet is not dimmed, it is absent — it has not been decided on. */
-.nap-demo-step[data-state="pending"] {
+.vibe-vr-demo-step[data-state="pending"] {
   opacity: 0;
   transform: translateY(6px);
 }
 
-.nap-demo-step[data-state="running"] .nap-demo-done,
-.nap-demo-step[data-state="done"] .nap-demo-running,
-.nap-demo-step[data-state="pending"] .nap-demo-done {
+.vibe-vr-demo-step[data-state="running"] .vibe-vr-demo-done,
+.vibe-vr-demo-step[data-state="done"] .vibe-vr-demo-running,
+.vibe-vr-demo-step[data-state="pending"] .vibe-vr-demo-done {
   display: none;
 }
 
@@ -1835,28 +1835,28 @@ body {
  * The caret. It is written on and off by the frame — this is only the blink, which has to keep
  * its own beat while the sentence is being typed rather than restarting per character.
  */
-.nap-caret {
-  animation: nap-blink 1s steps(2, jump-none) infinite;
+.vibe-vr-caret {
+  animation: vibe-vr-blink 1s steps(2, jump-none) infinite;
 }
 
-@keyframes nap-blink {
+@keyframes vibe-vr-blink {
   to {
     opacity: 0.15;
   }
 }
 
 /* The click: a ring leaving the pointer's tip. Centred on the tip, not on the glyph's box. */
-.nap-demo-press {
+.vibe-vr-demo-press {
   left: -9px;
   top: -9px;
   opacity: 0;
 }
 
-.nap-demo-cursor[data-press="true"] .nap-demo-press {
-  animation: nap-press 320ms ease-out;
+.vibe-vr-demo-cursor[data-press="true"] .vibe-vr-demo-press {
+  animation: vibe-vr-press 320ms ease-out;
 }
 
-@keyframes nap-press {
+@keyframes vibe-vr-press {
   from {
     opacity: 0.55;
     transform: scale(0.35);
@@ -1872,7 +1872,7 @@ body {
  * past nothing — a stagger written as delays rather than as five more numbers in the script,
  * because the order they arrive in is a property of the picture and not of the turn.
  */
-.nap-demo-preview > * {
+.vibe-vr-demo-preview > * {
   opacity: calc(var(--preview, 0) * 3 - 0.2);
   transition: opacity 200ms ease;
 }
@@ -1882,32 +1882,32 @@ body {
  * beats read it — no beat attribute at all (no script, or reduced motion) leaves every one of
  * them at full strength, which is the same rule the scroll reveal follows.
  */
-[data-beat] .nap-beat {
+[data-beat] .vibe-vr-beat {
   color: var(--s-text-subtle);
   transition:
     color 320ms ease,
     opacity 320ms ease;
 }
 
-[data-beat] .nap-beat .nap-beat-title {
+[data-beat] .vibe-vr-beat .vibe-vr-beat-title {
   color: var(--s-text-subtle);
   transition: color 320ms ease;
 }
 
-[data-beat="1"] .nap-beat[data-beat-index="1"],
-[data-beat="2"] .nap-beat[data-beat-index="2"],
-[data-beat="3"] .nap-beat[data-beat-index="3"] {
+[data-beat="1"] .vibe-vr-beat[data-beat-index="1"],
+[data-beat="2"] .vibe-vr-beat[data-beat-index="2"],
+[data-beat="3"] .vibe-vr-beat[data-beat-index="3"] {
   color: var(--s-text-muted);
 }
 
-[data-beat="1"] .nap-beat[data-beat-index="1"] .nap-beat-title,
-[data-beat="2"] .nap-beat[data-beat-index="2"] .nap-beat-title,
-[data-beat="3"] .nap-beat[data-beat-index="3"] .nap-beat-title {
+[data-beat="1"] .vibe-vr-beat[data-beat-index="1"] .vibe-vr-beat-title,
+[data-beat="2"] .vibe-vr-beat[data-beat-index="2"] .vibe-vr-beat-title,
+[data-beat="3"] .vibe-vr-beat[data-beat-index="3"] .vibe-vr-beat-title {
   color: var(--s-text-primary);
 }
 
 /* The rule beside a beat fills while its act plays: a progress bar the length of the paragraph. */
-.nap-beat-rule::after {
+.vibe-vr-beat-rule::after {
   content: "";
   position: absolute;
   inset: 0 auto 0 0;
@@ -1916,23 +1916,23 @@ body {
   transition: width 320ms ease;
 }
 
-[data-beat="1"] .nap-beat[data-beat-index="1"] .nap-beat-rule::after,
-[data-beat="2"] .nap-beat[data-beat-index="2"] .nap-beat-rule::after,
-[data-beat="3"] .nap-beat[data-beat-index="3"] .nap-beat-rule::after {
+[data-beat="1"] .vibe-vr-beat[data-beat-index="1"] .vibe-vr-beat-rule::after,
+[data-beat="2"] .vibe-vr-beat[data-beat-index="2"] .vibe-vr-beat-rule::after,
+[data-beat="3"] .vibe-vr-beat[data-beat-index="3"] .vibe-vr-beat-rule::after {
   width: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nap-demo-step,
-  .nap-demo-preview > *,
-  [data-beat] .nap-beat,
-  [data-beat] .nap-beat .nap-beat-title,
-  .nap-beat-rule::after {
+  .vibe-vr-demo-step,
+  .vibe-vr-demo-preview > *,
+  [data-beat] .vibe-vr-beat,
+  [data-beat] .vibe-vr-beat .vibe-vr-beat-title,
+  .vibe-vr-beat-rule::after {
     transition: none;
   }
 
-  .nap-caret,
-  .nap-demo-cursor[data-press="true"] .nap-demo-press {
+  .vibe-vr-caret,
+  .vibe-vr-demo-cursor[data-press="true"] .vibe-vr-demo-press {
     animation: none;
   }
 }
@@ -1945,31 +1945,31 @@ body {
  * trough down the side of a dark transcript. Scoped to a class rather than applied to
  * everything, because the preview frame is the user's own app and its scrollbars are theirs.
  */
-.nap-scroll {
+.vibe-vr-scroll {
   scrollbar-width: thin;
   scrollbar-color: var(--color-edge) transparent;
 }
 
-.nap-scroll::-webkit-scrollbar {
+.vibe-vr-scroll::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.nap-scroll::-webkit-scrollbar-track {
+.vibe-vr-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.nap-scroll::-webkit-scrollbar-thumb {
+.vibe-vr-scroll::-webkit-scrollbar-thumb {
   background-color: var(--color-edge);
   border-radius: 4px;
 }
 
-.nap-scroll::-webkit-scrollbar-thumb:hover {
+.vibe-vr-scroll::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-line-strong);
 }
 
 /* Two bars meeting in the corner is a small grey square the eye finds; nothing belongs there. */
-.nap-scroll::-webkit-scrollbar-corner {
+.vibe-vr-scroll::-webkit-scrollbar-corner {
   background: transparent;
 }
 
@@ -1978,26 +1978,26 @@ body {
  * permanent browser trough. The page is a focused starting point, not a document, and the
  * hidden bar keeps the quiet edge treatment intact while leaving its content fully reachable.
  */
-.nap-scroll-hidden {
+.vibe-vr-scroll-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.nap-scroll-hidden::-webkit-scrollbar {
+.vibe-vr-scroll-hidden::-webkit-scrollbar {
   display: none;
 }
 
 /*
- * The Threepod landing theme: a warm sheet under dark viewports.
+ * The Vibe-VR landing theme: a warm sheet under dark viewports.
  *
- * Scoped to `.threepod` (which sits alongside `.ai-stage-ink` on the landing
+ * Scoped to `.vibe-vr` (which sits alongside `.ai-stage-ink` on the landing
  * root) so the cream ramp and the orange accent reach this page and cannot
  * restyle the dark workspace. Single-class specificity, declared after the
  * `.ai-stage` block, so it wins ties without `!important`. The 3D canvases
  * keep their own dark scene background — the model reads as lit only because
  * the page around it holds still.
  */
-.threepod {
+.vibe-vr {
   --s-surface-1: #fffdf9;
   --s-surface-2: #faf6ef;
   --s-surface-3: #f2ecdf;
@@ -2021,7 +2021,7 @@ body {
  * distance from the top so it reads as a drawing sheet rather than a table.
  * Linear lines only — no radial glows, no color ramps.
  */
-.threepod-grid {
+.vibe-vr-grid {
   background-image:
     linear-gradient(to right, rgb(28 26 23 / 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgb(28 26 23 / 0.05) 1px, transparent 1px);
@@ -2030,7 +2030,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .threepod-grid {
+  .vibe-vr-grid {
     background-image: none;
   }
 }

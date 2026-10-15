@@ -18,8 +18,8 @@
  * mind about what happened.
  */
 
-import type { TurnFailureReason } from "@nap/shared/events";
-import type { PreviewDiagnosis } from "@nap/verify/preview";
+import type { TurnFailureReason } from "@vibe-vr/shared/events";
+import type { PreviewDiagnosis } from "@vibe-vr/verify/preview";
 import { z } from "zod";
 import { dispositionForTurnFailure, type ErrorKind } from "./error-kind.ts";
 import type { CheckResult } from "./report.ts";

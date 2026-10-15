@@ -15,7 +15,7 @@
  * project, which is precisely the bug those tests exist to catch.
  */
 
-import type { ProjectStore, ProjectSummary } from "@nap/shared/ports/project-store";
+import type { ProjectStore, ProjectSummary } from "@vibe-vr/shared/ports/project-store";
 
 /**
  * The owner a seeded project gets when a test does not care who it belongs to — which is most

@@ -1,6 +1,10 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ChatInput } from "./chat-input.tsx";
+
+vi.mock("./reference-image.ts", () => ({
+  prepareReferenceImage: vi.fn(async () => "data:image/jpeg;base64,aGVsbG8="),
+}));
 
 function show(props: Partial<Parameters<typeof ChatInput>[0]> = {}) {
   return render(
@@ -21,6 +25,19 @@ function type(text: string) {
 }
 
 describe("sending", () => {
+  it("allows sending an image without typing a prompt and includes the prepared pixels", async () => {
+    const onSubmit = vi.fn();
+    show({ onSubmit });
+    fireEvent.change(screen.getByLabelText("Reference image"), {
+      target: { files: [new File(["image"], "chair.png", { type: "image/png" })] },
+    });
+    await waitFor(() => expect(screen.getByAltText("3D reference")).toBeInTheDocument());
+    fireEvent.click(screen.getByRole("button", { name: "Send" }));
+    expect(onSubmit).toHaveBeenCalledWith(
+      "Create an editable 3D model of the object in this image.",
+      "data:image/jpeg;base64,aGVsbG8=",
+    );
+  });
   it("sends what was typed", () => {
     const onSubmit = vi.fn();
     show({ onSubmit });

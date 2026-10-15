@@ -5,8 +5,8 @@
  * against a model, so a reason nobody wrote a case for is a reason nobody has checked.
  */
 
-import type { TurnFailureReason } from "@nap/shared/events";
-import { TurnFailureReasonSchema } from "@nap/shared/events";
+import type { TurnFailureReason } from "@vibe-vr/shared/events";
+import { TurnFailureReasonSchema } from "@vibe-vr/shared/events";
 import { describe, expect, it } from "vitest";
 import {
   attributionOf,

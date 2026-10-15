@@ -1,4 +1,4 @@
-import type { ProjectSummaryPayload } from "@nap/shared/projects-protocol";
+import type { ProjectSummaryPayload } from "@vibe-vr/shared/projects-protocol";
 import { describe, expect, it } from "vitest";
 import {
   filterProjects,

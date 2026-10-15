@@ -21,9 +21,9 @@
  * missing; this is about a field that does not apply.
  */
 
-import { CheckOutcomeSchema } from "@nap/shared/check-outcome";
-import type { Result } from "@nap/shared/result";
-import { CommandOutputSchema } from "@nap/verify/command-output";
+import { CheckOutcomeSchema } from "@vibe-vr/shared/check-outcome";
+import type { Result } from "@vibe-vr/shared/result";
+import { CommandOutputSchema } from "@vibe-vr/verify/command-output";
 import { z } from "zod";
 import { CategorySchema, type CategoryWeights, CategoryWeightsSchema } from "./category.ts";
 import { ErrorKindSchema } from "./error-kind.ts";
@@ -42,7 +42,7 @@ import { carriesScore, RunStatusSchema } from "./status.ts";
 import { VISUAL_NOT_RUN, VisualEvaluationSchema } from "./visual.ts";
 
 /**
- * A `@nap/verify` check, plus the scoring metadata that makes it an acceptance criterion.
+ * A `@vibe-vr/verify` check, plus the scoring metadata that makes it an acceptance criterion.
  *
  * The split is where the two halves genuinely divide: whether a check passed, failed or was
  * never asked is a fact about running it, and the category, weight and required flag are facts

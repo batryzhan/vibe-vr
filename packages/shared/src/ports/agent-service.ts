@@ -20,6 +20,7 @@ export type AgentTurnRequest = {
   turnId: string;
   sandboxId: string;
   context: BuiltContext;
+  referenceImage?: string | undefined;
   sandbox: SandboxManager;
   /**
    * Who prompted this turn, for the `turn.started` this component writes. Absent is the user.

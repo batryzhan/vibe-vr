@@ -22,8 +22,8 @@
  * never does.
  */
 
-import { STRANDED_GRACE_MS } from "@nap/shared/capacity-windows";
-import type { CapacityReconciler, ReclaimedCapacity } from "@nap/shared/ports/capacity-reconciler";
+import { STRANDED_GRACE_MS } from "@vibe-vr/shared/capacity-windows";
+import type { CapacityReconciler, ReclaimedCapacity } from "@vibe-vr/shared/ports/capacity-reconciler";
 import { and, eq, inArray, isNotNull, lt, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { projects, sandboxReservations } from "./schema.ts";

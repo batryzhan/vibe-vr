@@ -18,7 +18,7 @@
  * fakes. What is being exercised is the layer that used to be single-process.
  */
 
-import { type ServerFrame, ServerFrameSchema } from "@nap/shared/ws-protocol";
+import { type ServerFrame, ServerFrameSchema } from "@vibe-vr/shared/ws-protocol";
 
 type Json = Record<string, unknown>;
 

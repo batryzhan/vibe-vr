@@ -21,9 +21,9 @@
  * assert bit-exact repeat builds. No cross-engine float identity is claimed.
  */
 
-import { MAX_TRIANGLES } from "@nap/scene-spec/limits";
-import type { SceneMaterial, SceneNode, SceneSpec, Vec3 } from "@nap/scene-spec/schema";
-import type { Result } from "@nap/shared/result";
+import { MAX_TRIANGLES } from "@vibe-vr/scene-spec/limits";
+import type { SceneMaterial, SceneNode, SceneSpec, Vec3 } from "@vibe-vr/scene-spec/schema";
+import type { Result } from "@vibe-vr/shared/result";
 
 /** Axis-aligned bounds in meters: [minX, minY, minZ] / [maxX, maxY, maxZ]. */
 export type Bounds = { min: Vec3; max: Vec3 };

@@ -12,7 +12,7 @@
 
 import { randomUUID } from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeAll, describe, expect, inject, it } from "vitest";

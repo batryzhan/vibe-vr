@@ -8,18 +8,11 @@
  */
 
 import { afterAll, beforeAll, expect, it } from "vitest";
-import { E2BSandboxManager } from "./e2b-sandbox-manager.ts";
+import { DockerSandboxManager } from "./docker-sandbox-manager.ts";
 import { bundle, commitAll, currentSha, restoreBundle } from "./git.ts";
-import { NAP_TEMPLATE, TEMPLATE_WORKDIR } from "./template.ts";
+import { TEMPLATE_WORKDIR } from "./template.ts";
 
-if (process.env.E2B_API_KEY === undefined || process.env.E2B_API_KEY === "") {
-  throw new Error(
-    "E2B_API_KEY is not set, so the git round trip cannot verify anything. " +
-      "Put it in apps/api/.env or export it, then re-run `bun run test:integration`.",
-  );
-}
-
-const manager = new E2BSandboxManager({ template: NAP_TEMPLATE });
+const manager = new DockerSandboxManager();
 let sandboxId: string;
 
 beforeAll(async () => {

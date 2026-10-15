@@ -21,6 +21,7 @@
 
 import { z } from "zod";
 import { CheckOutcomeSchema } from "./check-outcome.ts";
+import { ReferenceImageSchema } from "./reference-image.ts";
 
 /**
  * The six sandbox-proxy tools, the two scene tools, and the desk builder.
@@ -130,7 +131,7 @@ const toolRef = {
 };
 
 export const NapEventSchema = z.discriminatedUnion("type", [
-  event("user.message", text),
+  event("user.message", { ...text, referenceImage: ReferenceImageSchema.optional() }),
   /** Summarized reasoning, not raw thinking — the model is run with `display: "summarized"`. */
   event("agent.thinking", text),
   event("agent.message", text),

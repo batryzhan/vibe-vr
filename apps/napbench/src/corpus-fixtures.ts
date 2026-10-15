@@ -21,9 +21,9 @@ import {
   CORPUS_FIXTURES,
   type CorpusFixtureId,
   corpusScreenshotPath,
-} from "@nap/bench/product/corpus";
-import { CAPTURE_VIEWPORTS } from "@nap/bench/surface";
-import type { ViewportName } from "@nap/bench/viewport";
+} from "@vibe-vr/bench/product/corpus";
+import { CAPTURE_VIEWPORTS } from "@vibe-vr/bench/surface";
+import type { ViewportName } from "@vibe-vr/bench/viewport";
 
 /** The page every fixture directory holds, and the only file the capture pass opens. */
 export const CORPUS_PAGE = "index.html";

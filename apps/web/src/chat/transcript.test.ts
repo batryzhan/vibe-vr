@@ -1,5 +1,5 @@
-import { type NapEvent, NapEventSchema, type NapEventType } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { type NapEvent, NapEventSchema, type NapEventType } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { describe, expect, it } from "vitest";
 import { buildTranscript, type TranscriptItem } from "./transcript.ts";
 
@@ -140,12 +140,15 @@ describe("the treatment table covers the union", () => {
 
     // Fails to compile if a new member is added to the union without a case here, a place
     // in `DRAWN_ELSEWHERE`, or a deliberate entry in `NOT_DRAWN`.
-    const _exhaustive: (typeof CASES)[number]["type"] | (typeof DRAWN_ELSEWHERE)[number] | (typeof NOT_DRAWN)[number] =
-      null as unknown as NapEventType;
+    const _exhaustive:
+      | (typeof CASES)[number]["type"]
+      | (typeof DRAWN_ELSEWHERE)[number]
+      | (typeof NOT_DRAWN)[number] = null as unknown as NapEventType;
     void _exhaustive;
   });
 
-  it("lets nothing but a job event out of the treatment table", () => {    // Otherwise the list above is an escape hatch: anything moved into it keeps both the count
+  it("lets nothing but a job event out of the treatment table", () => {
+    // Otherwise the list above is an escape hatch: anything moved into it keeps both the count
     // and the compile check green while rendering nowhere at all, which is the exact failure
     // this table exists to catch. Only the job strip's own events may sit there.
     for (const type of DRAWN_ELSEWHERE) {
@@ -186,6 +189,19 @@ describe("the treatment table covers the union", () => {
 });
 
 describe("messages", () => {
+  it("keeps the reference image in the transcript and on a failed turn's retry", () => {
+    const referenceImage = "data:image/png;base64,aGVsbG8=";
+    const items = fold(
+      ev("user.message", { text: "Build this", referenceImage }),
+      ev("turn.failed", { reason: "internal", message: "upstream failure" }),
+    );
+    expect(items[0]).toMatchObject({ kind: "message", referenceImage });
+    expect(items[1]).toMatchObject({
+      kind: "turn-end",
+      retryMessage: "Build this",
+      retryReferenceImage: referenceImage,
+    });
+  });
   it("keeps user and agent prose apart and in order", () => {
     const items = fold(
       ev("user.message", { text: "build me a todo list" }),

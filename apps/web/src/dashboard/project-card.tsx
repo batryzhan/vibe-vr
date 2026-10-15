@@ -22,7 +22,7 @@
  * row, and there is no snapshot left to open afterwards.
  */
 
-import { type ProjectSummaryPayload, projectState } from "@nap/shared/projects-protocol";
+import { type ProjectSummaryPayload, projectState } from "@vibe-vr/shared/projects-protocol";
 import { useState } from "react";
 import { EditableTitle } from "../ui/editable-title.tsx";
 import { TrashIcon } from "../ui/icons.tsx";

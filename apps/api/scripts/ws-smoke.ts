@@ -14,11 +14,11 @@
  * change to the route or the connection.
  */
 
-import { InProcessEventBus } from "@nap/db/in-process-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
-import { type ServerFrame, ServerFrameSchema, WS_CLOSE } from "@nap/shared/ws-protocol";
+import { InProcessEventBus } from "@vibe-vr/db/in-process-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import { type ServerFrame, ServerFrameSchema, WS_CLOSE } from "@vibe-vr/shared/ws-protocol";
 import { upgradeWebSocket, websocket } from "hono/bun";
 import { createApp } from "../src/app.ts";
 import { createLogger } from "../src/logger.ts";

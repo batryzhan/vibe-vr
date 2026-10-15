@@ -7,7 +7,7 @@
  * the rule actually produces rather than a shape it might not.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { check, JOB_ID as JOB, jobLog } from "../testing/job-events.ts";

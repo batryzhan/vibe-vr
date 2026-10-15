@@ -6,7 +6,7 @@ Scan of `E:\opensource_projects\nap` — ~600 files. What it is, and where what 
 
 **Nap** is a Lovable-style AI app builder:
 
-> user prompt in chat → durable queued `Turn` → worker runs `Runtime` → `AgentService` drives model loop with 6 sandbox-proxy tools → writes code into isolated **E2B sandbox** → commits → runs project checks (`@nap/verify`) → `checkpoint` if green, bounded repair turn if red → live preview + event log over WebSocket.
+> user prompt in chat → durable queued `Turn` → worker runs `Runtime` → `AgentService` drives model loop with 6 sandbox-proxy tools → writes code into isolated **E2B sandbox** → commits → runs project checks (`@vibe-vr/verify`) → `checkpoint` if green, bounded repair turn if red → live preview + event log over WebSocket.
 
 Three processes, one composition:
 
@@ -33,7 +33,7 @@ Stack: `Bun 1.3.13` (install + run + API runtime), `TypeScript strict`, `Hono + 
 | Path | What |
 |---|---|
 | `package.json` | Monorepo root. `workspaces: packages/*, apps/*`. Scripts: `test/test:fast/test:integration`, `typecheck (turbo + tsc)`, `harness`, `ws:smoke`, `loadgen*`, `napbench*`, `harbor:tasks`, `lint:py/test:py`, `dev/dev:worker/dev:reaper`, `build`. Deps: `biome, turbo, vitest, lefthook, railway SDK`. |
-| `turbo.json` | `build/typecheck/lint/dev/dev:worker/dev:reaper` tasks + env passthrough (`DATABASE_URL`, `NAP_*`). |
+| `turbo.json` | `build/typecheck/lint/dev/dev:worker/dev:reaper` tasks + env passthrough (`DATABASE_URL`, `VIBE_VR_*`). |
 | `vitest.config.ts` | **5 projects split by filename, not dir**: `unit (*.test.ts)`, `types (*.test-d.ts, typecheck only)`, `db (*.db.test.ts, Postgres container, `globalSetup`)`, `web (*.test.tsx, jsdom+React)`, `integration (*.integration.test.ts, 120s timeout, loads `.env`)`. Wrong suffix = silently not collected. |
 | `tsconfig.json / tsconfig.base.json / tsconfig.test-d.json` | Root pass covers `test/` + configs; `.test-d` program covers all type tests; `.railway/railway.ts` named as file (dot-paths are skipped by wildcards). |
 | `biome.json`, `lefthook.yml` | Format/lint owner = Biome. Pre-commit: `biome + typecheck + vitest --changed` + `ruff/pytest` if `*.py` touched. Same in CI. |
@@ -96,15 +96,15 @@ Three entrypoints, one `bootNap` composition (`src/boot.ts` + `compose.ts`, `env
 | `k6/ramp.js` | k6 VU script for `loadgen:ramp` (to 100, profiles `smoke/extended/saturate/realism`). |
 | `scripts/` | `loadgen.ts` (in-process users), `loadgen-ramp.ts` (hold open for k6), `loadgen-composition.ts` (real API + fake sandbox/model + real PG), `loadgen-cluster.ts` (k6 vs k8s sampler), `loadgen-sandbox-store.ts` (shared PG-backed fake sandbox so cross-pod turns reattach), `loadgen-teardown.ts` (delete demo identities), `fake-turn.ts`, `ws-smoke.ts` (real Bun socket over `/ws`), `acceptance.ts` (paid, vs deployment), `cluster-proof.ts + cluster-proof-check.ts` (turn across pods + rolling-restart no-loss). |
 
-`.env.example` documents every `NAP_*`; `env.ts` validates only what the API uses today (Zod).
+`.env.example` documents every `VIBE_VR_*`; `env.ts` validates only what the API uses today (Zod).
 
 ---
 
 ## 4. `apps/napbench` — benchmark CLI (Playwright lives only here)
 
-Shell around `@nap/bench` pure layer. Entry `scripts/napbench.ts`, `napbench-trial.ts` (harbor `run/verify`), `harbor-tasks.ts` (registry generator), `capture-corpus.ts`, `preview|vision-reachability.ts`.
+Shell around `@vibe-vr/bench` pure layer. Entry `scripts/napbench.ts`, `napbench-trial.ts` (harbor `run/verify`), `harbor-tasks.ts` (registry generator), `capture-corpus.ts`, `preview|vision-reachability.ts`.
 
-`src/`: `trial.ts`, `harbor-task.ts`, `harness-identity.ts`, `results-dir.ts`, `write-report|screenshot.ts`, `load-report.ts`, `corpus-fixtures.ts`, `playwright-browser-session.ts`, `vision-judge.ts` (`OpenRouterVisionJudge`), `product-judge|rubric.ts`, `preview-spike.ts`, plus `*.test.ts` and `*.integration.test.ts` (`browser-driving`, `corpus-discrimination`, `playwright-browser-session`, `task-commands` — need `NAP_CHROME_PATH`, some `--real`).
+`src/`: `trial.ts`, `harbor-task.ts`, `harness-identity.ts`, `results-dir.ts`, `write-report|screenshot.ts`, `load-report.ts`, `corpus-fixtures.ts`, `playwright-browser-session.ts`, `vision-judge.ts` (`OpenRouterVisionJudge`), `product-judge|rubric.ts`, `preview-spike.ts`, plus `*.test.ts` and `*.integration.test.ts` (`browser-driving`, `corpus-discrimination`, `playwright-browser-session`, `task-commands` — need `VIBE_VR_CHROME_PATH`, some `--real`).
 
 `fixtures/corpus/<9 dirs>/`: `index.html + desktop.png + mobile.png` — nine hand-written apps with one shared Intent (`ai-slop-generic`, `broken-beautiful`, `correct-ugly`, `desktop-only-breaks-mobile`, `excessive-gradient`, `excessive-icon`, `icons-restrained`, `minimalist-professional`, `responsive-strong`). Re-photograph all-at-once via `napbench:corpus`.
 
@@ -112,7 +112,7 @@ Shell around `@nap/bench` pure layer. Entry `scripts/napbench.ts`, `napbench-tri
 
 ## 5. `packages/` — 11 workspaces
 
-Dependency rule (`test/architecture.ts` enforces both manifest + actual `@nap/*` imports): `runtime → {context, agent, sandbox, storage, capture, db, verify} → shared`. `bench` + `loadgen` sit beside `shared` (pure, ports only). `verify` sits below both `runtime` and `bench`. `runtime → bench` forbidden.
+Dependency rule (`test/architecture.ts` enforces both manifest + actual `@vibe-vr/*` imports): `runtime → {context, agent, sandbox, storage, capture, db, verify} → shared`. `bench` + `loadgen` sit beside `shared` (pure, ports only). `verify` sits below both `runtime` and `bench`. `runtime → bench` forbidden.
 
 | Package | `src/` highlights |
 |---|---|
@@ -150,7 +150,7 @@ Every `testing/` fake is exported production-quality code used downstream.
 
 ## 9. `test/` — repo-wide guards (run in `bun run test`)
 
-`architecture.ts` (dep direction + manifest match + `@nap/bench` ban + new-package tombstone), `comments.ts` (no `M2-5` task IDs in `src`, cite reason/section), `docs.ts` (README vs `/docs` split, mechanism numbers only in docs), `k8s.ts` (manifest claims: metric name from code, ceiling↔scaler arithmetic, removals explicit), `railway.ts` (3 services, healthcheck only on API, reaper=1, no literal secrets, drain>app), `deploy-ignore.ts`, `template-design|checks.ts`, `project-root.ts`, `integration-setup.ts` (loads `.env` for Node under Vitest).
+`architecture.ts` (dep direction + manifest match + `@vibe-vr/bench` ban + new-package tombstone), `comments.ts` (no `M2-5` task IDs in `src`, cite reason/section), `docs.ts` (README vs `/docs` split, mechanism numbers only in docs), `k8s.ts` (manifest claims: metric name from code, ceiling↔scaler arithmetic, removals explicit), `railway.ts` (3 services, healthcheck only on API, reaper=1, no literal secrets, drain>app), `deploy-ignore.ts`, `template-design|checks.ts`, `project-root.ts`, `integration-setup.ts` (loads `.env` for Node under Vitest).
 
 ---
 

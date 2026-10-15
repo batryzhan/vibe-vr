@@ -5,9 +5,9 @@
  * `bun run napbench --real --suite=all`
  *
  * The composition root: this is the only place where a real sandbox, a real model, a real
- * browser and a real filesystem meet the pure evaluator in `@nap/bench`. Everything it decides
- * is decided elsewhere — the flags in `@nap/bench/cli`, the tasks in `@nap/bench/suite`, the
- * scoring in the runner, the aggregation in `@nap/bench/summary` — because a rule that lives in
+ * browser and a real filesystem meet the pure evaluator in `@vibe-vr/bench`. Everything it decides
+ * is decided elsewhere — the flags in `@vibe-vr/bench/cli`, the tasks in `@vibe-vr/bench/suite`, the
+ * scoring in the runner, the aggregation in `@vibe-vr/bench/summary` — because a rule that lives in
  * a script is a rule nobody tests, and one of these rules decides whether money is spent.
  *
  * **It runs on fakes unless told otherwise.** A dry run exercises every stage — seeding, turns,
@@ -24,42 +24,42 @@
  */
 
 import { join } from "node:path";
-import { NapAgentService } from "@nap/agent/agent-service";
-import { createBedrockClient, toBedrockModel } from "@nap/agent/bedrock";
-import { type AnthropicClient, ClaudeProvider } from "@nap/agent/claude-provider";
-import { createOpenRouterClient, toOpenRouterModel } from "@nap/agent/openrouter";
-import { DEFAULT_MAX_TOKENS } from "@nap/agent/safety/budget";
-import { ScriptedLLMProvider } from "@nap/agent/testing/scripted-llm-provider";
-import type { BrowserSessionFactory } from "@nap/bench/browser-session";
-import { DEFAULT_CATEGORY_WEIGHTS } from "@nap/bench/category";
+import { NapAgentService } from "@vibe-vr/agent/agent-service";
+import { createBedrockClient, toBedrockModel } from "@vibe-vr/agent/bedrock";
+import { type AnthropicClient, ClaudeProvider } from "@vibe-vr/agent/claude-provider";
+import { createOpenRouterClient, toOpenRouterModel } from "@vibe-vr/agent/openrouter";
+import { DEFAULT_MAX_TOKENS } from "@vibe-vr/agent/safety/budget";
+import { ScriptedLLMProvider } from "@vibe-vr/agent/testing/scripted-llm-provider";
+import type { BrowserSessionFactory } from "@vibe-vr/bench/browser-session";
+import { DEFAULT_CATEGORY_WEIGHTS } from "@vibe-vr/bench/category";
 import {
   type BenchPlatform,
   NAPBENCH_DEFAULTS,
   NAPBENCH_USAGE,
   parseNapBenchArgs,
-} from "@nap/bench/cli";
-import { compareRuns, formatComparison } from "@nap/bench/compare";
-import { deriveRunMetrics } from "@nap/bench/metrics";
-import type { ProductEvaluation } from "@nap/bench/product/evaluation";
-import { type BenchReport, evaluatorErrorReport } from "@nap/bench/report";
-import { type BenchRunResult, runBenchTask } from "@nap/bench/runner";
-import { resolveSelection } from "@nap/bench/suite";
-import { formatRunSummary, formatSuiteSummary, summariseSuite } from "@nap/bench/summary";
-import type { BenchTask } from "@nap/bench/task";
-import { ScriptedBrowserSession } from "@nap/bench/testing/scripted-browser-session";
-import { scriptedProductJudge } from "@nap/bench/testing/scripted-judgement";
-import { NapContextEngine } from "@nap/context/context-engine";
-import { NoopMemoryProvider } from "@nap/context/noop-memory-provider";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { SingleAgentRuntime } from "@nap/runtime/single-agent-runtime";
-import { E2BSandboxManager } from "@nap/sandbox/e2b-sandbox-manager";
-import { NAP_TEMPLATE, TEMPLATE_DEV_PORT, TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { loadEnvFile } from "@nap/shared/env-file";
-import type { LLMProvider } from "@nap/shared/ports/llm-provider";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+} from "@vibe-vr/bench/cli";
+import { compareRuns, formatComparison } from "@vibe-vr/bench/compare";
+import { deriveRunMetrics } from "@vibe-vr/bench/metrics";
+import type { ProductEvaluation } from "@vibe-vr/bench/product/evaluation";
+import { type BenchReport, evaluatorErrorReport } from "@vibe-vr/bench/report";
+import { type BenchRunResult, runBenchTask } from "@vibe-vr/bench/runner";
+import { resolveSelection } from "@vibe-vr/bench/suite";
+import { formatRunSummary, formatSuiteSummary, summariseSuite } from "@vibe-vr/bench/summary";
+import type { BenchTask } from "@vibe-vr/bench/task";
+import { ScriptedBrowserSession } from "@vibe-vr/bench/testing/scripted-browser-session";
+import { scriptedProductJudge } from "@vibe-vr/bench/testing/scripted-judgement";
+import { NapContextEngine } from "@vibe-vr/context/context-engine";
+import { NoopMemoryProvider } from "@vibe-vr/context/noop-memory-provider";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { SingleAgentRuntime } from "@vibe-vr/runtime/single-agent-runtime";
+import { DockerSandboxManager } from "@vibe-vr/sandbox/docker-sandbox-manager";
+import { TEMPLATE_DEV_PORT, TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { loadEnvFile } from "@vibe-vr/shared/env-file";
+import type { LLMProvider } from "@vibe-vr/shared/ports/llm-provider";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 import { gitAt, harnessIdentity } from "../src/harness-identity.ts";
 import { loadBenchReport } from "../src/load-report.ts";
 import { launchPlaywrightBrowser } from "../src/playwright-browser-session.ts";
@@ -98,8 +98,8 @@ const options = command;
  * two sources would be a report claiming a budget the turn was not actually given, and the
  * comparison that refuses an unfair pairing would be reading a number nobody enforced.
  *
- * Resolved here rather than in `@nap/bench`, which cannot see the agent's defaults — it may
- * depend on `@nap/shared` and nothing else (docs/adr/0001). `maxTokens` is left at the agent's
+ * Resolved here rather than in `@vibe-vr/bench`, which cannot see the agent's defaults — it may
+ * depend on `@vibe-vr/shared` and nothing else (docs/adr/0001). `maxTokens` is left at the agent's
  * own default and named explicitly, because a report that recorded only the ceiling nobody hit
  * would explain nothing about a turn that hit the other one.
  */
@@ -109,7 +109,7 @@ const turnBudget = { maxSteps: options.maxSteps, maxTokens: DEFAULT_MAX_TOKENS }
  * Which Nap these runs are of, resolved once and recorded on every report they produce.
  *
  * Read here for the same reason the budget is resolved here: the two facts it carries live on
- * opposite sides of the package boundary — the sha is in a checkout `@nap/bench` cannot see, and
+ * opposite sides of the package boundary — the sha is in a checkout `@vibe-vr/bench` cannot see, and
  * whether the loop runs is decided twenty lines below, in the runtime this script composes.
  * Null when there is no checkout to identify, which reads as unrecorded.
  */
@@ -179,12 +179,12 @@ const scriptedBrowser: BrowserSessionFactory = async () => ({
  * A record rather than three parallel ternary chains over `options.platform`: the chains asked
  * the same question in three places, so adding a fourth route meant finding all three, and a
  * route that answered two of them was a run that authenticated one way and was billed another.
- * Every platform speaks the same Messages API — see the notes in `@nap/agent`.
+ * Every platform speaks the same Messages API — see the notes in `@vibe-vr/agent`.
  */
 const PLATFORMS: Record<
   BenchPlatform,
   {
-    /** Beyond `E2B_API_KEY`, which every real run needs. */
+    /** Credentials for the selected model provider. */
     credentials: readonly string[];
     /** The model id as this route spells it. */
     qualify: (model: string) => string;
@@ -247,7 +247,7 @@ if (options.real) {
 
   const route = PLATFORMS[options.platform];
 
-  for (const key of ["E2B_API_KEY", ...route.credentials]) {
+  for (const key of route.credentials) {
     if (process.env[key]) continue;
     console.error(`${key} is not set. Add it to ${ENV_FILE}, or export it, then retry.`);
     process.exit(1);
@@ -256,10 +256,10 @@ if (options.real) {
   // Checked before the first sandbox rather than when the first browser check runs: every
   // browser check in the suite would error for this reason, and discovering it after paying
   // for a turn is the expensive way to learn it.
-  const chromePath = process.env.NAP_CHROME_PATH;
+  const chromePath = process.env.VIBE_VR_CHROME_PATH;
   if (!chromePath) {
     console.error(
-      "NAP_CHROME_PATH is not set, and the benchmark tasks drive a real browser.\n" +
+      "VIBE_VR_CHROME_PATH is not set, and the benchmark tasks drive a real browser.\n" +
         "Point it at a Chrome or Chromium binary, then retry.",
     );
     process.exit(1);
@@ -284,7 +284,7 @@ if (options.real) {
     const judgeModel = judgeModelOf(process.env);
     if (judgeModel !== DEFAULT_JUDGE_MODEL) {
       console.warn(
-        `NAP_JUDGE_MODEL overrides the judge to ${judgeModel}, which nothing here has verified\n` +
+        `VIBE_VR_JUDGE_MODEL overrides the judge to ${judgeModel}, which nothing here has verified\n` +
           "accepts image input through this route. Confirm it first, for a fraction of a cent:\n" +
           `  bun run napbench:vision-spike --real --model=${judgeModel}\n`,
       );
@@ -319,10 +319,10 @@ if (options.real) {
       // grades, and `compare` refuses two runs graded by different ones. Somebody reading this
       // banner is choosing which archive this run joins.
       `${judgeable ? `judged by ${judgeModelOf(process.env)}` : "unjudged"}` +
-      ", on real E2B sandboxes. This costs money.\n",
+      ", on local Docker sandboxes. Model usage is billed by the selected provider.\n",
   );
 
-  sandbox = new E2BSandboxManager({ template: NAP_TEMPLATE });
+  sandbox = new DockerSandboxManager();
   const claude = new ClaudeProvider({
     model,
     effort: options.effort,

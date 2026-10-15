@@ -52,7 +52,7 @@ export const AFTER_DEMO_SIGN_IN = "/dashboard";
  * `baseURL`, so `/welcome` becomes `/welcome` *on the API's origin* — a route that only the
  * front end has, answered by the API's 404 as JSON. Passing the full URL makes the origin
  * explicit rather than inherited. It has to be in `trustedOrigins` on the server, and is:
- * `apps/api/src/index.ts` passes `NAP_WEB_ORIGIN`.
+ * `apps/api/src/index.ts` passes `VIBE_VR_WEB_ORIGIN`.
  */
 export function returnTo(path: string): string {
   return new URL(path, window.location.origin).toString();

@@ -12,8 +12,8 @@
  * occasionally by the repair. `capacity-windows.test.ts` asserts the ordering, since nothing else
  * would notice it being edited away.
  *
- * They live in `shared` rather than in `@nap/db` because the admission path reads one and the
- * reconciling sweep in `@nap/runtime` reads the other, and neither package may import the other's
+ * They live in `shared` rather than in `@vibe-vr/db` because the admission path reads one and the
+ * reconciling sweep in `@vibe-vr/runtime` reads the other, and neither package may import the other's
  * internals.
  */
 

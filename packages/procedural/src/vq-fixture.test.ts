@@ -1,4 +1,4 @@
-import { validateSceneSpec } from "@nap/scene-spec/schema";
+import { validateSceneSpec } from "@vibe-vr/scene-spec/schema";
 import { describe, expect, it } from "vitest";
 import { buildScene } from "./build.ts";
 import { resolveMaterial } from "./material.ts";

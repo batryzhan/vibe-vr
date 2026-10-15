@@ -22,7 +22,7 @@
  * build step of the run already proves.
  */
 
-import type { SceneNode, SceneSpec } from "@nap/scene-spec/schema";
+import type { SceneNode, SceneSpec } from "@vibe-vr/scene-spec/schema";
 
 export const DESK_SCENE_ID = "eval-desk";
 export const DESK_TOP_ID = "top";

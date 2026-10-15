@@ -27,7 +27,7 @@
  * second; the check that tells them apart is the same check either way.
  */
 
-import type { Result, VoidResult } from "@nap/shared/result";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 import type {
   AccessibilityScan,
   AccessibilityViolation,

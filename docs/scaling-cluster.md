@@ -144,7 +144,7 @@ reaching four again at a hundred.
 That accident is better evidence than the scale-up: it is the third acceptance criterion
 happening. Two workers were removed while they were running turns, and **every one of the run's
 2,310 turns still completed** — the pods drained rather than being killed, because
-`terminationGracePeriodSeconds` (900) comfortably exceeds `NAP_DRAIN_TIMEOUT_SECONDS` (60 here)
+`terminationGracePeriodSeconds` (900) comfortably exceeds `VIBE_VR_DRAIN_TIMEOUT_SECONDS` (60 here)
 and a draining worker keeps renewing the leases it holds. Not one turn was orphaned, and the two
 scale-ups afterwards show the trigger reading depth correctly in the other direction.
 
@@ -256,7 +256,7 @@ asserts it and this run neither adds to nor contradicts that.
 | 13 | `turn_requests.id` equals the first Turn's `turn_id` | Covered by tests |
 | 14 | Every request terminal within `lease_ttl + grace` | **Demonstrated.** The queue drained to zero; nothing was left non-terminal |
 | 15 | Every orphaned request has terminal events and a notice | **Untested here.** Nothing was orphaned |
-| 16 | Live sandboxes never exceed `NAP_MAX_SANDBOXES_TOTAL` | **Demonstrated** at this run's ceiling of 200 — 100 reservations, 0 quota refusals. The *refusal* path is a db test |
+| 16 | Live sandboxes never exceed `VIBE_VR_MAX_SANDBOXES_TOTAL` | **Demonstrated** at this run's ceiling of 200 — 100 reservations, 0 quota refusals. The *refusal* path is a db test |
 | 17 | Capacity is reconcilable | Covered by tests; **untested here** — nothing stranded |
 | 18 | An append is retried at most 3 times, never duplicating | Covered by tests; **untested here** — no transient failures occurred |
 | 19 | Cancellation reaches a Turn within one renewal period | **Untested here.** The k6 journey never cancels |
@@ -353,5 +353,5 @@ exercise.
 Both halves were run against this cluster's database rather than argued, with the window at zero
 because the run had only just finished. With 200 projects still naming a sandbox and no
 `E2B_API_KEY`, it refused and deleted nothing. With those sandboxes put away — which is what the
-reaper does within `NAP_REAP_IDLE_MINUTES` of a run finishing — it removed **200 identities, 200
+reaper does within `VIBE_VR_REAP_IDLE_MINUTES` of a run finishing — it removed **200 identities, 200
 projects and 42,338 events**, leaving the tables empty.

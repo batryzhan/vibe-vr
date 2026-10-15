@@ -13,8 +13,8 @@
  * `lease-windows.test.ts` asserts the ordering, since nothing else would notice it being edited
  * away.
  *
- * They live in `shared` because the queue in `@nap/db` reads two of them, the worker loop in
- * `@nap/runtime` reads the third, and neither package may import the other's internals.
+ * They live in `shared` because the queue in `@vibe-vr/db` reads two of them, the worker loop in
+ * `@vibe-vr/runtime` reads the third, and neither package may import the other's internals.
  */
 
 /**

@@ -13,7 +13,7 @@
  * the same thing by the same person would otherwise collide on the second one.
  */
 
-import { UNTITLED_PROJECT } from "@nap/shared/project-title";
+import { UNTITLED_PROJECT } from "@vibe-vr/shared/project-title";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { projects, sessions } from "./schema.ts";
 
@@ -35,7 +35,7 @@ export async function createProjectSession(
 ): Promise<CreatedSession> {
   const name = options.name?.trim() === "" ? undefined : options.name?.trim();
   /*
-   * The fallback comes from `@nap/shared` rather than a constant here, because the API asks
+   * The fallback comes from `@vibe-vr/shared` rather than a constant here, because the API asks
    * `isUnnamed()` about this exact string when it decides whether to name a project after its
    * first prompt. Two copies is how that check silently stops matching and every project stays
    * untitled forever.

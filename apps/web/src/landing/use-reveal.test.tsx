@@ -132,7 +132,7 @@ describe("revealing a section", () => {
 
 describe("the delay", () => {
   it("is written as a custom property, so one rule staggers a whole row", () => {
-    expect(revealProps("pending", 120).style).toEqual({ "--nap-reveal-delay": "120ms" });
+    expect(revealProps("pending", 120).style).toEqual({ "--vibe-vr-reveal-delay": "120ms" });
   });
 
   it("is left off entirely when there is none", () => {

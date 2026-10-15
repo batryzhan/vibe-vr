@@ -7,8 +7,8 @@
  * script itself is the imperative shell: credentials, real components, output.
  */
 
-import type { NapEvent } from "@nap/shared/events";
-import type { Result } from "@nap/shared/result";
+import type { NapEvent } from "@vibe-vr/shared/events";
+import type { Result } from "@vibe-vr/shared/result";
 
 /**
  * What a real run costs, capped up front.
@@ -32,7 +32,7 @@ export const HARNESS_DEFAULTS = {
 export const HARNESS_USAGE = [
   'Usage: bun run harness [options] "<prompt>"',
   "",
-  "  --real                  Use real E2B and the real model. Costs money.",
+  "  --real                  Use local Docker sandboxes and a real model. Model usage is billed.",
   `  --platform=<name>       openrouter | anthropic | bedrock (default ${HARNESS_DEFAULTS.platform}) — which account pays`,
   `  --model=<id>            Model for a real run (default ${HARNESS_DEFAULTS.model})`,
   `  --effort=<level>        low | medium | high | xhigh | max (default ${HARNESS_DEFAULTS.effort})`,
@@ -50,7 +50,7 @@ export type HarnessEffort = (typeof EFFORT_LEVELS)[number];
  * Where the models are reached from.
  *
  * All three speak the same Messages API and differ only in which account is billed and how the
- * client authenticates — see the notes in `@nap/agent`'s bedrock and openrouter modules.
+ * client authenticates — see the notes in `@vibe-vr/agent`'s bedrock and openrouter modules.
  * OpenRouter is first because it is the one this project uses.
  */
 const PLATFORMS = ["openrouter", "anthropic", "bedrock"] as const;

@@ -27,8 +27,8 @@ import {
   type SceneSpec,
   type SceneTransform,
   validateSceneSpec,
-} from "@nap/scene-spec/schema";
-import type { Result } from "@nap/shared/result";
+} from "@vibe-vr/scene-spec/schema";
+import type { Result } from "@vibe-vr/shared/result";
 import { type Bounds, type BuiltMesh, buildScene } from "./build.ts";
 import { resolveMaterial } from "./material.ts";
 

@@ -1,5 +1,5 @@
 {
-  "name": "@nap/db",
+  "name": "@vibe-vr/db",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,13 +11,13 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@nap/shared": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
     "drizzle-orm": "0.45.2",
     "postgres": "3.4.9",
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@nap/scene-spec": "workspace:*",
+    "@vibe-vr/scene-spec": "workspace:*",
     "@testcontainers/postgresql": "12.1.0",
     "drizzle-kit": "0.31.10"
   }

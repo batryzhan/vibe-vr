@@ -11,7 +11,7 @@
  * so the order here is the order they happen in.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import type { BenchTask } from "./task.ts";
 import { DEBUG_BROKEN_TASK } from "./tasks/debug-broken.ts";
 import { EXPENSE_LEDGER_TASK } from "./tasks/expense-ledger.ts";

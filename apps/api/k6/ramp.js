@@ -9,7 +9,7 @@
  * turn queue, the event log, fanout — which is the part the scaling work is about.
  *
  * Driven by `bun run loadgen:ramp`, which boots that API, spawns this, samples the server while
- * it runs and writes the report. Running this file by hand needs `NAP_LOADGEN_BASE` pointed at
+ * it runs and writes the report. Running this file by hand needs `VIBE_VR_LOADGEN_BASE` pointed at
  * something already serving.
  *
  * **The async WebSocket module, not `k6/ws`.** The legacy one blocks the VU for the socket's
@@ -35,9 +35,9 @@ import { Counter, Rate, Trend } from "k6/metrics";
 import { clearTimeout, setTimeout } from "k6/timers";
 import { WebSocket } from "k6/websockets";
 
-const BASE = __ENV.NAP_LOADGEN_BASE || "http://localhost:3100";
-const PROFILE = __ENV.NAP_LOADGEN_PROFILE || "ramp";
-const SUMMARY_PATH = __ENV.NAP_LOADGEN_SUMMARY || "k6-summary.json";
+const BASE = __ENV.VIBE_VR_LOADGEN_BASE || "http://localhost:3100";
+const PROFILE = __ENV.VIBE_VR_LOADGEN_PROFILE || "ramp";
+const SUMMARY_PATH = __ENV.VIBE_VR_LOADGEN_SUMMARY || "k6-summary.json";
 
 /**
  * Long enough for the slowest calibrated turn (43s) plus a cold start, a preview render and
@@ -45,10 +45,10 @@ const SUMMARY_PATH = __ENV.NAP_LOADGEN_SUMMARY || "k6-summary.json";
  * so is the point — but the number has to be well clear of the honest worst case or the run
  * reports the harness's impatience as the system's ceiling.
  */
-const TURN_TIMEOUT_MS = Number(__ENV.NAP_LOADGEN_TURN_TIMEOUT_MS || 240_000);
+const TURN_TIMEOUT_MS = Number(__ENV.VIBE_VR_LOADGEN_TURN_TIMEOUT_MS || 240_000);
 
 /** How much of a realism VU's cycle is spent not asking for anything. See §23. */
-const THINK_TIME_MS = Number(__ENV.NAP_LOADGEN_THINK_MS || 75_000);
+const THINK_TIME_MS = Number(__ENV.VIBE_VR_LOADGEN_THINK_MS || 75_000);
 
 /** One in this many VUs drops its socket mid-turn and rejoins at the highest seq it saw. */
 const RECONNECT_EVERY = 10;
@@ -258,7 +258,7 @@ export const options = {
           realism: {
             executor: "constant-vus",
             vus: 100,
-            duration: __ENV.NAP_LOADGEN_DURATION || "8m",
+            duration: __ENV.VIBE_VR_LOADGEN_DURATION || "8m",
             exec: "realism",
             gracefulStop: "120s",
           },

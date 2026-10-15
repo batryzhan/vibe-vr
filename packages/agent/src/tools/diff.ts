@@ -7,7 +7,7 @@
  * human or tool, already understands.
  */
 
-import type { NapEventOf } from "@nap/shared/events";
+import type { NapEventOf } from "@vibe-vr/shared/events";
 import { createPatch } from "diff";
 
 type FileChanged = NapEventOf<"file.changed">["payload"];

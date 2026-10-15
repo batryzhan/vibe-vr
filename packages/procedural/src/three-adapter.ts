@@ -52,7 +52,7 @@ function meshToObject(mesh: BuiltMesh): THREE.Mesh {
 /** Upload a built scene into a Group of identity-transformed meshes. */
 export function builtSceneToGroup(built: BuiltScene): THREE.Group {
   const group = new THREE.Group();
-  group.name = "threepod-scene";
+  group.name = "vibe-vr-scene";
   for (const mesh of built.meshes) {
     group.add(meshToObject(mesh));
   }

@@ -1,5 +1,5 @@
 {
-  "name": "@nap/napbench",
+  "name": "@vibe-vr/napbench",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,20 +7,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nap/bench": "workspace:*",
-    "@nap/sandbox": "workspace:*",
-    "@nap/shared": "workspace:*",
+    "@vibe-vr/bench": "workspace:*",
+    "@vibe-vr/sandbox": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
     "axe-core": "4.13.0",
     "playwright-core": "1.57.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@nap/agent": "workspace:*",
-    "@nap/context": "workspace:*",
-    "@nap/db": "workspace:*",
-    "@nap/procedural": "workspace:*",
-    "@nap/runtime": "workspace:*",
-    "@nap/sandbox": "workspace:*",
-    "@nap/scene-spec": "workspace:*"
+    "@vibe-vr/agent": "workspace:*",
+    "@vibe-vr/context": "workspace:*",
+    "@vibe-vr/db": "workspace:*",
+    "@vibe-vr/procedural": "workspace:*",
+    "@vibe-vr/runtime": "workspace:*",
+    "@vibe-vr/sandbox": "workspace:*",
+    "@vibe-vr/scene-spec": "workspace:*"
   }
 }

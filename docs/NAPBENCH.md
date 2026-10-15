@@ -52,17 +52,17 @@ the only thing left unproven when somebody pays is the judgement itself.
 **The real judge is `OpenRouterVisionJudge` in `apps/napbench/src/vision-judge.ts`**, reached over
 OpenRouter with a plain `fetch` and the Anthropic Messages shape: one call carrying every surface
 capture, structured output forced through a single `tool_use`, and the rubric in
-`product-rubric.ts` as the system prompt. It reuses none of `@nap/agent` — that is the thing under
+`product-rubric.ts` as the system prompt. It reuses none of `@vibe-vr/agent` — that is the thing under
 test, and a grader sharing its subject's retries and accounting measures neither. It cites a surface
 and a viewport and *we* resolve the path, so a grade can never cite an image that does not exist. A
 judge that cannot grade **throws**, which lands as `errored`/`evaluator`; a judge that returns low
 grades on its own outage would file the instrument's bad afternoon against the model.
 
 A real run of a suite whose tasks declare an `intent` therefore needs `OPENROUTER_API_KEY`, and it
-is checked **before the first sandbox** for the reason `NAP_CHROME_PATH` is: every product judgement
+is checked **before the first sandbox** for the reason `VIBE_VR_CHROME_PATH` is: every product judgement
 failing for one missing key after the turns are paid for is the expensive way to find out. A suite
 whose tasks declare no intent — `all`, `hard` — needs no judge and is not blocked for want of one.
-`NAP_JUDGE_MODEL` overrides which model grades; see the caution about the judge and the agent being
+`VIBE_VR_JUDGE_MODEL` overrides which model grades; see the caution about the judge and the agent being
 the same model in [`napbench-vision-judge.md`](napbench-vision-judge.md).
 
 Unknown flags are refused rather than ignored. A forgiving parser would let `--budget-tokens` be
@@ -71,7 +71,7 @@ mistyped on a paid run and silently use the default.
 | Flag | Meaning |
 |---|---|
 | `--suite=<name>` | Run a named suite serially. `all` (the four, frozen), `hard` (built to separate models), `smoke` (the tracer) or `product` (scored on both halves). |
-| `--real` | Real E2B, real model, real Chrome. Also requires `NAP_CHROME_PATH`. |
+| `--real` | Real E2B, real model, real Chrome. Also requires `VIBE_VR_CHROME_PATH`. |
 | `--platform=<name>` | `openrouter` (default), `anthropic` or `bedrock` — which account pays. |
 | `--model=<id>` | Model for a real run. Also what the cost estimate is priced against. |
 | `--effort=<level>` | `low` … `max`. |
@@ -97,7 +97,7 @@ shared primitive, per [ADR-0007](adr/0007-the-check-primitive-moves-below-both.m
 
 **`packages/bench`** is the pure half: tasks, checks, gates, scoring, metrics, reports,
 trajectories, the CLI's argument parsing, suite aggregation and comparison. Its runtime workspace
-dependencies are `@nap/shared` and `@nap/verify`. It is written against ports — `Runtime`,
+dependencies are `@vibe-vr/shared` and `@vibe-vr/verify`. It is written against ports — `Runtime`,
 `SandboxManager`, `SessionStore`, `EventStore`, `BrowserSession` — which is what lets the whole
 evaluation be driven by a unit test with no network, no model and no database.
 
@@ -148,7 +148,7 @@ One declarative file under `packages/bench/src/tasks/`, then two lines to regist
 the evaluator changes.
 
 ```ts
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 import { defineTask } from "../task.ts";
 import { TEMPLATE_PREVIEW_PORT, TEMPLATE_PREVIEW_TIMEOUT_MS } from "./template.ts";
 
@@ -687,20 +687,20 @@ Filename decides which suite a test belongs to; see `CLAUDE.md`. For NapBench sp
 | Suite | Command | Needs | Costs |
 |---|---|---|---|
 | Unit — every task, gate, score, metric, aggregation, comparison, the whole browser executor against the scripted fake | `bun run test` | Nothing. No network, no browser, no credentials. | Free |
-| `apps/napbench/src/playwright-browser-session.integration.test.ts` — the adapter against real Chrome, serving its own page on loopback | `bun run test:integration` | **A Chrome or Chromium at `NAP_CHROME_PATH`.** Skips without one. | Free |
-| `apps/napbench/src/browser-driving.integration.test.ts` — the browser steps a task uses, driven against a local application | `bun run test:integration` | **A Chrome at `NAP_CHROME_PATH`.** Skips without one. | Free |
+| `apps/napbench/src/playwright-browser-session.integration.test.ts` — the adapter against real Chrome, serving its own page on loopback | `bun run test:integration` | **A Chrome or Chromium at `VIBE_VR_CHROME_PATH`.** Skips without one. | Free |
+| `apps/napbench/src/browser-driving.integration.test.ts` — the browser steps a task uses, driven against a local application | `bun run test:integration` | **A Chrome at `VIBE_VR_CHROME_PATH`.** Skips without one. | Free |
 | `apps/napbench/src/task-commands.integration.test.ts` — every command every task declares, run against an untouched template | `bun run test:integration` | **`E2B_API_KEY` and the network.** Unlike the browser suites it **throws rather than skips** without them. | One sandbox, seconds. No model calls |
 | `apps/napbench/src/corpus-discrimination.integration.test.ts` — can a real judge tell the nine fixtures apart? | `bun run test:integration` | **A composed product judge.** Skips, with the reason printed, while there is none. No sandbox, no agent. | Eighteen images through a vision model |
 | `apps/napbench/scripts/preview-reachability.ts` — can a host-side browser reach an E2B preview? | `bun run napbench:preview-spike` | `E2B_API_KEY`, network, a Chrome | One sandbox |
-| `apps/napbench/scripts/capture-corpus.ts` — re-photographs the fixture corpus | `bun run napbench:corpus` | **A Chrome at `NAP_CHROME_PATH`.** Nothing else. | Free |
+| `apps/napbench/scripts/capture-corpus.ts` — re-photographs the fixture corpus | `bun run napbench:corpus` | **A Chrome at `VIBE_VR_CHROME_PATH`.** Nothing else. | Free |
 | A dry benchmark run | `bun run napbench --suite=all` | Nothing | Free |
-| A real benchmark run | `bun run napbench --real --suite=all` | `E2B_API_KEY`, a model credential for the chosen platform, `NAP_CHROME_PATH`, network | Sandboxes + model calls |
+| A real benchmark run | `bun run napbench --real --suite=all` | `E2B_API_KEY`, a model credential for the chosen platform, `VIBE_VR_CHROME_PATH`, network | Sandboxes + model calls |
 
 NapBench needs **no Postgres, no object storage and no Docker**: a run composes in-memory stores
 with real infrastructure, so it works from a clean checkout.
 
 Credentials are read from `apps/api/.env` by convention. A real run refuses to start when one is
-missing, and names the variable — including `NAP_CHROME_PATH`, which is checked *before* the first
+missing, and names the variable — including `VIBE_VR_CHROME_PATH`, which is checked *before* the first
 sandbox rather than at the first browser check, because every browser check in the suite would fail
 for want of it after the turns had already been paid for. `OPENROUTER_API_KEY` is checked in the
 same place and for the same reason, but only when the selected tasks declare an `intent`: a suite

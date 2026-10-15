@@ -1,10 +1,10 @@
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { DEFAULT_CATEGORY_WEIGHTS } from "@nap/bench/category";
-import { type BenchReport, parseBenchReport } from "@nap/bench/report";
-import { type BenchTrajectory, parseBenchTrajectory } from "@nap/bench/trajectory";
-import { VISUAL_NOT_RUN } from "@nap/bench/visual";
+import { DEFAULT_CATEGORY_WEIGHTS } from "@vibe-vr/bench/category";
+import { type BenchReport, parseBenchReport } from "@vibe-vr/bench/report";
+import { type BenchTrajectory, parseBenchTrajectory } from "@vibe-vr/bench/trajectory";
+import { VISUAL_NOT_RUN } from "@vibe-vr/bench/visual";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   reportPath,

@@ -13,17 +13,17 @@
  * rejected promotion leaves no scene events and no revision behind.
  */
 
-import { buildScene } from "@nap/procedural/build";
-import type { ComponentSpec } from "@nap/procedural/component";
-import { semanticSceneMaterial } from "@nap/procedural/material";
-import { promoteAssemblyToCreation } from "@nap/procedural/promotion";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { foldSceneSpec } from "@nap/scene-spec/fold";
-import { hashSceneSpec } from "@nap/scene-spec/revisions";
-import { sceneLogEvents } from "@nap/scene-spec/scene-events";
-import type { SceneSpec } from "@nap/scene-spec/schema";
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
-import type { LLMToolCall } from "@nap/shared/ports/llm-provider";
+import { buildScene } from "@vibe-vr/procedural/build";
+import type { ComponentSpec } from "@vibe-vr/procedural/component";
+import { semanticSceneMaterial } from "@vibe-vr/procedural/material";
+import { promoteAssemblyToCreation } from "@vibe-vr/procedural/promotion";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { foldSceneSpec } from "@vibe-vr/scene-spec/fold";
+import { hashSceneSpec } from "@vibe-vr/scene-spec/revisions";
+import { sceneLogEvents } from "@vibe-vr/scene-spec/scene-events";
+import type { SceneSpec } from "@vibe-vr/scene-spec/schema";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import type { LLMToolCall } from "@vibe-vr/shared/ports/llm-provider";
 import { beforeEach, describe, expect, it } from "vitest";
 import { executeTool, type ToolContext } from "./execute.ts";
 

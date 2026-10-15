@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nextTrick, pickDifferent, TRICKS } from "./nap-tricks.ts";
+import { nextTrick, pickDifferent, TRICKS } from "./vibe-vr-tricks.ts";
 
 /**
  * The choosing, which is the half that can be wrong without looking wrong: a ghost stuck on an

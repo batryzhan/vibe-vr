@@ -3,7 +3,7 @@
 ## Reporting a vulnerability
 
 Report it privately through GitHub's
-**[Report a vulnerability](https://github.com/mangit955/nap/security/advisories/new)** form, not as a
+**[Report a vulnerability](https://github.com/batryzhan/vibe-vr/security/advisories/new)** form, not as a
 public issue. That opens a draft advisory only you and I can see.
 
 Nap is a solo project and has no support commitment behind it: expect a first reply within a week,
@@ -18,7 +18,7 @@ Nap runs model-written code and spends other people's money, so the interesting 
 ones where those two meet:
 
 - **Sealed user API keys.** A user may store an OpenRouter key so their turns bill to them. Keys are
-  sealed with AES-256-GCM under `NAP_KEY_ENCRYPTION_SECRET`, a fresh 12-byte IV per seal, tag
+  sealed with AES-256-GCM under `VIBE_VR_KEY_ENCRYPTION_SECRET`, a fresh 12-byte IV per seal, tag
   appended — [`apps/api/src/account/secret-box.ts`](apps/api/src/account/secret-box.ts). Anything
   that opens a key it should not, returns a key to the wrong user, or gets one into a log or an
   event payload is the highest-value finding here.
@@ -44,7 +44,7 @@ Please do not report these as vulnerabilities:
   inside its own sandbox are expected; findings about escaping it into Nap's processes are not.
 - **A user's preview URL is public if you have it.** An E2B preview is unauthenticated by design so
   the browser can load it.
-- **Rotating `NAP_KEY_ENCRYPTION_SECRET` makes every stored key stop opening.** That is the intended
+- **Rotating `VIBE_VR_KEY_ENCRYPTION_SECRET` makes every stored key stop opening.** That is the intended
   behaviour of a rotation, not data loss — everyone falls back to the free tier until they paste
   theirs again.
 - **The hosted demo signs you out on Safari and Brave.** The app and its API are on two different

@@ -25,7 +25,7 @@ neither. **The ladder never ran at all.**
 Estimated columns are the local four-characters-per-token approximation and run about half of what
 the provider counted; the ratio is stable across all four turns, so the shape is what to read.
 
-Two ceilings exist and they are not the same ceiling. `NAP_CONTEXT_BUDGET_TOKENS` caps **one
+Two ceilings exist and they are not the same ceiling. `VIBE_VR_CONTEXT_BUDGET_TOKENS` caps **one
 request**. `TurnBudget`'s `DEFAULT_MAX_TOKENS` caps **the sum over a turn's round trips**. Every
 round trip re-sends the whole transcript, so a turn's bill is roughly the assembled size *times*
 its step count — and both factors grow with the session. Turn 4 assembled to 20% of its per-request

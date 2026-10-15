@@ -1,16 +1,16 @@
 /**
  * The judge that actually looks at the screenshots: a vision model, reached over OpenRouter.
  *
- * This is the far end of the `ProductEvaluation` port. `@nap/bench` may touch no network, so it
+ * This is the far end of the `ProductEvaluation` port. `@vibe-vr/bench` may touch no network, so it
  * defines what a judgement *is* and nothing about how one is obtained; everything below —
  * credentials, base64, a tool schema, a retry — lives here, exactly as the Playwright adapter
  * does beside it.
  *
- * **It reuses none of `@nap/agent`, deliberately and structurally.** The agent is the thing under
+ * **It reuses none of `@vibe-vr/agent`, deliberately and structurally.** The agent is the thing under
  * test, and a benchmark whose grader shares its subject's retries, fallbacks and accounting
  * measures neither of them; `LLMContentBlock` also has no image variant, so there is nothing to
  * reuse even if it were wise. The consequence is the plain `fetch` below rather than the Anthropic
- * SDK — that SDK belongs to `@nap/agent` and `test/architecture.ts` enforces it — which is a fair
+ * SDK — that SDK belongs to `@vibe-vr/agent` and `test/architecture.ts` enforces it — which is a fair
  * price for a request this small: one message, one tool, no streaming.
  *
  * **Structured output comes back as a tool call, not as prose to be parsed.** A judge asked for
@@ -34,29 +34,29 @@
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { POLISH, PRODUCT_DIMENSIONS, type ProductDimension } from "@nap/bench/product/dimension";
+import { POLISH, PRODUCT_DIMENSIONS, type ProductDimension } from "@vibe-vr/bench/product/dimension";
 import type {
   ProductEvaluation,
   ProductEvaluationInput,
   SurfaceScreenshot,
-} from "@nap/bench/product/evaluation";
-import { CONFIDENCE_LEVELS, ConfidenceSchema, GRADES, GradeSchema } from "@nap/bench/product/grade";
+} from "@vibe-vr/bench/product/evaluation";
+import { CONFIDENCE_LEVELS, ConfidenceSchema, GRADES, GradeSchema } from "@vibe-vr/bench/product/grade";
 import {
   type DimensionJudgement,
   type JudgeIdentity,
   type ProductEvidence,
   type ProductJudgement,
   parseProductJudgement,
-} from "@nap/bench/product/judgement";
-import { VIEWPORT_NAMES, ViewportNameSchema } from "@nap/bench/viewport";
-import type { Result } from "@nap/shared/result";
+} from "@vibe-vr/bench/product/judgement";
+import { VIEWPORT_NAMES, ViewportNameSchema } from "@vibe-vr/bench/viewport";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import { PRODUCT_RUBRIC, PRODUCT_RUBRIC_VERSION } from "./product-rubric.ts";
 
 /**
  * The endpoint, spelled out in full rather than composed from a root.
  *
- * `@nap/agent` keeps the *root* because the Anthropic SDK appends `/v1/messages` itself. Nothing
+ * `@vibe-vr/agent` keeps the *root* because the Anthropic SDK appends `/v1/messages` itself. Nothing
  * here has an SDK, so the whole address is written down — and written down here rather than
  * imported, because importing it would be the dependency this file exists not to have.
  */
@@ -525,7 +525,7 @@ export function toolInputOf(reply: MessagesReply): Result<unknown, string> {
  * What the call cost, in Anthropic's shape.
  *
  * Both cache fields are summed into the input side for the reason `toTokenUsage` does it in
- * `@nap/agent`: `input_tokens` on this API is the uncached remainder, so reading it alone
+ * `@vibe-vr/agent`: `input_tokens` on this API is the uncached remainder, so reading it alone
  * under-reports a prompt by most of itself.
  */
 function usageOf(reply: MessagesReply): JudgeUsage | undefined {

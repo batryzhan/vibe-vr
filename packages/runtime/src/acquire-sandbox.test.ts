@@ -1,10 +1,10 @@
-import { InMemorySandboxCapacity } from "@nap/db/testing/in-memory-sandbox-capacity";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SessionRecord } from "@nap/shared/ports/session-store";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { InMemorySandboxCapacity } from "@vibe-vr/db/testing/in-memory-sandbox-capacity";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SessionRecord } from "@vibe-vr/shared/ports/session-store";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { describe, expect, it } from "vitest";
 import {
   acquireSandbox,

@@ -16,7 +16,7 @@
  * element per line, with the line number as text — and Prism decorates it.
  */
 
-import type { FileContent } from "@nap/shared/files-protocol";
+import type { FileContent } from "@vibe-vr/shared/files-protocol";
 import { Highlight, type PrismTheme } from "prism-react-renderer";
 import { memo, useEffect } from "react";
 import { CloseIcon } from "../ui/icons.tsx";
@@ -119,7 +119,7 @@ export function FileViewer({
         </div>
       </div>
 
-      <div className="nap-scroll relative min-h-0 flex-1 overflow-auto">
+      <div className="vibe-vr-scroll relative min-h-0 flex-1 overflow-auto">
         {file === undefined ? (
           <p className="p-4 text-muted text-sm">
             {status === "loading" ? "Loading…" : "Couldn't read this file."}

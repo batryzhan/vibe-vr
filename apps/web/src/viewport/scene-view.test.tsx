@@ -1,5 +1,5 @@
-import { buildScene } from "@nap/procedural/build";
-import { towerSpec } from "@nap/scene-spec/tower";
+import { buildScene } from "@vibe-vr/procedural/build";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
 import { fireEvent, render, screen } from "@testing-library/react";
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";

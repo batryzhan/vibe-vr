@@ -16,9 +16,9 @@
  * that does not navigate is a promise to the browser's back button that this page cannot keep.
  */
 
-import type { ProjectSummaryPayload } from "@nap/shared/projects-protocol";
+import type { ProjectSummaryPayload } from "@vibe-vr/shared/projects-protocol";
 import { useRef, useState } from "react";
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 import { SpinnerIcon } from "../ui/icons.tsx";
 import type { ProjectScope } from "./filters.ts";
 
@@ -75,11 +75,11 @@ export function Sidebar({
   return (
     <nav
       aria-label="Dashboard"
-      className="nap-scroll-hidden flex h-dvh w-full flex-col gap-6 overflow-y-auto border-edge border-r bg-panel px-3 py-4"
+      className="vibe-vr-scroll-hidden flex h-dvh w-full flex-col gap-6 overflow-y-auto border-edge border-r bg-panel px-3 py-4"
     >
       <div className="flex items-center gap-1.5 px-2">
-        <NapMark className="size-8" />
-        <span className="font-semibold text-ink text-sm tracking-tight">nap</span>
+        <VibeVrMark className="size-8" />
+        <span className="font-semibold text-ink text-sm tracking-tight">Vibe-VR</span>
       </div>
 
       <div className="flex flex-col gap-0.5">

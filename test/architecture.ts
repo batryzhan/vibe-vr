@@ -21,7 +21,7 @@ export type Manifest = {
   dependencies: string[];
   /**
    * Optional, and only the exclusive-externals rule reads it. The two rules want different
-   * answers: a sibling package may sit here (docs/adr/0001 — @nap/bench carries them for
+   * answers: a sibling package may sit here (docs/adr/0001 — @vibe-vr/bench carries them for
    * their published fakes), while a third-party library that is supposed to have exactly
    * one owner may not, because the production image is built by one workspace-wide install
    * with no --production and therefore ships devDependencies too.
@@ -50,16 +50,16 @@ export type PackageSources = {
 
 /** Which internal packages each package is allowed to depend on. */
 const ALLOWED: Record<string, readonly string[]> = {
-  "@nap/shared": [],
+  "@vibe-vr/shared": [],
   // The canonical 3D scene contract: versioned schemas, patches, revisions and
   // content hashes. Foundational like shared — it may only lean on shared, never
   // on the engine, the runtime or any renderer.
-  "@nap/scene-spec": ["@nap/shared"],
+  "@vibe-vr/scene-spec": ["@vibe-vr/shared"],
   // The deterministic procedural engine: pure geometry plus a Three.js adapter and
   // GLB export. It reads the contract and renders through three, and nothing else.
-  "@nap/procedural": ["@nap/shared", "@nap/scene-spec"],
-  "@nap/db": ["@nap/shared"],
-  "@nap/sandbox": ["@nap/shared"],
+  "@vibe-vr/procedural": ["@vibe-vr/shared", "@vibe-vr/scene-spec"],
+  "@vibe-vr/db": ["@vibe-vr/shared"],
+  "@vibe-vr/sandbox": ["@vibe-vr/shared"],
   // Scene tools validate proposals against the contract, so the agent reads it.
   // Foundation-ward like shared, and pure: scene-spec has no I/O, no store and
   // no model access for the agent to inherit by importing it. The procedural
@@ -67,48 +67,48 @@ const ALLOWED: Record<string, readonly string[]> = {
   // geometry (bounds, triangles, budget) before promoting it, and the engine
   // is deterministic, side-effect-free, and Three-free at the boundary the
   // tool touches — the same purity rationale, no I/O inherited.
-  "@nap/agent": ["@nap/shared", "@nap/scene-spec", "@nap/procedural"],
-  "@nap/context": ["@nap/shared"],
+  "@vibe-vr/agent": ["@vibe-vr/shared", "@vibe-vr/scene-spec", "@vibe-vr/procedural"],
+  "@vibe-vr/context": ["@vibe-vr/shared"],
   // Object storage sits beside the sandbox and the database as infrastructure: it holds a
   // project's bytes while nothing is running, and knows nothing about turns or projects.
-  "@nap/storage": ["@nap/shared"],
+  "@vibe-vr/storage": ["@vibe-vr/shared"],
   // A browser, behind the PageCapture port. Beside storage and the sandbox for the same reason:
   // it photographs an address it is handed and knows nothing about projects or turns.
-  "@nap/capture": ["@nap/shared"],
+  "@vibe-vr/capture": ["@vibe-vr/shared"],
   // Running one check against a sandbox and saying what it produced: the preview probe, the
   // captured output of a failed command, and the passed/failed/absent answer. It sits below
   // both of its consumers deliberately. The runtime verifies a turn's claim and the benchmark
   // scores a run, and the machinery underneath is the same — but a dependency from the runtime
   // to the benchmark would make the system under test import the thing that grades it, and
   // every future scoring change a production change. See docs/adr/0007.
-  "@nap/verify": ["@nap/shared"],
+  "@vibe-vr/verify": ["@vibe-vr/shared"],
   // The pure half of NapBench: task specifications, scoring, gates, metric derivation,
   // report serialisation. None of it may reach for a sandbox, a model or a browser — those
   // arrive through ports, which is what keeps the part that has to be trustworthy testable
   // with no network. Its sibling packages appear under devDependencies for their published
   // fakes, which this check deliberately does not read. See docs/adr/0001.
-  "@nap/bench": ["@nap/shared", "@nap/verify"],
+  "@vibe-vr/bench": ["@vibe-vr/shared", "@vibe-vr/verify"],
   // The pure half of the load harness: percentile maths, metric rollup, threshold verdicts, the
   // scripted user's ordering, and how slow the fakes pretend to be. It sits beside `bench` and
   // for the same reason — it is written against the ports in `shared` and knows nothing about
   // Postgres, a socket or a server, which is what lets the arithmetic a report is read through
   // be tested rather than trusted. The process that composes real infrastructure behind it is
   // `apps/api/scripts/loadgen.ts`, which is an app and may reach for anything.
-  "@nap/loadgen": ["@nap/shared"],
-  "@nap/runtime": [
-    "@nap/context",
-    "@nap/agent",
-    "@nap/sandbox",
-    "@nap/db",
-    "@nap/storage",
-    "@nap/capture",
-    "@nap/verify",
-    "@nap/shared",
+  "@vibe-vr/loadgen": ["@vibe-vr/shared"],
+  "@vibe-vr/runtime": [
+    "@vibe-vr/context",
+    "@vibe-vr/agent",
+    "@vibe-vr/sandbox",
+    "@vibe-vr/db",
+    "@vibe-vr/storage",
+    "@vibe-vr/capture",
+    "@vibe-vr/verify",
+    "@vibe-vr/shared",
   ],
   // Apps compose everything; they are the top of the graph.
-  "@nap/web": ["*"],
-  "@nap/api": ["*"],
-  "@nap/napbench": ["*"],
+  "@vibe-vr/web": ["*"],
+  "@vibe-vr/api": ["*"],
+  "@vibe-vr/napbench": ["*"],
 };
 
 /**
@@ -116,40 +116,35 @@ const ALLOWED: Record<string, readonly string[]> = {
  * the whole point of the abstraction is that nothing else knows about them.
  */
 const EXCLUSIVE_EXTERNALS: Record<string, { owner: string; reason: string }> = {
-  e2b: {
-    owner: "@nap/sandbox",
-    reason:
-      "E2B belongs to @nap/sandbox. Depend on the SandboxManager interface from @nap/shared instead — see docs/PLAN.md §0.",
-  },
   "@anthropic-ai/sdk": {
-    owner: "@nap/agent",
+    owner: "@vibe-vr/agent",
     reason:
-      "The Anthropic SDK belongs to @nap/agent. Depend on the LLMProvider interface from @nap/shared instead — see docs/PLAN.md §0. The interface is not a cross-vendor swap, but model id, effort, retries and refusal handling still belong in one place rather than at every call site.",
+      "The Anthropic SDK belongs to @vibe-vr/agent. Depend on the LLMProvider interface from @vibe-vr/shared instead — see docs/PLAN.md §0. The interface is not a cross-vendor swap, but model id, effort, retries and refusal handling still belong in one place rather than at every call site.",
   },
   "@aws-sdk/client-s3": {
-    owner: "@nap/storage",
+    owner: "@vibe-vr/storage",
     reason:
-      "The S3 client belongs to @nap/storage, which is the only place that knows a project's bytes live in R2. Depend on the ObjectStore interface from @nap/shared instead — everything above it is written against three methods and must keep working when the bucket is a map in a test.",
+      "The S3 client belongs to @vibe-vr/storage, which is the only place that knows a project's bytes live in R2. Depend on the ObjectStore interface from @vibe-vr/shared instead — everything above it is written against three methods and must keep working when the bucket is a map in a test.",
   },
   "puppeteer-core": {
-    owner: "@nap/capture",
+    owner: "@vibe-vr/capture",
     reason:
-      "The browser belongs to @nap/capture, which is the only place that knows a thumbnail is made by rendering a page. Depend on the PageCapture interface from @nap/shared instead — everything above it is written against one method and must keep working when the browser is a fake handing back four bytes.",
+      "The browser belongs to @vibe-vr/capture, which is the only place that knows a thumbnail is made by rendering a page. Depend on the PageCapture interface from @vibe-vr/shared instead — everything above it is written against one method and must keep working when the browser is a fake handing back four bytes.",
   },
   "playwright-core": {
-    owner: "@nap/napbench",
+    owner: "@vibe-vr/napbench",
     reason:
-      "Playwright belongs to apps/napbench, which drives a browser against a generated app to judge it. Nothing that ships to production may depend on it — the deployed image is built from one workspace-wide install, so an evaluation tool's browser driver would otherwise become the API's problem. Depend on the BrowserSession interface from @nap/bench instead. See docs/adr/0001.",
+      "Playwright belongs to apps/napbench, which drives a browser against a generated app to judge it. Nothing that ships to production may depend on it — the deployed image is built from one workspace-wide install, so an evaluation tool's browser driver would otherwise become the API's problem. Depend on the BrowserSession interface from @vibe-vr/bench instead. See docs/adr/0001.",
   },
   "axe-core": {
-    owner: "@nap/napbench",
+    owner: "@vibe-vr/napbench",
     reason:
-      "The accessibility scanner belongs to apps/napbench for the same reason Playwright does: it is an evaluation tool, it runs inside a browser nothing that ships has, and the deployed image is built from one workspace-wide install. Depend on BrowserSession.scanAccessibility from @nap/bench instead — what counts as a violation is axe's answer, and nothing above the port needs to know whose. See docs/adr/0001.",
+      "The accessibility scanner belongs to apps/napbench for the same reason Playwright does: it is an evaluation tool, it runs inside a browser nothing that ships has, and the deployed image is built from one workspace-wide install. Depend on BrowserSession.scanAccessibility from @vibe-vr/bench instead — what counts as a violation is axe's answer, and nothing above the port needs to know whose. See docs/adr/0001.",
   },
   "@anthropic-ai/bedrock-sdk": {
-    owner: "@nap/agent",
+    owner: "@vibe-vr/agent",
     reason:
-      "Reaching the models through Bedrock rather than Anthropic directly is a transport detail, and it belongs to @nap/agent for the same reason the direct SDK does. Which platform serves a request must not be visible above the LLMProvider interface — the whole point is that the agent loop and the event contract cannot tell the difference.",
+      "Reaching the models through Bedrock rather than Anthropic directly is a transport detail, and it belongs to @vibe-vr/agent for the same reason the direct SDK does. Which platform serves a request must not be visible above the LLMProvider interface — the whole point is that the agent loop and the event contract cannot tell the difference.",
   },
 };
 
@@ -159,13 +154,13 @@ const EXCLUSIVE_EXTERNALS: Record<string, { owner: string; reason: string }> = {
  * `import type` erases at runtime but the compiler still had to read the other package, so it is
  * a layering edge, and it is the form a violation is likeliest to take.
  *
- * It matches text, not syntax, so a comment or string quoting `from "@nap/…"` counts as an import.
+ * It matches text, not syntax, so a comment or string quoting `from "@vibe-vr/…"` counts as an import.
  * That is the cheap direction to be wrong in — a commented-out illegal import is still a decision
  * somebody should have to defend — but it is why a failure can name a line with no code on it.
  */
 const SPECIFIER = /\b(?:from|import|require)\s*\(?\s*["']([^"']+)["']/g;
 
-/** `@nap/bench/category` → `@nap/bench`. Every package exports `./*`, so specifiers are deep. */
+/** `@vibe-vr/bench/category` → `@vibe-vr/bench`. Every package exports `./*`, so specifiers are deep. */
 function packageOf(specifier: string): string {
   const [scope, name] = specifier.split("/");
   return name === undefined ? specifier : `${scope}/${name}`;
@@ -213,7 +208,7 @@ function layerViolation(
  * changes. Apps are unaffected — `apps/napbench` is what the benchmark is for.
  */
 const NO_TEST_EXEMPTION: Record<string, string> = {
-  "@nap/bench":
+  "@vibe-vr/bench":
     "docs/adr/0007: nothing below apps/napbench may import the benchmark, tests included — a test edge still makes every change to scoring a change to the system being scored",
 };
 
@@ -230,7 +225,7 @@ const NO_TEST_EXEMPTION: Record<string, string> = {
  *     their published fakes, and a test-only edge is not the layering the table is about. The
  *     exception is NO_TEST_EXEMPTION, for the one edge an ADR says must never exist at all.
  *   - Every file — shipped, test or script — may only import a package its manifest declares.
- *     That is the hoisting hole, and it is how a test importing @nap/sandbox with no
+ *     That is the hoisting hole, and it is how a test importing @vibe-vr/sandbox with no
  *     devDependency on it shipped green.
  */
 export function checkSourceImports(packages: PackageSources[]): Violation[] {
@@ -244,7 +239,7 @@ export function checkSourceImports(packages: PackageSources[]): Violation[] {
       const imported = new Set(
         [...contents.matchAll(SPECIFIER)]
           .map((match) => packageOf(match[1] ?? ""))
-          .filter((name) => name.startsWith("@nap/") && name !== manifest.name),
+          .filter((name) => name.startsWith("@vibe-vr/") && name !== manifest.name),
       );
 
       for (const dep of imported) {
@@ -327,7 +322,7 @@ export function checkDependencyDirection(manifests: Manifest[]): Violation[] {
       }
 
       // Third-party dependencies are unconstrained.
-      if (!dep.startsWith("@nap/")) continue;
+      if (!dep.startsWith("@vibe-vr/")) continue;
 
       const reason = layerViolation(name, dep, allowed, "depends on");
       if (reason === undefined) continue;

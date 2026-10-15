@@ -3,7 +3,7 @@
  *
  * Local development only: the API otherwise requires R2 credentials at boot,
  * which is the right demand for any deployment and an account too many for
- * trying the app on a laptop. Selected with `NAP_OBJECT_STORE=local`, never by
+ * trying the app on a laptop. Selected with `VIBE_VR_OBJECT_STORE=local`, never by
  * default — production keeps failing closed without a bucket.
  *
  * Keys map to paths under one base directory, segments split on `/` exactly
@@ -17,8 +17,8 @@
 
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve, sep } from "node:path";
-import type { ObjectStore, ObjectStoreError } from "@nap/shared/ports/object-store";
-import type { Result, VoidResult } from "@nap/shared/result";
+import type { ObjectStore, ObjectStoreError } from "@vibe-vr/shared/ports/object-store";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 
 function invalidKey(key: string): ObjectStoreError {
   return { code: "unavailable", message: `refusing key outside the store: ${JSON.stringify(key)}` };

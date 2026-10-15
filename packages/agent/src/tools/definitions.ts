@@ -17,9 +17,9 @@
  * request — so wording here is paid for once and read on every turn.
  */
 
-import { AnySceneProposalSchema } from "@nap/scene-spec/proposal";
-import { TOOL_NAMES, type ToolName } from "@nap/shared/events";
-import type { LLMToolDefinition } from "@nap/shared/ports/llm-provider";
+import { AnySceneProposalSchema } from "@vibe-vr/scene-spec/proposal";
+import { TOOL_NAMES, type ToolName } from "@vibe-vr/shared/events";
+import type { LLMToolDefinition } from "@vibe-vr/shared/ports/llm-provider";
 import { z } from "zod";
 import { ProposeDeskSchema } from "./desk.ts";
 
@@ -82,9 +82,9 @@ const DESCRIPTIONS: Record<ToolName, string> = {
   run_command:
     "Run a shell command in the project directory. Use it for builds, tests, and package management. A non-zero exit is reported back to you, not treated as a failure of the tool.",
   get_scene:
-    "Read the current 3D scene before proposing any geometry change. Call this first when the user asks about the model: it lists every node with its parameters and the revision hash your patch must cite.",
+    "Read the current 3D scene when no authoritative snapshot was supplied, or when a proposal was rejected because the revision changed. It lists every node with its parameters and the revision hash your patch must cite.",
   propose_scene_patch:
-    "Propose a 3D scene edit as a patch against the hash get_scene returned, or a complete new scene when get_scene reports no scene yet. Prefer this over describing geometry in prose: the proposal is validated before anything changes, and a rejection tells you exactly what to fix. Never invent a baseHash — re-read the scene when told yours is stale.",
+    "Propose a 3D scene edit as a patch against the full revision hash in the authoritative scene snapshot or get_scene, or a complete new scene when the snapshot says no scene exists. Edits use top-level baseHash, ops array, and rationale; add a material with add_material before adding a node that uses it. For creation, spec.id must be a valid UUID. Prefer this over describing geometry in prose: the proposal is validated before anything changes, and a rejection tells you exactly what to fix. Never invent a baseHash; re-read the scene when told yours is stale.",
   propose_desk:
     "Build a walnut, oak, or maple desk from typed dimensions when the user asks for a desk or table: tops, legs, and aprons are placed and validated deterministically, so prefer this over hand-computing scene coordinates. For follow-up desk edits — wider, taller, a material swap — call it again with the revision hash get_scene returned and only the changes; legs and aprons follow automatically.",
 };

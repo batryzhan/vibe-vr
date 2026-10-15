@@ -1,16 +1,16 @@
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { hashSceneSpec } from "@nap/scene-spec/revisions";
-import { towerSpec } from "@nap/scene-spec/tower";
-import type { NapEvent } from "@nap/shared/events";
-import type { EventBus, EventHandler, Unsubscribe } from "@nap/shared/ports/event-bus";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { hashSceneSpec } from "@vibe-vr/scene-spec/revisions";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
+import type { NapEvent } from "@vibe-vr/shared/events";
+import type { EventBus, EventHandler, Unsubscribe } from "@vibe-vr/shared/ports/event-bus";
 import type {
   AppendOptions,
   EventStore,
   PendingEvent,
   StoredEvent,
-} from "@nap/shared/ports/event-store";
-import { type ServerFrame, ServerFrameSchema, WS_CLOSE } from "@nap/shared/ws-protocol";
+} from "@vibe-vr/shared/ports/event-store";
+import { type ServerFrame, ServerFrameSchema, WS_CLOSE } from "@vibe-vr/shared/ws-protocol";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { openEventStream, TurnStreamBus, type TurnStreamEvent } from "./event-stream.ts";
 

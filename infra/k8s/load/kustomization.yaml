@@ -14,10 +14,10 @@
 #
 #   1. **The fakes are slowed to the speeds a funded run recorded.** Instant ones would finish
 #      each turn before the next user connected and nothing would ever be concurrent — see
-#      `@nap/loadgen/calibration`, and `NAP_PROOF_CALIBRATED_LATENCY` in patch-config.yaml.
+#      `@vibe-vr/loadgen/calibration`, and `VIBE_VR_PROOF_CALIBRATED_LATENCY` in patch-config.yaml.
 #   2. **The ceilings are sized for the load, and the autoscalers follow them.** See
 #      patch-config.yaml and patch-scale.yaml: the worker maximum is still
-#      ceil(NAP_MAX_SANDBOXES_TOTAL / NAP_WORKER_CONCURRENCY), which is the coupling the whole
+#      ceil(VIBE_VR_MAX_SANDBOXES_TOTAL / VIBE_VR_WORKER_CONCURRENCY), which is the coupling the whole
 #      ticket is about, and `test/k8s.test.ts` asserts it here as well as in the base.
 #   3. **The NetworkPolicy is removed**, because kind's default CNI enforces none — applying it
 #      would look exercised when it had not been.
@@ -48,7 +48,6 @@ secretGenerator:
       # then reports `no such host` and the ScaledObject never becomes ready — while every pod,
       # which resolves it in its own namespace, is perfectly happy. One string, two resolvers.
       - DATABASE_URL=postgres://nap:nap@nap-postgres.nap.svc.cluster.local:5432/nap
-      - E2B_API_KEY=load-not-a-key
       - OPENROUTER_API_KEY=load-not-a-key
       - R2_ACCOUNT_ID=load
       - R2_BUCKET=load

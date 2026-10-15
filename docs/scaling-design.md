@@ -21,7 +21,7 @@ the way, and each is recorded rather than edited over:
   what replaced each of its four reasons is in that document, under *Scaling*.
 
 Smaller corrections are marked in place: §5's single-statement claim (the shipped claim is two
-statements in one transaction, for a reason the source states), §15's `NAP_DRAIN_TIMEOUT` naming,
+statements in one transaction, for a reason the source states), §15's `VIBE_VR_DRAIN_TIMEOUT` naming,
 §24's answered questions.
 
 ---
@@ -387,7 +387,7 @@ create unique index sandbox_reservations_one_per_project
 TXN 1 (reserve; commits before any E2B call)
   pg_advisory_xact_lock(SANDBOX_CAPACITY_KEY)          ← serializes all admissions
   select count(*) where state in ('reserved','active')
-    → if >= NAP_MAX_SANDBOXES_TOTAL: abort, refuse
+    → if >= VIBE_VR_MAX_SANDBOXES_TOTAL: abort, refuse
   select count(*) where user_id = $1 and state in ('reserved','active')
     → if >= per-user cap: abort, refuse
   insert (project_id, user_id, 'reserved', now() + '2 minutes')
@@ -428,7 +428,7 @@ it matches the reasoning already in `sandbox-quota.ts:19`.
 
 This moves the authoritative capacity check out of `apps/api/src/turns/sandbox-quota.ts` and into the
 creation path in `packages/runtime/src/acquire-sandbox.ts`, behind a new **`SandboxCapacity` port**
-implemented in `@nap/db`.
+implemented in `@vibe-vr/db`.
 
 **`CLAUDE.md`'s component-ownership table contradicts this as written** and must be updated — the
 `Runtime` row gains authoritative sandbox capacity reservation, and the note that quota checks belong
@@ -600,8 +600,8 @@ poddisruptionbudget/nap-api minAvailable: 2
 deployment/nap-worker       replicas 2 (KEDA 2–25)
   no Service — nothing connects to a worker
   terminationGracePeriodSeconds: 900
-  NAP_WORKER_CONCURRENCY (start at 5; set by measurement)
-  NAP_CAPTURE_CONCURRENCY=1        ← see B-6
+  VIBE_VR_WORKER_CONCURRENCY (start at 5; set by measurement)
+  VIBE_VR_CAPTURE_CONCURRENCY=1        ← see B-6
   resources: requests 500m/1Gi, limits 2000m/3Gi   (Chromium spikes)
   livenessProbe: exec, "has the claim loop ticked in 120s"
 poddisruptionbudget/nap-worker maxUnavailable: 1
@@ -610,9 +610,9 @@ deployment/nap-reaper       replicas 1, strategy Recreate
   additionally guarded by pg_try_advisory_lock so a rollout overlap cannot double-sweep
   owns: idle sweep, lease janitor, reservation reconciliation, rate-event sweep
 
-configmap/nap-config        every NAP_* tunable
+configmap/nap-config        every VIBE_VR_* tunable
 secret/nap-secrets          DATABASE_URL, E2B_API_KEY, OPENROUTER_API_KEY,
-                            BETTER_AUTH_SECRET, NAP_KEY_ENCRYPTION_SECRET, R2_*
+                            BETTER_AUTH_SECRET, VIBE_VR_KEY_ENCRYPTION_SECRET, R2_*
 serviceaccount/nap          no RBAC — leader election is an advisory lock, not a k8s Lease
 hpa/nap-api                 autoscaling/v2
 scaledobject/nap-worker     KEDA, postgresql scaler
@@ -630,9 +630,9 @@ sandbox, so five concurrent turns can sit at 15% CPU.
 
 ```
 query:            select count(*) from turn_requests where state in ('queued','leased')
-targetValue:      NAP_WORKER_CONCURRENCY
+targetValue:      VIBE_VR_WORKER_CONCURRENCY
 minReplicaCount:  2
-maxReplicaCount:  ceil(NAP_MAX_SANDBOXES_TOTAL / NAP_WORKER_CONCURRENCY)
+maxReplicaCount:  ceil(VIBE_VR_MAX_SANDBOXES_TOTAL / VIBE_VR_WORKER_CONCURRENCY)
 cooldownPeriod:   300
 ```
 
@@ -655,8 +655,8 @@ human a reopen — so scale-down should be lazy and rare.
 Worker, on `SIGTERM`:
 
 1. Stop claiming. The claim loop exits immediately.
-2. Let in-flight turns finish, up to `NAP_DRAIN_TIMEOUT_SECONDS` (600s), inside the 900s grace
-   period. (Shipped under that name; this section said `NAP_DRAIN_TIMEOUT` before it was built.)
+2. Let in-flight turns finish, up to `VIBE_VR_DRAIN_TIMEOUT_SECONDS` (600s), inside the 900s grace
+   period. (Shipped under that name; this section said `VIBE_VR_DRAIN_TIMEOUT` before it was built.)
 3. **Keep renewing leases** of turns still running, so the janitor does not orphan progressing work.
 4. On completion, settle each request and release its lease.
 5. If the drain timeout expires: abort remaining turns via their `AbortController`. A cancelled turn
@@ -675,14 +675,14 @@ one sequence and neither can forget a piece the other stops.
 
 ## 16. Cost control
 
-- **Ceilings become cluster-wide and atomic** (§7). `NAP_MAX_SANDBOXES_TOTAL` is the hard bound.
+- **Ceilings become cluster-wide and atomic** (§7). `VIBE_VR_MAX_SANDBOXES_TOTAL` is the hard bound.
 - **`maxReplicaCount` is derived from that cap**, so no autoscaler decision can exceed it.
 - **The k6 proof costs nothing.** Fake `SandboxManager` and fake `LLMProvider`, latency calibrated
   from `docs/napbench-first-real-run.md` (turn 8–43s, sandbox cold start ~3.0s, preview render 2.4s).
   What is measured is the layer that was single-process; E2B and OpenRouter concurrency are vendor
   quota questions, not Nap architecture questions.
 - **Production ceilings are not raised.** The harness composes its own.
-- A separate assertion covers the ceiling path: at `NAP_MAX_SANDBOXES_TOTAL=10`, requests 11+ get a
+- A separate assertion covers the ceiling path: at `VIBE_VR_MAX_SANDBOXES_TOTAL=10`, requests 11+ get a
   clean `409` with no half-created sandbox, no leaked reservation and no stuck lease.
 - One optional funded confirmation run at low n, after the shape is proven free.
 
@@ -751,7 +751,7 @@ one kills a whole turn — including its repair budget.
 > the intended event is already present. `unique(session_id, seq)` is the backstop that turns any
 > remaining race into a hard error rather than a duplicated message in somebody's chat.
 
-### B-4 — `NAP_MAX_SANDBOXES_TOTAL` is documented as per-process
+### B-4 — `VIBE_VR_MAX_SANDBOXES_TOTAL` is documented as per-process
 
 `sandbox-quota.ts:28` says *"Across everybody in this process."* After scaling it is **cluster-wide**.
 Someone sizing the cap by replica count would multiply the bill. The comment, `apps/api/.env.example`
@@ -771,10 +771,10 @@ implies a race that the schema has already made impossible.
 
 ### B-6 — thumbnail capture concurrency is not worker concurrency
 
-`#photograph` runs after every committed turn. At `NAP_WORKER_CONCURRENCY=5` that is up to five
+`#photograph` runs after every committed turn. At `VIBE_VR_WORKER_CONCURRENCY=5` that is up to five
 simultaneous Chromium page loads in one pod.
 
-**Resolution: a per-worker semaphore, `NAP_CAPTURE_CONCURRENCY=1`.** One capture at a time per
+**Resolution: a per-worker semaphore, `VIBE_VR_CAPTURE_CONCURRENCY=1`.** One capture at a time per
 worker unless measurement proves more is safe. Capture is already best-effort — a failure is only a
 log line (`single-agent-runtime.ts:1013`) — so queueing behind a semaphore costs nothing a user can
 see, while five Chromiums in a 3Gi pod is an OOMKill.
@@ -919,7 +919,7 @@ New, and specific to this design:
     and the janitor deliberately leaves it alone.
 15. **Every `orphaned` request has a terminal `turn.*` event and a `system.notice` in its session's
     log**, under its own `turnId`. No Turn is permanently invisible; no chat pane spins forever.
-16. **Global live sandboxes never exceed `NAP_MAX_SANDBOXES_TOTAL`** — enforced at reservation,
+16. **Global live sandboxes never exceed `VIBE_VR_MAX_SANDBOXES_TOTAL`** — enforced at reservation,
     before creation, so the cap is never exceeded and only ever temporarily under-used.
 17. **Capacity is reconcilable.** Every reserved or active row either corresponds to a live sandbox
     or is reclaimed by the reaper within its expiry window.
@@ -929,7 +929,7 @@ New, and specific to this design:
 21. **A notification is never required for correctness.** Suppressing `pg_notify` entirely must still
     deliver every event via the catch-up poll.
 22. `bun run test`, `bun run typecheck`, `bun run lint` stay green; `test/architecture.ts` learns
-    about any new package; nothing outside `apps/napbench` imports `@nap/bench` (ADR-0007).
+    about any new package; nothing outside `apps/napbench` imports `@vibe-vr/bench` (ADR-0007).
 23. `CLAUDE.md`, `docs/DEPLOY.md` and `CONTEXT.md` describe reality at every step — in particular the
     one-replica rule, every clause of which this design exists to retire.
 
@@ -1013,7 +1013,7 @@ New, and specific to this design:
 
 **Gates**
 42. `test/architecture.ts` learns about `packages/loadgen`; nothing outside `apps/napbench` imports
-    `@nap/bench`.
+    `@vibe-vr/bench`.
 43. `bun run test`, `typecheck`, `lint` green; every new suite confirmed collected via
     `vitest list --project <name>`.
 
@@ -1041,7 +1041,7 @@ version before writing the script).
 
 **One VU = one user:**
 
-1. `POST /api/auth/sign-in/anonymous` — the demo door (`NAP_ALLOW_DEMO=true`), the only path k6 can
+1. `POST /api/auth/sign-in/anonymous` — the demo door (`VIBE_VR_ALLOW_DEMO=true`), the only path k6 can
    drive without OAuth, and a real code path.
 2. `POST /projects` → project id, session id.
 3. `GET /ws?sessionId=…&seq=0`, wait for `{"type":"ready"}`.
@@ -1105,7 +1105,7 @@ These were open questions that did not block starting at step 0 but had to be an
 step they name. **Each is answered below**, in place and where the answer was found; none was
 answered by this section being edited to agree with the code.
 
-1. **`NAP_WORKER_CONCURRENCY`'s real value** — 5 is a guess. Step 0's baseline sets it. *(Before step
+1. **`VIBE_VR_WORKER_CONCURRENCY`'s real value** — 5 is a guess. Step 0's baseline sets it. *(Before step
    10.)* **Answered at step 0**, in `docs/scaling-baseline.md` — the shipped default is 25, and
    deliberately below what that run licenses.
 2. **Catch-up poll cost at 100 sessions.** 2s × 100 sessions is 50 queries/second of pure overhead if

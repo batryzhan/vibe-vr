@@ -117,7 +117,7 @@ vision model until it is verified that the model accepts image input through the
 this repo uses; `LLMContentBlock` has no image variant today.
 
 The judge is a port (`ProductEvaluation`), not the agent's `LLMProvider` — that is the thing under
-test, and `packages/bench` may import only `@nap/shared` and `@nap/verify` in any case. The adapter
+test, and `packages/bench` may import only `@vibe-vr/shared` and `@vibe-vr/verify` in any case. The adapter
 lives in `apps/napbench`, exactly as `BrowserSession`'s does.
 
 ### Single-judge bias is accepted, and disclosed
@@ -202,7 +202,7 @@ was named: `bun run napbench:vision-spike --real --model=<id>` sends one real ju
 corpus fixture and confirms that the *Anthropic-shaped* `/v1/messages` endpoint forwards an `image`
 content block to a non-Anthropic model and answers with the `tool_use` block a structured judgement
 rides in. The registry's `input_modalities` is a claim about the model and was not treated as
-sufficient — what a run depends on is the route. `NAP_JUDGE_MODEL` moves the pin; re-run the spike
+sufficient — what a run depends on is the route. `VIBE_VR_JUDGE_MODEL` moves the pin; re-run the spike
 before moving it.
 
 **Two things this ADR anticipated are now measured rather than argued.**
@@ -210,7 +210,7 @@ before moving it.
 The single-judge bias above is worse than stated in one specific way: the pinned judge is *the same
 model the agent runs on*, which on a funded run comparing two models would put one of the arms in
 the chair. It is pinned there on cost, and the mitigation is to name a third model in
-`NAP_JUDGE_MODEL` before spending on such a comparison — not to leave it to whoever reads the
+`VIBE_VR_JUDGE_MODEL` before spending on such a comparison — not to leave it to whoever reads the
 report afterwards.
 
 And the fixture corpus did what this ADR built it to do — though not in the direction expected. It

@@ -1,14 +1,14 @@
-import { enqueueRequest } from "@nap/db/testing/enqueue-request";
-import { InMemoryTurnQueue } from "@nap/db/testing/in-memory-turn-queue";
-import type { ModelCredentials } from "@nap/shared/ports/llm-provider";
+import { enqueueRequest } from "@vibe-vr/db/testing/enqueue-request";
+import { InMemoryTurnQueue } from "@vibe-vr/db/testing/in-memory-turn-queue";
+import type { ModelCredentials } from "@vibe-vr/shared/ports/llm-provider";
 import type {
   ContinueOptions,
   ResumeOutcome,
   Runtime,
   TurnOutcome,
   TurnRequest,
-} from "@nap/shared/ports/runtime";
-import type { TurnQueue } from "@nap/shared/ports/turn-queue";
+} from "@vibe-vr/shared/ports/runtime";
+import type { TurnQueue } from "@vibe-vr/shared/ports/turn-queue";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { type RunningTurns, startTurnWorker, type TurnWorker } from "./turn-worker.ts";
 

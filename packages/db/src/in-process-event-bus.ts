@@ -16,8 +16,8 @@
  */
 
 import { EventEmitter } from "node:events";
-import type { EventBus, EventHandler, Unsubscribe } from "@nap/shared/ports/event-bus";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { EventBus, EventHandler, Unsubscribe } from "@vibe-vr/shared/ports/event-bus";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 export class InProcessEventBus implements EventBus {
   readonly #emitter = new EventEmitter<Record<string, [StoredEvent]>>();

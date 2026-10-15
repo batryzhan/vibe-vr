@@ -1,7 +1,7 @@
 /**
  * Putting a run's two artefacts on disk — the report and the trajectory it was derived from.
  * The one part of producing them that touches a filesystem, and therefore the one part that
- * lives in the app rather than in `@nap/bench`.
+ * lives in the app rather than in `@vibe-vr/bench`.
  *
  * Both are named by task *and* run id. The task id makes a directory listing readable at a
  * glance; the run id is what keeps two runs of the same task from overwriting each other,
@@ -11,8 +11,8 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { type BenchReport, serialiseBenchReport } from "@nap/bench/report";
-import { type BenchTrajectory, serialiseBenchTrajectory } from "@nap/bench/trajectory";
+import { type BenchReport, serialiseBenchReport } from "@vibe-vr/bench/report";
+import { type BenchTrajectory, serialiseBenchTrajectory } from "@vibe-vr/bench/trajectory";
 
 /** Where a report goes, as a pure function, so a caller can print the path before writing. */
 export function reportPath(resultsDir: string, report: BenchReport): string {

@@ -1,7 +1,7 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { type CapturedScreenshot, parseScreenshotMetadata } from "@nap/bench/screenshot";
+import { type CapturedScreenshot, parseScreenshotMetadata } from "@vibe-vr/bench/screenshot";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { fileScreenshotStore } from "./write-screenshot.ts";
 

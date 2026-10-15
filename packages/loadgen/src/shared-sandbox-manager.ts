@@ -32,8 +32,8 @@ import type {
   Sandbox,
   SandboxError,
   SandboxManager,
-} from "@nap/shared/ports/sandbox-manager";
-import type { Result, VoidResult } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/sandbox-manager";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 
 /**
  * One sandbox, as the processes that did not create it can see it.

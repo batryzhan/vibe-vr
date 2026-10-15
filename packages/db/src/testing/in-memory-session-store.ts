@@ -10,7 +10,7 @@
  * session up: it is a bug in the caller rather than an outcome to hand back.
  */
 
-import type { SessionRecord, SessionStore } from "@nap/shared/ports/session-store";
+import type { SessionRecord, SessionStore } from "@vibe-vr/shared/ports/session-store";
 import { FAKE_OWNER } from "./in-memory-project-store.ts";
 
 /** A session to start with. `sandboxId` defaults to none, `userId` to the shared fake owner. */

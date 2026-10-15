@@ -1,10 +1,10 @@
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { scriptGit } from "@nap/sandbox/testing/script-git";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { scriptGit } from "@vibe-vr/sandbox/testing/script-git";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { captureSnapshot, snapshotKey, tearDownProject } from "./teardown.ts";
 

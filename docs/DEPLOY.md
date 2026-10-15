@@ -75,7 +75,7 @@ synthetic service that breaks it, because a rule nobody has watched fail is not 
 
 One thing must be true first:
 
-- **`NAP_EVENT_BUS=postgres`.** A worker publishing to an in-process bus announces a turn to
+- **`VIBE_VR_EVENT_BUS=postgres`.** A worker publishing to an in-process bus announces a turn to
   nobody: every socket watching it is on the API pod. Turns would run perfectly while every
   chat pane sat still, so **the worker and the reaper both refuse to boot without it** rather
   than letting that be discovered from the browser — the reaper publishes too, when it stops a
@@ -100,10 +100,10 @@ live. **Its figures live there and are not repeated here.**
 
 | The old reason | What replaced it |
 |---|---|
-| **The in-process bus** — `InProcessEventBus` fanned events out to sockets inside one process, so a browser on pod A never saw a turn that ran on B | `PostgresNotifyEventBus`, under `NAP_EVENT_BUS=postgres`. The notification carries `{sessionId, seq}` and the pod reads the events out of the durable log; a 2s catch-up poll makes the notification optional for correctness. See `docs/adr/0010` |
+| **The in-process bus** — `InProcessEventBus` fanned events out to sockets inside one process, so a browser on pod A never saw a turn that ran on B | `PostgresNotifyEventBus`, under `VIBE_VR_EVENT_BUS=postgres`. The notification carries `{sessionId, seq}` and the pod reads the events out of the durable log; a 2s catch-up poll makes the notification optional for correctness. See `docs/adr/0010` |
 | **The in-memory registry** — `TurnRegistry` meant a cancel landing on pod A could not reach a turn on pod B, and `isBusy` went blind | Cancellation is a row. `cancel_requested` on `turn_requests` reaches an executing turn on any pod within one lease renewal (≤15s); the registry survives only as the same-process fast path. **Busy** is `TurnQueue.anyLeased` — a `state = 'leased'` query — so close, delete and the idle sweep all get the same answer cluster-wide |
 | **The in-memory queue** — `SessionQueue` serialised a session's turns inside one process, so two pods would run two turns for one session and the project would end up with two sandboxes | `turn_requests` plus per-session **leases**, exclusive by the partial unique index `unique (session_id) where state = 'leased'`. One in-flight turn per session cluster-wide, adjudicated by Postgres rather than by every caller remembering. See `docs/adr/0009` |
-| **The per-process rate limiter** — N pods meant N times the free-tier allowance | `turn_rate_events`: one row per accepted turn, counted over a rolling hour in Postgres. `NAP_FREE_TURNS_PER_HOUR=5` means five whether one process is running or twelve. The sandbox ceiling moved the same way, to `sandbox_reservations` taken *before* creation |
+| **The per-process rate limiter** — N pods meant N times the free-tier allowance | `turn_rate_events`: one row per accepted turn, counted over a rolling hour in Postgres. `VIBE_VR_FREE_TURNS_PER_HOUR=5` means five whether one process is running or twelve. The sandbox ceiling moved the same way, to `sandbox_reservations` taken *before* creation |
 | **The in-process reaper** — N pods meant N concurrent sweeps tearing the same project down twice | **Not retired: moved.** The sweeps left the API process entirely and became `apps/api/src/reaper.ts`, of which there is exactly one. That is what makes the row above it safe to scale — see below |
 
 **The reaper is still exactly one, and that pin is permanent.** It is what snapshots an idle
@@ -118,7 +118,7 @@ That also rules out anything that sleeps the *reaper*: a sleeping one is not rea
 sandboxes it should have cleaned up keep billing. Leave app sleeping off on every service.
 
 **What is deployed is still one API and one worker, and that is now a sizing choice.**
-`.railway/railway.ts` pins each at one replica. `NAP_EVENT_BUS` is already `postgres` on all three
+`.railway/railway.ts` pins each at one replica. `VIBE_VR_EVENT_BUS` is already `postgres` on all three
 services — it has to be, since the worker and the reaper refuse to boot without it — so scaling
 this deployment is now the one edit rather than the two it used to be. **Raising the replica count
 while the bus is still `in-process` is exactly the failure the old rule described**, and nothing
@@ -131,14 +131,14 @@ reconnects with `?afterSeq=` and gets exactly the gap.
 
 ### Turning it on
 
-`NAP_EVENT_BUS=postgres` swaps `InProcessEventBus` for `PostgresNotifyEventBus`. Two things to get
+`VIBE_VR_EVENT_BUS=postgres` swaps `InProcessEventBus` for `PostgresNotifyEventBus`. Two things to get
 right when you do:
 
 - **`LISTEN` cannot go through a connection pooler.** It is session state, and a transaction
   pooler hands the next statement to whichever backend is free — so the `LISTEN` lands on a
   connection that is returned to the pool, and the process hears nothing while every query it
   runs keeps working. Behind Neon's pooled endpoint (or PgBouncer in transaction mode), set
-  `NAP_LISTEN_DATABASE_URL` to the **direct** endpoint. Omit it otherwise. The reaper's advisory
+  `VIBE_VR_LISTEN_DATABASE_URL` to the **direct** endpoint. Omit it otherwise. The reaper's advisory
   lock is session state too and uses the same variable.
 - **`/readyz` gains a `listener` check and fails on it**, so a pod whose fanout has degraded to
   the 2s catch-up poll leaves the rotation while another pod's has not. `/livez` does not: the
@@ -153,7 +153,7 @@ waiting on the model and the sandbox, and an idle socket costs a file descriptor
 
 | | Signal | Bound |
 |---|---|---|
-| Worker | **Queue depth** — `count(*) from turn_requests where state in ('queued','leased')`, divided by one pod's worth of work. KEDA's `postgresql` scaler, because a plain HPA cannot read Postgres | `maxReplicaCount` is derived from `NAP_MAX_SANDBOXES_TOTAL`, so **no autoscaler decision can outrun the thing that bounds the bill**. At the base ConfigMap's ceiling that derivation puts min and max both at 2, so the scaler is correctly wired and has nothing to move until the ceiling is raised |
+| Worker | **Queue depth** — `count(*) from turn_requests where state in ('queued','leased')`, divided by one pod's worth of work. KEDA's `postgresql` scaler, because a plain HPA cannot read Postgres | `maxReplicaCount` is derived from `VIBE_VR_MAX_SANDBOXES_TOTAL`, so **no autoscaler decision can outrun the thing that bounds the bill**. At the base ConfigMap's ceiling that derivation puts min and max both at 2, so the scaler is correctly wired and has nothing to move until the ceiling is raised |
 | API | **Open sockets** — `nap_ws_connections`, through Prometheus and prometheus-adapter, with CPU as a secondary trigger | Nothing but the replica count; API pods spend no money |
 
 `infra/k8s/base/scaledobject-worker.yaml` and `hpa-api.yaml` are those two, they carry the actual
@@ -166,7 +166,7 @@ scaling in an API pod costs every socket on it a reconnect.
 
 A worker between `SIGTERM` and exit **drains**: it stops claiming, keeps renewing the leases it
 already holds so the janitor does not orphan progressing work, and waits out
-`NAP_DRAIN_TIMEOUT_SECONDS` for the turns in flight. Past that the rest are aborted through their
+`VIBE_VR_DRAIN_TIMEOUT_SECONDS` for the turns in flight. Past that the rest are aborted through their
 `AbortController` — a clean stop that commits nothing and closes each job *abandoned*, never a
 kill.
 
@@ -184,7 +184,7 @@ platform's default silently cancels the application's design: `SIGTERM` is follo
 turns in flight are then the janitor's problem rather than the drain's — they are recovered, but
 each one cost somebody a reopen, on every single deploy. `.railway/railway.ts` sets
 `drainingSeconds: 900` on the worker for the same 900-around-600 reason as the manifests, and
-`test/railway.test.ts` asserts that it exceeds `NAP_DRAIN_TIMEOUT_SECONDS`. Railway also exposes
+`test/railway.test.ts` asserts that it exceeds `VIBE_VR_DRAIN_TIMEOUT_SECONDS`. Railway also exposes
 this as the `RAILWAY_DEPLOYMENT_DRAINING_SECONDS` variable; the config file is where it is decided.
 
 An API pod is cheaper: stop accepting, close each socket with a normal close code, exit. Clients
@@ -218,15 +218,15 @@ carry is the credentials, which are `preserve()` there and must be set on the se
 
 ```
 DATABASE_URL              the Neon URL from step 1
-NAP_LISTEN_DATABASE_URL   the same database's direct endpoint — see the LISTEN caveat above
+VIBE_VR_LISTEN_DATABASE_URL   the same database's direct endpoint — see the LISTEN caveat above
 E2B_API_KEY
 OPENROUTER_API_KEY
 BETTER_AUTH_SECRET        openssl rand -base64 32 — a fresh one, not the dev value
-NAP_KEY_ENCRYPTION_SECRET openssl rand -base64 32 — must decode to exactly 32 bytes
+VIBE_VR_KEY_ENCRYPTION_SECRET openssl rand -base64 32 — must decode to exactly 32 bytes
 R2_ACCOUNT_ID R2_BUCKET R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY
 ```
 
-`NODE_ENV`, `NAP_API_URL`, `NAP_WEB_ORIGIN` and `NAP_EVENT_BUS` are in the config file rather than
+`NODE_ENV`, `VIBE_VR_API_URL`, `VIBE_VR_WEB_ORIGIN` and `VIBE_VR_EVENT_BUS` are in the config file rather than
 here, because none of them is a secret and all four are things a reader should be able to see
 without opening a dashboard.
 
@@ -241,14 +241,14 @@ the demo door still work.
 
 Two ways to get this wrong, both quiet:
 
-- **`NAP_WEB_ORIGIN` must match the browser's origin exactly** — no trailing slash, and
+- **`VIBE_VR_WEB_ORIGIN` must match the browser's origin exactly** — no trailing slash, and
   `https`. CORS compares it verbatim, and a mismatch reads as "the API is down".
 - **An empty variable is not an unset one.** `GITHUB_CLIENT_ID=` fails boot with
   *"expected string to have >=1 characters"*. Leave optional variables out entirely — including
-  `NAP_CHROME_PATH`, which the image sets and a blank platform variable would shadow.
+  `VIBE_VR_CHROME_PATH`, which the image sets and a blank platform variable would shadow.
 
 The two origins refer to each other, so the first deployment is circular: deploy the API,
-take its domain to Vercel, then come back and set `NAP_WEB_ORIGIN` and redeploy.
+take its domain to Vercel, then come back and set `VIBE_VR_WEB_ORIGIN` and redeploy.
 
 ### 3. The web app on Vercel
 
@@ -270,7 +270,7 @@ Two more things that only show up on a first deployment:
   keep being used after you delete it; clear it with the same PATCH, setting
   `buildCommand`, `installCommand` and `outputDirectory` to `null`.
 - **`.vercelignore` is not optional here.** The CLI uploads the whole workspace — which is
-  correct, since `apps/web` imports `@nap/shared` by source and would not build alone — and
+  correct, since `apps/web` imports `@vibe-vr/shared` by source and would not build alone — and
   without that file it also uploads a gigabyte of `node_modules` and any local `.next`,
   which fails on Vercel's 100MB limit.
 
@@ -289,7 +289,7 @@ NEXT_PUBLIC_API_WS_URL  wss://<the railway domain>
 
 ### 4. OAuth callbacks
 
-better-auth builds redirect URIs from `NAP_API_URL`, so each provider's app needs
+better-auth builds redirect URIs from `VIBE_VR_API_URL`, so each provider's app needs
 `https://<railway domain>/api/auth/callback/github` (and `/google`).
 
 ## The session cookie, and the browsers where sign-in will not work
@@ -319,34 +319,34 @@ comparison is trusted. DNS on both dashboards, update the four URL variables, re
 
 ## What a public URL costs
 
-The demo door is open by default (`NAP_ALLOW_DEMO=true`): a visitor with no account gets a
+The demo door is open by default (`VIBE_VR_ALLOW_DEMO=true`): a visitor with no account gets a
 throwaway identity and turns paid for by this deployment. The ceilings are the reason that
 is affordable, and they are worth setting deliberately rather than inheriting:
 
-- `NAP_FREE_TURNS_PER_HOUR=5`, `NAP_FREE_MAX_SANDBOXES_PER_USER=1` — per visitor.
-- `NAP_MAX_SANDBOXES_TOTAL=10` — **everybody together, across every replica**. It is a count
+- `VIBE_VR_FREE_TURNS_PER_HOUR=5`, `VIBE_VR_FREE_MAX_SANDBOXES_PER_USER=1` — per visitor.
+- `VIBE_VR_MAX_SANDBOXES_TOTAL=10` — **everybody together, across every replica**. It is a count
   of rows in Postgres, reserved under a lock at the moment a sandbox is created, so it means
   the same number whether one process is running or six. This is the only one that bounds
   total spend; the per-user limits multiply by the number of users. Ten concurrent E2B
   sandboxes is ten times the burn rate of one.
-- `NAP_REAP_IDLE_MINUTES=10` — how long an abandoned project keeps costing money. The same
+- `VIBE_VR_REAP_IDLE_MINUTES=10` — how long an abandoned project keeps costing money. The same
   tick reconciles the ceiling, so a slot leaked by a crash comes back within minutes rather
   than waiting for a deploy.
-- `NAP_WORKER_CONCURRENCY=25` — how many queued turns *one worker* runs at once. Not a
+- `VIBE_VR_WORKER_CONCURRENCY=25` — how many queued turns *one worker* runs at once. Not a
   ceiling on spend, which is what the three above are: turn it down when a pod is the
   bottleneck, not when the bill is. A turn that cannot be claimed waits in `turn_requests`
   rather than being refused, so this changes latency and never who gets in. The default is
   derived in `docs/scaling-baseline.md` and deliberately below what that run licenses.
-- `NAP_CAPTURE_CONCURRENCY=1` — how many browsers a worker may have open at once. Every
+- `VIBE_VR_CAPTURE_CONCURRENCY=1` — how many browsers a worker may have open at once. Every
   committed turn is photographed, so this is *not* the worker's concurrency: unbounded it
   would be 25 simultaneous Chromiums in one container, and an OOM kill costs every turn in
   flight rather than a thumbnail. Nobody waits on a card, so queueing costs nothing visible.
-- `NAP_DRAIN_TIMEOUT_SECONDS=600` — how long a worker being taken away waits for the turns it
+- `VIBE_VR_DRAIN_TIMEOUT_SECONDS=600` — how long a worker being taken away waits for the turns it
   is already running before aborting them. Keep it inside the platform's grace period.
-- `NAP_REAP_INTERVAL_SECONDS=60` — how often the reaper looks. The idle sweep and the janitor
+- `VIBE_VR_REAP_INTERVAL_SECONDS=60` — how often the reaper looks. The idle sweep and the janitor
   tick separately, on purpose: an idle project can wait a minute to be put away and a chat pane
   waiting on a turn that will never finish cannot.
-- `NAP_JANITOR_INTERVAL_SECONDS=15` — how often to look for turns whose worker died holding
+- `VIBE_VR_JANITOR_INTERVAL_SECONDS=15` — how often to look for turns whose worker died holding
   their lease. Not a ceiling on anything: it is how long somebody watching an interrupted turn
   waits to be told, on top of the lease and its grace window. The grace itself is a fence and is
   not configurable — shortening it is what would allow two writers on one session.
@@ -355,7 +355,7 @@ is affordable, and they are worth setting deliberately rather than inheriting:
 
 ```bash
 curl https://<railway domain>/health          # 200, every check "ok"
-NAP_API_URL=https://<railway domain> bun run acceptance --keep
+VIBE_VR_API_URL=https://<railway domain> bun run acceptance --keep
 ```
 
 `apps/api/scripts/acceptance.ts` drives the six steps of `docs/PLAN.md` §6 over the same
@@ -384,13 +384,13 @@ provider — is in `docs/GOTCHAS.md`, under API, auth and logging.
 
 The dashboard's cards are pictures of the apps themselves, taken at the end of the last turn
 that changed each one. That needs a browser in the image, so `Dockerfile` installs Debian's
-`chromium` and sets **`NAP_CHROME_PATH=/usr/bin/chromium` itself**. Do not set it as a Railway
+`chromium` and sets **`VIBE_VR_CHROME_PATH=/usr/bin/chromium` itself**. Do not set it as a Railway
 variable: the binary and the path to it are one fact, and a variable can drift from the image
 that has to satisfy it.
 
 It costs about a gigabyte of image — chromium is ~370MB and drags in mesa and libllvm for a GPU
 stack it never uses. Runtime memory only moves while a capture is in flight, which is a second or
-two per turn, and `NAP_CAPTURE_CONCURRENCY` is what stops a worker running twenty-five of them at
+two per turn, and `VIBE_VR_CAPTURE_CONCURRENCY` is what stops a worker running twenty-five of them at
 once — but it is the reason this was off at first.
 
 **A missing browser is not an error anywhere.** Capture returns a typed failure, the turn
@@ -415,7 +415,7 @@ Four things there are easy to get wrong, and every one of them fails without an 
   kind cluster a 10s timeout kills an idle socket in ten seconds. ingress-nginx's 60s default
   survives, but only on the back of that 30s ping: the margin is one missed ping, and the
   application's window is what should decide.
-- **The worker's grace period must comfortably exceed `NAP_DRAIN_TIMEOUT_SECONDS`** — 900 around
+- **The worker's grace period must comfortably exceed `VIBE_VR_DRAIN_TIMEOUT_SECONDS`** — 900 around
   600 — or a rolling restart is a kill, and every turn in flight costs a human a reopen.
 - **Migrations are a Job you run, never a pod's boot.** A dozen replicas racing one schema change
   is the reason nothing here migrates at startup.

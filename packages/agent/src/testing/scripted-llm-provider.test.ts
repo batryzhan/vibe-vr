@@ -1,4 +1,4 @@
-import type { LLMRequest } from "@nap/shared/ports/llm-provider";
+import type { LLMRequest } from "@vibe-vr/shared/ports/llm-provider";
 import { describe, expect, it } from "vitest";
 import { ScriptedLLMProvider } from "./scripted-llm-provider.ts";
 

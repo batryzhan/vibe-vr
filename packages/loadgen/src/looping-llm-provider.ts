@@ -24,7 +24,7 @@ import type {
   LLMTurn,
   LLMTurnResult,
   TokenUsage,
-} from "@nap/shared/ports/llm-provider";
+} from "@vibe-vr/shared/ports/llm-provider";
 
 /** One response, with every field optional so a script writes only what it means. */
 export type LoopingResponse = {

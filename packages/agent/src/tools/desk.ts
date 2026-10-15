@@ -2,7 +2,7 @@
  * The desk builder tool's arguments: a creation plan or a baseHash plus
  * changes, each with the model's rationale.
  *
- * Schemas live here, construction lives in `@nap/procedural/desk`, and the
+ * Schemas live here, construction lives in `@vibe-vr/procedural/desk`, and the
  * split is load-bearing: this package describes what the model may ask for
  * (and its JSON Schema derives from these definitions, so wording here is
  * what the model actually reads), while validated numbers, placement, and
@@ -15,7 +15,7 @@
  * both (or neither) matches nothing.
  */
 
-import { HashHexSchema } from "@nap/scene-spec/proposal";
+import { HashHexSchema } from "@vibe-vr/scene-spec/proposal";
 import { z } from "zod";
 
 const DeskMaterialSchema = z.strictObject({

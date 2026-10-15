@@ -24,10 +24,10 @@ import {
   CORPUS_FIXTURES,
   CORPUS_INTENT,
   corpusSurfaceScreenshots,
-} from "@nap/bench/product/corpus";
-import { PRODUCT_DIMENSIONS } from "@nap/bench/product/dimension";
-import { scoreProduct } from "@nap/bench/product/product-score";
-import { loadEnvFile } from "@nap/shared/env-file";
+} from "@vibe-vr/bench/product/corpus";
+import { PRODUCT_DIMENSIONS } from "@vibe-vr/bench/product/dimension";
+import { scoreProduct } from "@vibe-vr/bench/product/product-score";
+import { loadEnvFile } from "@vibe-vr/shared/env-file";
 import { CORPUS_ROOT, missingCorpusArtefacts } from "../src/corpus-fixtures.ts";
 import { OpenRouterVisionJudge } from "../src/vision-judge.ts";
 

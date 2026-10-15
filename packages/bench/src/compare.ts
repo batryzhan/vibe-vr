@@ -37,8 +37,8 @@
  * table rather than a diff — and is explicitly out of scope for v1.
  */
 
-import type { CheckOutcome } from "@nap/shared/check-outcome";
-import type { Result } from "@nap/shared/result";
+import type { CheckOutcome } from "@vibe-vr/shared/check-outcome";
+import type { Result } from "@vibe-vr/shared/result";
 import { CATEGORIES, type Category } from "./category.ts";
 import type { ErrorKind } from "./error-kind.ts";
 import type { RunMetrics } from "./metrics.ts";

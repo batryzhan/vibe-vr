@@ -1,10 +1,10 @@
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { FAKE_OWNER } from "@nap/db/testing/in-memory-project-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { FileContentSchema, FileListingSchema } from "@nap/shared/files-protocol";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { FAKE_OWNER } from "@vibe-vr/db/testing/in-memory-project-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { FileContentSchema, FileListingSchema } from "@vibe-vr/shared/files-protocol";
 import { beforeEach, describe, expect, it } from "vitest";
 import { createApp } from "../app.ts";
 import { createLogger } from "../logger.ts";

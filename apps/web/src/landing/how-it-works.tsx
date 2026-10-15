@@ -44,7 +44,7 @@ export function HowItWorks() {
           sub="A conversational construction layer: the model proposes, trusted code checks, the scene only moves on valid revisions."
         />
 
-        <div ref={ref} {...revealProps(state)} className="nap-reveal mt-12">
+        <div ref={ref} {...revealProps(state)} className="vibe-vr-reveal mt-12">
           <ol className="grid gap-8 sm:grid-cols-3 sm:gap-6">
             {STEPS.map((step, index) => (
               <li key={step.title} className="flex gap-4">

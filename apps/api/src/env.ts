@@ -20,22 +20,26 @@ import { z } from "zod";
 const BaseSchema = z.object({
   DATABASE_URL: z.string().min(1),
   /**
-   * The server creates sandboxes itself now that turns run here, so this is required rather
-   * than listed as coming later: a process without it fails on the first message someone
-   * sends, which is a much worse place to find out than at startup.
+   * Which provider serves model requests. Dahl is the default for the current agent workflow;
+   * the other entries remain available for deployments that explicitly select them.
+   * Credentials are checked conditionally below so unrelated provider keys are never required.
    */
-  E2B_API_KEY: z.string().min(1),
-  /**
-   * Which account pays for the model, and therefore which credentials are required — hence the
-   * conditional check below rather than a flat list. Demanding an Anthropic key from someone
-   * billing through OpenRouter is how a boot check teaches people to paste dummy values.
-   *
-   * **OpenRouter is the default and the route this project actually uses.** The other two are
-   * kept because they are the same Messages API underneath and cost nothing to keep working,
-   * but nothing here is configured for them.
-   */
-  NAP_PLATFORM: z.enum(["openrouter", "anthropic", "bedrock"]).default("openrouter"),
-  /** Billed to an OpenRouter account, whatever the model. Keys look like `sk-or-…`. */
+  VIBE_VR_PLATFORM: z.enum(["alem", "dahl", "openrouter", "anthropic", "bedrock"]).default("alem"),
+  ALEM_API_KEY: z.string().min(1).optional(),
+  ALEM_BASE_URL: z.url().default("https://llm.alem.ai/v1"),
+  ALEM_MODEL: z.string().min(1).default("qwen3-8"),
+  DAHL_API_KEY: z.string().min(1).optional(),
+  DAHL_BASE_URL: z.url().default("https://inference.dahl.global/v1"),
+  DAHL_PRIMARY_MODEL: z.string().min(1).default("zai-org/GLM-5.3-Flash"),
+  DAHL_SPATIAL_MODEL: z.string().min(1).default("deepseek-ai/DeepSeek-V4-Flash-0731"),
+  DAHL_COMPOSITION_MODEL: z.string().min(1).default("MiniMaxAI/MiniMax-M2.7"),
+  DAHL_REQUEST_TIMEOUT_MS: z.coerce.number().int().positive().max(180_000).default(120_000),
+  DAHL_MAX_ATTEMPTS: z.coerce.number().int().min(1).max(5).default(3),
+  DAHL_MAX_CONCURRENCY: z.coerce.number().int().min(1).max(32).default(4),
+  DAHL_MAX_PARALLEL_AGENTS: z.coerce.number().int().min(1).max(2).default(2),
+  DAHL_MAX_ORCHESTRATION_ROUNDS: z.coerce.number().int().min(0).max(1).default(1),
+  DAHL_MAX_COMPLETION_TOKENS: z.coerce.number().int().positive().max(32_000).default(8_000),
+  /** Optional credentials for deployments using OpenRouter instead of the default Dahl route. */
   OPENROUTER_API_KEY: z.string().min(1).optional(),
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   /** Bedrock takes an API key as a bearer token, and throws at construction with no region. */
@@ -51,9 +55,9 @@ const BaseSchema = z.object({
    * credentials. It is a different port from this API in development, so it has to be named —
    * and it cannot be `*`, because a browser will not send a cookie to a wildcard origin.
    */
-  NAP_WEB_ORIGIN: z.url().default("http://localhost:3000"),
+  VIBE_VR_WEB_ORIGIN: z.url().default("http://localhost:3000"),
   /** Where this API is reached. OAuth redirect URIs are built from it, so it must be right. */
-  NAP_API_URL: z.url().default("http://localhost:3001"),
+  VIBE_VR_API_URL: z.url().default("http://localhost:3001"),
   /**
    * A GitHub OAuth app, if there is one. Optional but paired — see the check below. Without
    * them the GitHub button simply is not offered and email sign-in works as usual.
@@ -66,12 +70,11 @@ const BaseSchema = z.object({
   /**
    * Whether somebody with no account at all may look around.
    *
-   * On by default, because a builder nobody can try is a screenshot. A demo visitor gets a
-   * throwaway identity, their own projects, and the free models under the lower ceilings
-   * below — so the door being open costs this deployment a bounded amount rather than an
-   * unbounded one. Turning it off is for a deployment that wants a private instance.
+   * On by default, because a builder nobody can try is a screenshot. Demo visitors get a
+   * throwaway identity and their own projects. Server-funded model calls are bounded by the
+   * lower rate and sandbox ceilings below. Turning this off makes the deployment private.
    */
-  NAP_ALLOW_DEMO: z
+  VIBE_VR_ALLOW_DEMO: z
     .enum(["true", "false"])
     .default("true")
     .transform((value) => value === "true"),
@@ -85,7 +88,7 @@ const BaseSchema = z.object({
    *
    * `openssl rand -base64 32`.
    */
-  NAP_KEY_ENCRYPTION_SECRET: z
+  VIBE_VR_KEY_ENCRYPTION_SECRET: z
     .string()
     .min(1)
     .refine((value) => Buffer.from(value, "base64").length === 32, {
@@ -105,16 +108,16 @@ const BaseSchema = z.object({
    * *and* raising the replica count; doing only the second is the failure `docs/DEPLOY.md` used to
    * forbid outright. The Kubernetes manifests set it. See `docs/adr/0010`.
    */
-  NAP_EVENT_BUS: z.enum(["in-process", "postgres"]).default("in-process"),
+  VIBE_VR_EVENT_BUS: z.enum(["in-process", "postgres"]).default("in-process"),
   /**
    * Where the connections that need *session* mode go, when they cannot go where everything else
    * does — which is any deployment behind a transaction pooler. There are two: the `LISTEN` socket
    * every API pod holds, and the reaper's advisory lock. `createListenerConnection` and
-   * `createLockConnection` in `@nap/db` each say why that is not optional for them.
+   * `createLockConnection` in `@vibe-vr/db` each say why that is not optional for them.
    *
    * Absent means `DATABASE_URL`, which is right for a local Postgres and anything unpooled.
    */
-  NAP_LISTEN_DATABASE_URL: z.string().min(1).optional(),
+  VIBE_VR_LISTEN_DATABASE_URL: z.string().min(1).optional(),
 
   /** Environments are all strings; the rest of the app should not have to remember that. */
   PORT: z.coerce.number().int().positive().default(3001),
@@ -124,22 +127,14 @@ const BaseSchema = z.object({
   /**
    * What a turn is allowed to spend, and on what.
    *
-   * Every message typed into the chat box is a real model call and a real sandbox. The default
-   * is GPT-5.6 Luna — the model this project runs everywhere, including for demo visitors.
-   * Raising the ceiling for something people will watch is `NAP_MODEL` and `NAP_EFFORT` on
-   * that run, which is one line rather than a code change.
-   *
-   * It supports tool calls and reasoning, and is a *fully namespaced* OpenRouter id — a bare
-   * name is assumed to be Anthropic's, which is how this codebase has always spelled a model,
-   * so a namespace is what keeps the default pointed where it says.
+   * Default model id used for turns.
    */
-  NAP_MODEL: z.string().min(1).default("openai/gpt-5.6-luna"),
+  VIBE_VR_MODEL: z.string().min(1).default("qwen3-8"),
   /**
-   * `medium` because it was measured, not guessed — fifteen turns over five prompts at three
-   * levels found it cheapest, fastest, and no worse in what the agent produced. It matches
-   * `DEFAULT_MODEL_CONFIG`, which used to disagree with it.
+   * Effort level passed to providers that support it. Dahl models use their configured
+   * orchestration settings; this field remains for the other provider integrations.
    */
-  NAP_EFFORT: z.enum(["low", "medium", "high", "xhigh", "max"]).default("medium"),
+  VIBE_VR_EFFORT: z.enum(["low", "medium", "high", "xhigh", "max"]).default("medium"),
 
   /**
    * Which models a request may ask for, as a comma-separated list.
@@ -149,29 +144,11 @@ const BaseSchema = z.object({
    * allowlist is the whole defence: anything not named here is refused before a sandbox is
    * touched or a single token is spent.
    *
-   * The default includes the demo default (Luna) up front, free models for visitors who
-   * prefer them, and paid choices for people using their own keys.
-   *
-   * **Every id here was read from OpenRouter's live catalogue and every one supports tool
-   * calling.** That second filter is not a nicety — this agent *is* a tool loop, so a model
-   * without tools cannot take a single step and every turn on it fails identically.
+   * The default lists the Alem model used by the local development provider.
    */
-  NAP_ALLOWED_MODELS: z
+  VIBE_VR_ALLOWED_MODELS: z
     .string()
-    .default(
-      [
-        // The default for everyone — demo visitors and keyed users alike.
-        "openai/gpt-5.6-luna",
-        "openai/gpt-5.6-terra",
-        "openai/gpt-5.6-sol",
-        // Free alternatives that cost the deployment nothing.
-        "poolside/laguna-s-2.1:free",
-        "nvidia/nemotron-3-ultra-550b-a55b:free",
-        // Paid choices for people who bring their own keys.
-        "anthropic/claude-sonnet-5",
-        "anthropic/claude-opus-5",
-      ].join(","),
-    )
+    .default("qwen3-8")
     .transform((list) =>
       list
         .split(",")
@@ -180,8 +157,8 @@ const BaseSchema = z.object({
     )
     .refine((models) => models.length > 0, { message: "must name at least one model" }),
   /** Model calls in one turn, and the ceiling on the context assembled for each of them. */
-  NAP_MAX_STEPS: z.coerce.number().int().positive().default(24),
-  NAP_CONTEXT_BUDGET_TOKENS: z.coerce.number().int().positive().default(80_000),
+  VIBE_VR_MAX_STEPS: z.coerce.number().int().positive().default(24),
+  VIBE_VR_CONTEXT_BUDGET_TOKENS: z.coerce.number().int().positive().default(80_000),
 
   /**
    * What one person may spend.
@@ -192,28 +169,25 @@ const BaseSchema = z.object({
    * ten messages, so fifteen an hour is room to work rather than a wall, and two running
    * projects is more than anybody uses at once.
    *
-   * `NAP_MAX_SANDBOXES_TOTAL` is the **cluster-wide** ceiling — it is counted in Postgres and
+   * `VIBE_VR_MAX_SANDBOXES_TOTAL` is the **cluster-wide** ceiling — it is counted in Postgres and
    * reserved under a lock there, so it means the same number however many processes are running —
    * and it is the only one of the three that bounds what *everybody together* can spend. Per-user
    * limits alone multiply by the number of users, which is the arithmetic that matters the first
    * time this is shown to strangers.
    */
-  NAP_TURNS_PER_HOUR: z.coerce.number().int().positive().default(15),
-  NAP_MAX_SANDBOXES_PER_USER: z.coerce.number().int().positive().default(2),
-  NAP_MAX_SANDBOXES_TOTAL: z.coerce.number().int().positive().default(10),
+  VIBE_VR_TURNS_PER_HOUR: z.coerce.number().int().positive().default(15),
+  VIBE_VR_MAX_SANDBOXES_PER_USER: z.coerce.number().int().positive().default(2),
+  VIBE_VR_MAX_SANDBOXES_TOTAL: z.coerce.number().int().positive().default(10),
 
   /**
    * What somebody spending *this deployment's* money may have.
    *
-   * The three above apply to a person paying for their own turns, where the ceiling exists to
-   * stop a runaway loop. These apply to everyone else — the demo visitor and the signed-in
-   * person who skipped the key step — where the ceiling is the whole reason the door can be
-   * open at all. Tighter on purpose: enough to build something and see it work, not enough to
-   * be worth abusing. A free model costs no tokens, but every turn is still a sandbox billed
-   * by the second, which is what these actually limit.
+   * The three above apply to a person paying for their own turns. These apply to everyone else
+   * — demo visitors and signed-in people without their own key — and bound server-funded model
+   * calls as well as sandbox use.
    */
-  NAP_FREE_TURNS_PER_HOUR: z.coerce.number().int().positive().default(5),
-  NAP_FREE_MAX_SANDBOXES_PER_USER: z.coerce.number().int().positive().default(1),
+  VIBE_VR_FREE_TURNS_PER_HOUR: z.coerce.number().int().positive().default(5),
+  VIBE_VR_FREE_MAX_SANDBOXES_PER_USER: z.coerce.number().int().positive().default(1),
   /**
    * What a turn runs on when the caller has no key of their own.
    *
@@ -221,7 +195,7 @@ const BaseSchema = z.object({
    * The deployment pays for these turns, bounded by the free-tier rate and sandbox ceilings
    * above.
    */
-  NAP_FREE_MODEL: z.string().min(1).default("openai/gpt-5.6-luna"),
+  VIBE_VR_FREE_MODEL: z.string().min(1).default("qwen3-8"),
 
   /**
    * Where a project's bytes live while no sandbox is holding them.
@@ -232,8 +206,8 @@ const BaseSchema = z.object({
    * machine instead — for trying the app on a laptop without opening a
    * Cloudflare account. Anything else fails closed at the enum above.
    */
-  NAP_OBJECT_STORE: z.enum(["r2", "local"]).default("r2"),
-  NAP_OBJECT_STORE_DIR: z.string().min(1).default(".nap-objects"),
+  VIBE_VR_OBJECT_STORE: z.enum(["r2", "local"]).default("r2"),
+  VIBE_VR_OBJECT_STORE_DIR: z.string().min(1).default(".nap-objects"),
   R2_ACCOUNT_ID: z.string().min(1).optional(),
   R2_BUCKET: z.string().min(1).optional(),
   R2_ACCESS_KEY_ID: z.string().min(1).optional(),
@@ -246,9 +220,9 @@ const BaseSchema = z.object({
    * decides what happens to an idle project: the reaper snapshots it before destroying it, and
    * the provider's own timer simply deletes it. There is a boot check below for that.
    */
-  NAP_REAP_IDLE_MINUTES: z.coerce.number().int().positive().default(10),
-  NAP_REAP_INTERVAL_SECONDS: z.coerce.number().int().positive().default(60),
-  NAP_SANDBOX_TTL_MINUTES: z.coerce.number().int().positive().default(30),
+  VIBE_VR_REAP_IDLE_MINUTES: z.coerce.number().int().positive().default(10),
+  VIBE_VR_REAP_INTERVAL_SECONDS: z.coerce.number().int().positive().default(60),
+  VIBE_VR_SANDBOX_TTL_MINUTES: z.coerce.number().int().positive().default(30),
 
   /**
    * How often to look for turns whose worker died holding their lease.
@@ -257,16 +231,16 @@ const BaseSchema = z.object({
    * clocks: a project can wait a minute to be put away, and a chat pane waiting on a turn that
    * will never finish cannot. A worker's death is visible within the lease, its grace window and
    * one of these — so this is the only part of that sum a deployment can shorten. It never moves
-   * the grace itself, which is a fence rather than a delay; see `@nap/shared/lease-windows`.
+   * the grace itself, which is a fence rather than a delay; see `@vibe-vr/shared/lease-windows`.
    */
-  NAP_JANITOR_INTERVAL_SECONDS: z.coerce.number().int().positive().default(15),
+  VIBE_VR_JANITOR_INTERVAL_SECONDS: z.coerce.number().int().positive().default(15),
 
   /**
    * How many queued turns this process runs at once.
    *
    * A property of the *worker*, not a ceiling on the deployment: what a person may spend is the
    * rate limiters' business and how many sandboxes may exist at once is
-   * `NAP_MAX_SANDBOXES_TOTAL`'s. This is how much of the queue one process takes responsibility
+   * `VIBE_VR_MAX_SANDBOXES_TOTAL`'s. This is how much of the queue one process takes responsibility
    * for at a time, and the number to turn down when a pod is the bottleneck rather than the bill.
    * A turn that cannot be claimed waits in `turn_requests` rather than being refused, so this
    * changes latency and never who gets in.
@@ -274,10 +248,10 @@ const BaseSchema = z.object({
    * The default is measured rather than guessed: `docs/scaling-baseline.md` derives 25 per worker
    * across four workers from the ramp's own arrival rate and mean turn, and deliberately sits
    * *below* what that run licenses — its turns cost no CPU and no vendor quota, so a real worker
-   * is bounded by E2B sandboxes and model rate limits long before it is bounded by anything that
+   * is bounded by local Docker sandboxes and model rate limits long before it is bounded by anything that
    * run measured. Raising it wants a real-vendor run behind it.
    */
-  NAP_WORKER_CONCURRENCY: z.coerce.number().int().positive().default(25),
+  VIBE_VR_WORKER_CONCURRENCY: z.coerce.number().int().positive().default(25),
 
   /**
    * How long a draining worker waits for the turns it is already running before aborting them.
@@ -286,7 +260,7 @@ const BaseSchema = z.object({
    * `docs/scaling-design.md` §15. A drain that outlasts it is not a graceful shutdown but a kill,
    * which leaves every lease to expire and every job open for somebody to continue by hand.
    */
-  NAP_DRAIN_TIMEOUT_SECONDS: z.coerce.number().int().positive().default(600),
+  VIBE_VR_DRAIN_TIMEOUT_SECONDS: z.coerce.number().int().positive().default(600),
 
   /**
    * Where a worker's claim loop leaves its mark, for a liveness probe to `stat`.
@@ -299,7 +273,7 @@ const BaseSchema = z.object({
    * See `worker-heartbeat.ts` for why a worker needs one at all — it serves nothing, so "is this
    * pod alive?" cannot be an HTTP request.
    */
-  NAP_WORKER_HEARTBEAT_FILE: z.string().min(1).optional(),
+  VIBE_VR_WORKER_HEARTBEAT_FILE: z.string().min(1).optional(),
 
   /**
    * How many thumbnails one worker photographs at once.
@@ -310,7 +284,7 @@ const BaseSchema = z.object({
    * a card that appears a few seconds later while the alternative is an OOMKill that costs every
    * turn in flight. One until measurement says more is safe — `docs/scaling-design.md` §17 (B-6).
    */
-  NAP_CAPTURE_CONCURRENCY: z.coerce.number().int().positive().default(1),
+  VIBE_VR_CAPTURE_CONCURRENCY: z.coerce.number().int().positive().default(1),
 
   /**
    * A Chrome or Chromium binary to photograph finished turns with, for the dashboard's cards.
@@ -320,15 +294,14 @@ const BaseSchema = z.object({
    * Nothing goes looking for a browser — a capture that silently found *some* binary is worse
    * than one that says it has none.
    */
-  NAP_CHROME_PATH: z.string().min(1).optional(),
+  VIBE_VR_CHROME_PATH: z.string().min(1).optional(),
 
   // ── Multi-model pipeline configuration ──────────────────────────────────────
   //
-  // The turn pipeline routes requests through three specialised models rather than
-  // one generalist. These configure which OpenRouter models handle each role, and
-  // the retry/rebase budgets that bound how many times a failing step is re-attempted.
+  // Legacy staged scene-evaluation pipeline settings. The default Dahl agent workflow uses
+  // the DAHL_* settings above; these values still configure the separate staged pipeline.
 
-  /** Base URL for the OpenRouter API. Only overridden for testing or proxies. */
+  /** Base URL for the OpenRouter provider integration. */
   OPENROUTER_BASE_URL: z.url().default("https://openrouter.ai/api/v1"),
 
   /**
@@ -384,18 +357,20 @@ const BaseSchema = z.object({
  */
 export const EnvSchema = BaseSchema.superRefine((env, ctx) => {
   const required =
-    env.NAP_PLATFORM === "openrouter"
-      ? (["OPENROUTER_API_KEY"] as const)
-      : env.NAP_PLATFORM === "bedrock"
+    env.VIBE_VR_PLATFORM === "alem"
+      ? (["ALEM_API_KEY"] as const)
+      : env.VIBE_VR_PLATFORM === "bedrock"
         ? (["AWS_BEARER_TOKEN_BEDROCK", "AWS_REGION"] as const)
-        : (["ANTHROPIC_API_KEY"] as const);
+        : env.VIBE_VR_PLATFORM === "anthropic"
+          ? (["ANTHROPIC_API_KEY"] as const)
+          : ([] as const);
 
   for (const key of required) {
     if (env[key] !== undefined) continue;
     ctx.addIssue({
       code: "custom",
       path: [key],
-      message: `is required when NAP_PLATFORM is ${env.NAP_PLATFORM}`,
+      message: `is required when VIBE_VR_PLATFORM is ${env.VIBE_VR_PLATFORM}`,
     });
   }
 
@@ -403,7 +378,7 @@ export const EnvSchema = BaseSchema.superRefine((env, ctx) => {
   // `local` needs none of them, which is the whole point of the escape hatch:
   // demanding credentials nothing reads teaches people to paste dummy values,
   // which is worse than no check.
-  if (env.NAP_OBJECT_STORE === "r2") {
+  if (env.VIBE_VR_OBJECT_STORE === "r2") {
     for (const key of [
       "R2_ACCOUNT_ID",
       "R2_BUCKET",
@@ -414,7 +389,7 @@ export const EnvSchema = BaseSchema.superRefine((env, ctx) => {
       ctx.addIssue({
         code: "custom",
         path: [key],
-        message: "is required when NAP_OBJECT_STORE is r2 (the default)",
+        message: "is required when VIBE_VR_OBJECT_STORE is r2 (the default)",
       });
     }
   }
@@ -453,21 +428,21 @@ export const EnvSchema = BaseSchema.superRefine((env, ctx) => {
 
   // The default has to be reachable, or every turn that names no model is refused by the
   // allowlist that was meant to protect it — a server that boots fine and answers nothing.
-  if (!env.NAP_ALLOWED_MODELS.includes(env.NAP_MODEL)) {
+  if (!env.VIBE_VR_ALLOWED_MODELS.includes(env.VIBE_VR_MODEL)) {
     ctx.addIssue({
       code: "custom",
-      path: ["NAP_ALLOWED_MODELS"],
-      message: `must include NAP_MODEL (${env.NAP_MODEL})`,
+      path: ["VIBE_VR_ALLOWED_MODELS"],
+      message: `must include VIBE_VR_MODEL (${env.VIBE_VR_MODEL})`,
     });
   }
 
   // The free-tier model has to be reachable too, or every turn by somebody without a key is
   // refused by the allowlist — which is everybody on their first visit.
-  if (!env.NAP_ALLOWED_MODELS.includes(env.NAP_FREE_MODEL)) {
+  if (!env.VIBE_VR_ALLOWED_MODELS.includes(env.VIBE_VR_FREE_MODEL)) {
     ctx.addIssue({
       code: "custom",
-      path: ["NAP_ALLOWED_MODELS"],
-      message: `must include NAP_FREE_MODEL (${env.NAP_FREE_MODEL})`,
+      path: ["VIBE_VR_ALLOWED_MODELS"],
+      message: `must include VIBE_VR_FREE_MODEL (${env.VIBE_VR_FREE_MODEL})`,
     });
   }
 
@@ -479,23 +454,26 @@ export const EnvSchema = BaseSchema.superRefine((env, ctx) => {
   // A per-user cap above the machine-wide one is unreachable: the global check would refuse
   // first, and the message would talk about the server being busy when the projects filling it
   // are the asker's own. Loud here rather than confusing at request time.
-  for (const key of ["NAP_MAX_SANDBOXES_PER_USER", "NAP_FREE_MAX_SANDBOXES_PER_USER"] as const) {
-    if (env[key] <= env.NAP_MAX_SANDBOXES_TOTAL) continue;
+  for (const key of [
+    "VIBE_VR_MAX_SANDBOXES_PER_USER",
+    "VIBE_VR_FREE_MAX_SANDBOXES_PER_USER",
+  ] as const) {
+    if (env[key] <= env.VIBE_VR_MAX_SANDBOXES_TOTAL) continue;
     ctx.addIssue({
       code: "custom",
       path: [key],
-      message: `must not exceed NAP_MAX_SANDBOXES_TOTAL (${env.NAP_MAX_SANDBOXES_TOTAL}), or the per-user limit can never be reached`,
+      message: `must not exceed VIBE_VR_MAX_SANDBOXES_TOTAL (${env.VIBE_VR_MAX_SANDBOXES_TOTAL}), or the per-user limit can never be reached`,
     });
   }
 
   // A configuration that reaps later than the provider kills is worse than no reaper at all:
   // every idle project would be deleted without a snapshot, silently, and the logs would show
   // a reaper finding nothing to do.
-  if (env.NAP_REAP_IDLE_MINUTES >= env.NAP_SANDBOX_TTL_MINUTES) {
+  if (env.VIBE_VR_REAP_IDLE_MINUTES >= env.VIBE_VR_SANDBOX_TTL_MINUTES) {
     ctx.addIssue({
       code: "custom",
-      path: ["NAP_REAP_IDLE_MINUTES"],
-      message: `must be less than NAP_SANDBOX_TTL_MINUTES (${env.NAP_SANDBOX_TTL_MINUTES}), or sandboxes expire before they are snapshotted`,
+      path: ["VIBE_VR_REAP_IDLE_MINUTES"],
+      message: `must be less than VIBE_VR_SANDBOX_TTL_MINUTES (${env.VIBE_VR_SANDBOX_TTL_MINUTES}), or sandboxes expire before they are snapshotted`,
     });
   }
 });
@@ -514,7 +492,14 @@ export class EnvValidationError extends Error {
 }
 
 export function parseEnv(source: Record<string, string | undefined>): Env {
-  const result = EnvSchema.safeParse(source);
+  const normalized = { ...source };
+  for (const [key, value] of Object.entries(source)) {
+    if (!key.startsWith("NAP_")) continue;
+    const renamedKey = `VIBE_VR_${key.slice("NAP_".length)}`;
+    if (normalized[renamedKey] === undefined) normalized[renamedKey] = value;
+  }
+
+  const result = EnvSchema.safeParse(normalized);
   if (result.success) return result.data;
 
   // One line per problem, each naming its key, so a single run tells you everything to fix.

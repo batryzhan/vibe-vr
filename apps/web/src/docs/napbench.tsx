@@ -43,13 +43,13 @@ export function NapBench() {
   return (
     <>
       <Lede>
-        NapBench is the harness that measures Nap&rsquo;s agent: a <Term>task</Term> is a
+        The benchmark harness measures the Vibe-VR agent: a <Term>task</Term> is a
         reproducible unit of work put to it, a <Term>run</Term> is one execution of one task against
         one configuration, and a run ends as a report with a score and a trajectory.
       </Lede>
 
       <P>
-        Tasks are data, validated by a schema as they load, and independent of how Nap is built — so
+        Tasks are data, validated by a schema as they load, and independent of how Vibe-VR is built — so
         the same task can be pointed at a different model, prompt or context engine without being
         edited. A custom check kind was specified and deliberately not built: a check that was code
         is one no schema can validate and no sandbox can be handed.
@@ -136,7 +136,7 @@ export function NapBench() {
       <P>
         That split is what keeps the benchmark honest. An agent that refused and a provider outage
         both produce no score, and only the first is evidence about the agent. What is measured is
-        the model, with Nap held fixed, so the question is not whose code was at fault but whether
+        the model, with Vibe-VR held fixed, so the question is not whose code was at fault but whether
         the failure says anything about a model.
       </P>
 

@@ -10,7 +10,7 @@
  * the head.
  */
 
-import type { SceneRevision } from "@nap/scene-spec/revisions";
+import type { SceneRevision } from "@vibe-vr/scene-spec/revisions";
 
 export function History({
   history,

@@ -22,7 +22,7 @@
  * against a fake socket with no network anywhere near it.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { useMemo } from "react";
 import { jobView, type SessionJobView } from "../chat/job-summary.ts";
 import { changedPaths } from "../files/changed-paths.ts";

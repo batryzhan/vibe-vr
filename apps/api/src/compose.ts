@@ -3,7 +3,7 @@
  *
  * `createApp` has always taken its dependencies injected; the layer underneath it — the runtime,
  * the context engine, the agent, the limiters, the reaper — was assembled by `index.ts` as
- * top-level side effects, which meant it could be built exactly one way: against E2B, R2,
+ * top-level side effects, which meant it could be built exactly one way: against local Docker, R2,
  * OpenRouter and Postgres, at boot, in that process. Nothing else could build the same system
  * with different parts, so nothing else could measure it, and a second entrypoint would have had
  * to grow its own copy of the wiring and then drift from this one.
@@ -23,33 +23,33 @@
  * the copies would have drifted the first time somebody changed one.
  */
 
-import { NapAgentService } from "@nap/agent/agent-service";
-import { BoundedPageCapture } from "@nap/capture/bounded-page-capture";
-import { NapContextEngine } from "@nap/context/context-engine";
-import { NoopMemoryProvider } from "@nap/context/noop-memory-provider";
-import { sweepOrphanedRequests } from "@nap/runtime/janitor";
-import { sweepIdleProjects } from "@nap/runtime/reaper";
-import { SingleAgentRuntime } from "@nap/runtime/single-agent-runtime";
-import { startSweeping } from "@nap/runtime/sweep-schedule";
-import { startTurnWorker, type TurnWorker } from "@nap/runtime/turn-worker";
-import type { Logger } from "@nap/shared/logging";
-import type { CapacityReconciler } from "@nap/shared/ports/capacity-reconciler";
-import type { EventBus } from "@nap/shared/ports/event-bus";
-import type { EventStore } from "@nap/shared/ports/event-store";
-import type { LLMProvider } from "@nap/shared/ports/llm-provider";
-import type { ObjectStore } from "@nap/shared/ports/object-store";
-import type { PageCapture } from "@nap/shared/ports/page-capture";
-import type { ProjectSandboxStore } from "@nap/shared/ports/project-sandbox-store";
-import type { ProjectStore } from "@nap/shared/ports/project-store";
-import type { SandboxCapacity } from "@nap/shared/ports/sandbox-capacity";
-import type { SandboxInventory } from "@nap/shared/ports/sandbox-inventory";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SessionStore } from "@nap/shared/ports/session-store";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
-import type { SweepLock } from "@nap/shared/ports/sweep-lock";
-import type { TurnQueue } from "@nap/shared/ports/turn-queue";
-import type { TurnRateLimiter } from "@nap/shared/ports/turn-rate-limit";
-import type { UserKeyStore } from "@nap/shared/ports/user-key-store";
+import { NapAgentService } from "@vibe-vr/agent/agent-service";
+import { BoundedPageCapture } from "@vibe-vr/capture/bounded-page-capture";
+import { NapContextEngine } from "@vibe-vr/context/context-engine";
+import { NoopMemoryProvider } from "@vibe-vr/context/noop-memory-provider";
+import { sweepOrphanedRequests } from "@vibe-vr/runtime/janitor";
+import { sweepIdleProjects } from "@vibe-vr/runtime/reaper";
+import { SingleAgentRuntime } from "@vibe-vr/runtime/single-agent-runtime";
+import { startSweeping } from "@vibe-vr/runtime/sweep-schedule";
+import { startTurnWorker, type TurnWorker } from "@vibe-vr/runtime/turn-worker";
+import type { Logger } from "@vibe-vr/shared/logging";
+import type { CapacityReconciler } from "@vibe-vr/shared/ports/capacity-reconciler";
+import type { EventBus } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore } from "@vibe-vr/shared/ports/event-store";
+import type { LLMProvider } from "@vibe-vr/shared/ports/llm-provider";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
+import type { PageCapture } from "@vibe-vr/shared/ports/page-capture";
+import type { ProjectSandboxStore } from "@vibe-vr/shared/ports/project-sandbox-store";
+import type { ProjectStore } from "@vibe-vr/shared/ports/project-store";
+import type { SandboxCapacity } from "@vibe-vr/shared/ports/sandbox-capacity";
+import type { SandboxInventory } from "@vibe-vr/shared/ports/sandbox-inventory";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SessionStore } from "@vibe-vr/shared/ports/session-store";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
+import type { SweepLock } from "@vibe-vr/shared/ports/sweep-lock";
+import type { TurnQueue } from "@vibe-vr/shared/ports/turn-queue";
+import type { TurnRateLimiter } from "@vibe-vr/shared/ports/turn-rate-limit";
+import type { UserKeyStore } from "@vibe-vr/shared/ports/user-key-store";
 import type { Hono } from "hono";
 import type { VerifyKey } from "./account/routes.ts";
 import { type EncryptionKey, open } from "./account/secret-box.ts";
@@ -71,23 +71,26 @@ import { TurnRegistry } from "./turns/registry.ts";
  */
 export type NapConfig = Pick<
   Env,
-  | "NAP_WEB_ORIGIN"
-  | "NAP_MODEL"
-  | "NAP_FREE_MODEL"
-  | "NAP_ALLOWED_MODELS"
-  | "NAP_MAX_STEPS"
-  | "NAP_CONTEXT_BUDGET_TOKENS"
-  | "NAP_MAX_SANDBOXES_PER_USER"
-  | "NAP_FREE_MAX_SANDBOXES_PER_USER"
-  | "NAP_MAX_SANDBOXES_TOTAL"
-  | "NAP_SANDBOX_TTL_MINUTES"
-  | "NAP_WORKER_CONCURRENCY"
-  | "NAP_DRAIN_TIMEOUT_SECONDS"
-  | "NAP_CAPTURE_CONCURRENCY"
-  | "NAP_REAP_IDLE_MINUTES"
-  | "NAP_REAP_INTERVAL_SECONDS"
-  | "NAP_JANITOR_INTERVAL_SECONDS"
->;
+  | "VIBE_VR_WEB_ORIGIN"
+  | "VIBE_VR_MODEL"
+  | "VIBE_VR_FREE_MODEL"
+  | "VIBE_VR_ALLOWED_MODELS"
+  | "VIBE_VR_MAX_STEPS"
+  | "VIBE_VR_CONTEXT_BUDGET_TOKENS"
+  | "VIBE_VR_MAX_SANDBOXES_PER_USER"
+  | "VIBE_VR_FREE_MAX_SANDBOXES_PER_USER"
+  | "VIBE_VR_MAX_SANDBOXES_TOTAL"
+  | "VIBE_VR_SANDBOX_TTL_MINUTES"
+  | "VIBE_VR_WORKER_CONCURRENCY"
+  | "VIBE_VR_DRAIN_TIMEOUT_SECONDS"
+  | "VIBE_VR_CAPTURE_CONCURRENCY"
+  | "VIBE_VR_REAP_IDLE_MINUTES"
+  | "VIBE_VR_REAP_INTERVAL_SECONDS"
+  | "VIBE_VR_JANITOR_INTERVAL_SECONDS"
+  | "DAHL_API_KEY"
+  | "ALEM_API_KEY"
+> &
+  Partial<Pick<Env, "VIBE_VR_PLATFORM">>;
 
 /**
  * Which part of the deployment this process is.
@@ -124,7 +127,7 @@ export type NapDeps = {
   projectSandboxes: ProjectSandboxStore;
   /**
    * The ceiling on how many sandboxes exist at once — the only thing bounding this deployment's
-   * E2B bill, and the reason it is required rather than optional.
+   * local container use, and the reason it is required rather than optional.
    *
    * The route's quota check in `limits.sandboxes` is a cheap refusal in front of this and is not
    * authoritative: it counts and then, some time later, something creates. This is claimed at the
@@ -210,7 +213,7 @@ export type NapDeps = {
   upgradeWebSocket: UpgradeWebSocket;
   /**
    * What `/health` reports. Built by the caller because the sandbox provider's `ping()` is
-   * deliberately not on the `SandboxManager` port — "is E2B up?" is a question about the
+   * deliberately not on the `SandboxManager` port — "is Docker up?" is a question about the
    * deployment, not about one project's workspace. Absent means liveness only.
    */
   health?: HealthProbe;
@@ -273,6 +276,9 @@ export type ComposedNap = {
 
 export function composeNap(deps: NapDeps): ComposedNap {
   const { config, logger } = deps;
+  const serverFundedModels =
+    (config.VIBE_VR_PLATFORM === "dahl" && config.DAHL_API_KEY !== undefined) ||
+    (config.VIBE_VR_PLATFORM === "alem" && config.ALEM_API_KEY !== undefined);
   const role = deps.role ?? "all";
   /** The part that executes: the claiming loop, and nothing else. */
   const executes = role === "worker" || role === "all";
@@ -299,17 +305,17 @@ export function composeNap(deps: NapDeps): ComposedNap {
       ? {}
       : {
           capture: new BoundedPageCapture(deps.capture, {
-            concurrency: config.NAP_CAPTURE_CONCURRENCY,
+            concurrency: config.VIBE_VR_CAPTURE_CONCURRENCY,
           }),
         }),
     // Where the ceiling is really enforced: at the point a sandbox is created, not at the route
     // that asked for one.
     capacity: deps.capacity,
-    sandboxTtlMs: config.NAP_SANDBOX_TTL_MINUTES * 60 * 1000,
-    context: new NapContextEngine({ budgetTokens: config.NAP_CONTEXT_BUDGET_TOKENS }),
+    sandboxTtlMs: config.VIBE_VR_SANDBOX_TTL_MINUTES * 60 * 1000,
+    context: new NapContextEngine({ budgetTokens: config.VIBE_VR_CONTEXT_BUDGET_TOKENS }),
     agent: new NapAgentService({
       provider: deps.provider,
-      budget: { maxSteps: config.NAP_MAX_STEPS },
+      budget: { maxSteps: config.VIBE_VR_MAX_STEPS },
     }),
     events: deps.events,
     bus: deps.bus,
@@ -348,7 +354,7 @@ export function composeNap(deps: NapDeps): ComposedNap {
     ...(deps.readiness === undefined ? {} : { readiness: deps.readiness }),
     // The browser app is on another port, so every request it makes is cross-origin and every
     // session cookie depends on this being right.
-    webOrigin: config.NAP_WEB_ORIGIN,
+    webOrigin: config.VIBE_VR_WEB_ORIGIN,
     ...(deps.auth === undefined ? {} : { auth: deps.auth }),
     // The same instance answers "who is this?" for every guarded route. Passing the function
     // rather than letting `createApp` reach into `auth` keeps the app's dependency a plain one.
@@ -366,25 +372,32 @@ export function composeNap(deps: NapDeps): ComposedNap {
       verify: deps.verifyKey,
     },
     models: {
-      allowed: config.NAP_ALLOWED_MODELS,
-      fallback: config.NAP_MODEL,
-      freeModel: config.NAP_FREE_MODEL,
+      allowed: config.VIBE_VR_ALLOWED_MODELS,
+      fallback: config.VIBE_VR_MODEL,
+      freeModel: config.VIBE_VR_FREE_MODEL,
+      serverFundedModels,
       // The stored record, not the opened key: the picker needs the platform and the hint, and
       // nothing on that route spends anything.
-      keys: (userId) => deps.userKeys.get(userId),
+      ...(config.VIBE_VR_PLATFORM === "dahl" || config.VIBE_VR_PLATFORM === "alem"
+        ? {}
+        : { keys: (userId: string) => deps.userKeys.get(userId) }),
     },
     turns: {
+      supportsImages: config.VIBE_VR_PLATFORM === "alem",
       queue: deps.queue,
       registry,
       sessions: deps.sessions,
       // Who pays for each turn, which is also what decides the models they may name.
-      keys: openCallerKey,
-      freeModel: config.NAP_FREE_MODEL,
-      defaultModel: config.NAP_MODEL,
+      ...(config.VIBE_VR_PLATFORM === "dahl" || config.VIBE_VR_PLATFORM === "alem"
+        ? {}
+        : { keys: openCallerKey }),
+      freeModel: config.VIBE_VR_FREE_MODEL,
+      defaultModel: config.VIBE_VR_MODEL,
+      serverFundedModels,
       // The same store the project routes list from, so a project named on its first turn and one
       // renamed by hand are written through one code path.
       projects: deps.projects,
-      allowedModels: config.NAP_ALLOWED_MODELS,
+      allowedModels: config.VIBE_VR_ALLOWED_MODELS,
       // What one person, and everybody together, may have running at once. This endpoint is the
       // only place either ceiling is applied *early* — the sandbox one is applied for real when a
       // sandbox is created, and `sandbox-quota.ts` says why the cheap refusal is worth keeping.
@@ -395,12 +408,12 @@ export function composeNap(deps: NapDeps): ComposedNap {
         freeRate: deps.rateLimits.freeRate,
         projects: deps.projects,
         sandboxes: {
-          perUser: config.NAP_MAX_SANDBOXES_PER_USER,
-          total: config.NAP_MAX_SANDBOXES_TOTAL,
+          perUser: config.VIBE_VR_MAX_SANDBOXES_PER_USER,
+          total: config.VIBE_VR_MAX_SANDBOXES_TOTAL,
         },
         freeSandboxes: {
-          perUser: config.NAP_FREE_MAX_SANDBOXES_PER_USER,
-          total: config.NAP_MAX_SANDBOXES_TOTAL,
+          perUser: config.VIBE_VR_FREE_MAX_SANDBOXES_PER_USER,
+          total: config.VIBE_VR_MAX_SANDBOXES_TOTAL,
         },
       },
     },
@@ -418,10 +431,13 @@ export function composeNap(deps: NapDeps): ComposedNap {
       // Opening a project can continue a job a restart left open, which spends tokens — so it is
       // billed exactly as a turn is, to whoever is standing in front of it.
       models: {
-        keys: openCallerKey,
-        allowedModels: config.NAP_ALLOWED_MODELS,
-        freeModel: config.NAP_FREE_MODEL,
-        defaultModel: config.NAP_MODEL,
+        ...(config.VIBE_VR_PLATFORM === "dahl" || config.VIBE_VR_PLATFORM === "alem"
+          ? {}
+          : { keys: openCallerKey }),
+        allowedModels: config.VIBE_VR_ALLOWED_MODELS,
+        freeModel: config.VIBE_VR_FREE_MODEL,
+        defaultModel: config.VIBE_VR_MODEL,
+        serverFundedModels,
       },
       // The same store and bus the socket subscribes to, or a close would append `preview.stopped`
       // to a log nobody is listening on.
@@ -432,8 +448,8 @@ export function composeNap(deps: NapDeps): ComposedNap {
       limits: {
         projects: deps.projects,
         sandboxes: {
-          perUser: config.NAP_MAX_SANDBOXES_PER_USER,
-          total: config.NAP_MAX_SANDBOXES_TOTAL,
+          perUser: config.VIBE_VR_MAX_SANDBOXES_PER_USER,
+          total: config.VIBE_VR_MAX_SANDBOXES_TOTAL,
         },
       },
       // The lease in the queue, which is what "busy" means everywhere now: the same rows the
@@ -467,7 +483,7 @@ export function composeNap(deps: NapDeps): ComposedNap {
   const reaper = !sweeps
     ? NOT_STARTED
     : startSweeping({
-        intervalMs: config.NAP_REAP_INTERVAL_SECONDS * 1000,
+        intervalMs: config.VIBE_VR_REAP_INTERVAL_SECONDS * 1000,
         // In the reaper process this timer is the only thing referencing the event loop; see
         // `SweepSchedule`. Harmless in a composition that also serves or claims.
         holdProcessOpen: role === "reaper",
@@ -501,7 +517,7 @@ export function composeNap(deps: NapDeps): ComposedNap {
             // The other half of the same tick: slots no path gave back, and sandboxes running under
             // an id nothing in the database ever recorded. See `reconcileCapacity`.
             ...(deps.reconcile === undefined ? {} : { reconcile: deps.reconcile }),
-            idleMs: config.NAP_REAP_IDLE_MINUTES * 60 * 1000,
+            idleMs: config.VIBE_VR_REAP_IDLE_MINUTES * 60 * 1000,
             // The same question the close and delete routes ask, of the same rows: a project is
             // busy while any of its sessions holds a lease, wherever the worker holding it is.
             isBusy: (project) => deps.queue.anyLeased(project.sessionIds),
@@ -560,10 +576,10 @@ export function composeNap(deps: NapDeps): ComposedNap {
     : startTurnWorker({
         queue: deps.queue,
         runtime,
-        concurrency: config.NAP_WORKER_CONCURRENCY,
+        concurrency: config.VIBE_VR_WORKER_CONCURRENCY,
         // How long a shutdown waits for turns in flight before aborting them. Config rather than
         // the port's default, because what fits depends on the platform's grace period.
-        drainTimeoutMs: config.NAP_DRAIN_TIMEOUT_SECONDS * 1000,
+        drainTimeoutMs: config.VIBE_VR_DRAIN_TIMEOUT_SECONDS * 1000,
         // The same function the turn route resolves access with — the queue stores only *whether*
         // the asker pays, so this is where their key is re-opened, once the request is claimed.
         credentialsFor: openCallerKey,
@@ -585,7 +601,7 @@ export function composeNap(deps: NapDeps): ComposedNap {
    *     in order to hold one query.
    *   - *Its own ticker*, because the two answer to different clocks: an idle project can wait a
    *     minute to be put away, and a chat pane waiting on a turn that will never finish cannot.
-   *     `NAP_JANITOR_INTERVAL_SECONDS` is deliberately the tighter of the two.
+   *     `VIBE_VR_JANITOR_INTERVAL_SECONDS` is deliberately the tighter of the two.
    *   - *Not under the lock*, because unlike the sweep it is safe to run twice over — the reclaim
    *     holds each row with `for update skip locked`, so two janitors never close out the same
    *     request — and because the moment two of them exist is a rolling update, which is exactly
@@ -596,7 +612,7 @@ export function composeNap(deps: NapDeps): ComposedNap {
   const janitor = !sweeps
     ? NOT_STARTED
     : startSweeping({
-        intervalMs: config.NAP_JANITOR_INTERVAL_SECONDS * 1000,
+        intervalMs: config.VIBE_VR_JANITOR_INTERVAL_SECONDS * 1000,
         holdProcessOpen: role === "reaper",
         sweep: async () => {
           const result = await sweepOrphanedRequests({

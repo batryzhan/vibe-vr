@@ -61,7 +61,7 @@ preview    passed
 Identical in all three verification runs. Three of five checks were **absent**, no repair turn
 ever fired, and the job that did not typecheck was reported `verified`.
 
-The cause is a disagreement about what a check is. `@nap/verify`'s `discover-checks` finds checks
+The cause is a disagreement about what a check is. `@vibe-vr/verify`'s `discover-checks` finds checks
 by reading the project's `package.json` and looking for a *script* of that name — reasonably, since
 a script nobody declared is absent rather than failed. The sandbox template declares no `typecheck`
 script and no `lint` script. NapBench already knows this: the first funded run discovered it the
@@ -122,7 +122,7 @@ none of these did.
 
 It does **not** license any claim that verification improves scores. Nothing here measured that,
 and the next attempt has to fix two things first: run against a model the task actually separates,
-and close the gap between what `@nap/verify` discovers and what the template declares.
+and close the gap between what `@vibe-vr/verify` discovers and what the template declares.
 
 ## Follow-ups
 

@@ -18,9 +18,9 @@
  * ordering be tested at all.
  */
 
-import type { EventBus, Unsubscribe } from "@nap/shared/ports/event-bus";
-import type { EventStore, StoredEvent } from "@nap/shared/ports/event-store";
-import { parseClientFrame, type ServerFrame, WS_CLOSE } from "@nap/shared/ws-protocol";
+import type { EventBus, Unsubscribe } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore, StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import { parseClientFrame, type ServerFrame, WS_CLOSE } from "@vibe-vr/shared/ws-protocol";
 import type { TurnState } from "../turns/state-machine.ts";
 
 /**

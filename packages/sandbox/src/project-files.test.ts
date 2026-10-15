@@ -1,4 +1,4 @@
-import type { FileNode, SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import type { FileNode, SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 import { describe, expect, it } from "vitest";
 import { listProjectFiles } from "./project-files.ts";
 import { InMemorySandboxManager } from "./testing/in-memory-sandbox-manager.ts";

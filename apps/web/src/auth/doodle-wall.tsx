@@ -13,10 +13,10 @@
  * path, straight lines bow, nothing is parallel, weight varies between marks. Everything below
  * obeys them, and anything added later that does not will look stamped next to the rest.
  *
- * **Nap is drawn here rather than imported.** `NapMark` is a *filled* silhouette, which is what
+ * **Vibe-VR is drawn here rather than imported.** `VibeVrMark` is a *filled* silhouette, which is what
  * makes it survive at 16px in a browser tab — and sixty filled ghosts on white paper is a page
  * of black blobs, not a doodle sheet. These are the same proportions in outline: the wide dome,
- * the straight shoulders, the three-bump hem, taken from `brand/nap-mark-paths.ts` by eye.
+ * the straight shoulders, the three-bump hem, taken from `brand/vibe-vr-mark-paths.ts` by eye.
  *
  * **The layout is a table, not a random seed.** A layer that places itself randomly renders one
  * way on the server and another in the browser; React calls that a hydration mismatch, throws
@@ -24,7 +24,7 @@
  * below is written down.
  *
  * The middle of the wall is cleared by a mask rather than by leaving a hole in the table — see
- * `.nap-doodle-wall` in `globals.css`. A hole would have to be re-cut every time the form
+ * `.vibe-vr-doodle-wall` in `globals.css`. A hole would have to be re-cut every time the form
  * changed height; a radial mask simply is where the form is.
  *
  * `aria-hidden` and `pointer-events-none`, like every other decoration in this app: there is
@@ -386,7 +386,7 @@ type Placed = { seed: number; x: number; y: number; rotate: number; size: number
 const COLUMNS = 13;
 const ROWS = 13;
 
-/** The form's clearing, as fractions of the page — kept in step with `.nap-doodle-wall`. */
+/** The form's clearing, as fractions of the page — kept in step with `.vibe-vr-doodle-wall`. */
 const CLEARING = { x: 0.5, y: 0.5, rx: 0.25, ry: 0.36 };
 /** And the wordmark's, in the top-left corner where it sits. */
 const LOGO = { x: 0.045, y: 0.045, rx: 0.13, ry: 0.09 };
@@ -455,7 +455,7 @@ export function DoodleWall() {
     <div
       aria-hidden="true"
       data-testid="doodle-wall"
-      className="nap-doodle-wall pointer-events-none absolute inset-0 z-0 hidden overflow-hidden text-[var(--s-doodle)] sm:block"
+      className="vibe-vr-doodle-wall pointer-events-none absolute inset-0 z-0 hidden overflow-hidden text-[var(--s-doodle)] sm:block"
     >
       {WALL.map(({ seed, x, y, rotate, size, doodle }) => {
         const Drawing = DOODLES[doodle];

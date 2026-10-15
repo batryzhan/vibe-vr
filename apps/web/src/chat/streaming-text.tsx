@@ -28,7 +28,7 @@
 import { useRef } from "react";
 
 /** The class the words wear. Exported because the effect has no other observable surface. */
-export const REVEAL_CLASS = "nap-stream-word";
+export const REVEAL_CLASS = "vibe-vr-stream-word";
 
 /** Between one word lighting up and the next. Fast enough to read as a wave, not a queue. */
 const STAGGER_MS = 38;
@@ -81,7 +81,7 @@ export function StreamingText({ text, live }: { text: string; live: boolean }) {
       </span>
 
       {/* Named by a data attribute rather than a class, so it survives restyling. */}
-      <span aria-hidden="true" data-caret className="nap-stream-caret" />
+      <span aria-hidden="true" data-caret className="vibe-vr-stream-caret" />
     </span>
   );
 }

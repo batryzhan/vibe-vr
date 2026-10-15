@@ -4,7 +4,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": ["NEXT_PUBLIC_SITE_URL", "VERCEL_URL"]
     },
     "typecheck": {
       "dependsOn": ["^build"],
@@ -21,9 +22,25 @@
         "PORT",
         "LOG_LEVEL",
         "NODE_ENV",
-        "NAP_PLATFORM",
-        "NAP_MODEL",
-        "NAP_EFFORT"
+        "VIBE_VR_PLATFORM",
+        "VIBE_VR_MODEL",
+        "DAHL_API_KEY",
+        "ALEM_API_KEY",
+        "ALEM_BASE_URL",
+        "ALEM_MODEL",
+        "DAHL_BASE_URL",
+        "DAHL_PRIMARY_MODEL",
+        "DAHL_SPATIAL_MODEL",
+        "DAHL_COMPOSITION_MODEL",
+        "DAHL_REQUEST_TIMEOUT_MS",
+        "DAHL_MAX_ATTEMPTS",
+        "DAHL_MAX_CONCURRENCY",
+        "DAHL_MAX_PARALLEL_AGENTS",
+        "DAHL_MAX_ORCHESTRATION_ROUNDS",
+        "DAHL_MAX_COMPLETION_TOKENS",
+        "VIBE_VR_EFFORT",
+        "OPENROUTER_API_KEY",
+        "VIBE_VR_EVENT_BUS"
       ]
     },
     "dev:worker": {
@@ -33,14 +50,29 @@
         "DATABASE_URL",
         "LOG_LEVEL",
         "NODE_ENV",
-        "NAP_PLATFORM",
-        "NAP_MODEL",
-        "NAP_EFFORT",
-        "NAP_EVENT_BUS",
-        "NAP_WORKER_CONCURRENCY",
-        "NAP_DRAIN_TIMEOUT_SECONDS",
-        "NAP_CAPTURE_CONCURRENCY",
-        "NAP_CHROME_PATH"
+        "VIBE_VR_PLATFORM",
+        "VIBE_VR_MODEL",
+        "DAHL_API_KEY",
+        "ALEM_API_KEY",
+        "ALEM_BASE_URL",
+        "ALEM_MODEL",
+        "DAHL_BASE_URL",
+        "DAHL_PRIMARY_MODEL",
+        "DAHL_SPATIAL_MODEL",
+        "DAHL_COMPOSITION_MODEL",
+        "DAHL_REQUEST_TIMEOUT_MS",
+        "DAHL_MAX_ATTEMPTS",
+        "DAHL_MAX_CONCURRENCY",
+        "DAHL_MAX_PARALLEL_AGENTS",
+        "DAHL_MAX_ORCHESTRATION_ROUNDS",
+        "DAHL_MAX_COMPLETION_TOKENS",
+        "VIBE_VR_EFFORT",
+        "OPENROUTER_API_KEY",
+        "VIBE_VR_EVENT_BUS",
+        "VIBE_VR_WORKER_CONCURRENCY",
+        "VIBE_VR_DRAIN_TIMEOUT_SECONDS",
+        "VIBE_VR_CAPTURE_CONCURRENCY",
+        "VIBE_VR_CHROME_PATH"
       ]
     },
     "dev:reaper": {
@@ -48,16 +80,31 @@
       "persistent": true,
       "passThroughEnv": [
         "DATABASE_URL",
-        "NAP_LISTEN_DATABASE_URL",
+        "VIBE_VR_LISTEN_DATABASE_URL",
         "LOG_LEVEL",
         "NODE_ENV",
-        "NAP_PLATFORM",
-        "NAP_MODEL",
-        "NAP_EFFORT",
-        "NAP_EVENT_BUS",
-        "NAP_REAP_INTERVAL_SECONDS",
-        "NAP_REAP_IDLE_MINUTES",
-        "NAP_JANITOR_INTERVAL_SECONDS"
+        "VIBE_VR_PLATFORM",
+        "VIBE_VR_MODEL",
+        "DAHL_API_KEY",
+        "ALEM_API_KEY",
+        "ALEM_BASE_URL",
+        "ALEM_MODEL",
+        "DAHL_BASE_URL",
+        "DAHL_PRIMARY_MODEL",
+        "DAHL_SPATIAL_MODEL",
+        "DAHL_COMPOSITION_MODEL",
+        "DAHL_REQUEST_TIMEOUT_MS",
+        "DAHL_MAX_ATTEMPTS",
+        "DAHL_MAX_CONCURRENCY",
+        "DAHL_MAX_PARALLEL_AGENTS",
+        "DAHL_MAX_ORCHESTRATION_ROUNDS",
+        "DAHL_MAX_COMPLETION_TOKENS",
+        "VIBE_VR_EFFORT",
+        "OPENROUTER_API_KEY",
+        "VIBE_VR_EVENT_BUS",
+        "VIBE_VR_REAP_INTERVAL_SECONDS",
+        "VIBE_VR_REAP_IDLE_MINUTES",
+        "VIBE_VR_JANITOR_INTERVAL_SECONDS"
       ]
     }
   }

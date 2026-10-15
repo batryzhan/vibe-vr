@@ -1,5 +1,5 @@
-import type { StoredEvent } from "@nap/shared/ports/event-store";
-import type { MemoryProvider } from "@nap/shared/ports/memory-provider";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import type { MemoryProvider } from "@vibe-vr/shared/ports/memory-provider";
 import { describe, expect, it } from "vitest";
 import { NoopMemoryProvider } from "./noop-memory-provider.ts";
 

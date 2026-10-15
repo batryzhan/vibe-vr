@@ -14,7 +14,7 @@
  * projects that they have none — see `emptyReason` at the foot of this file.
  */
 
-import type { ProjectSummaryPayload } from "@nap/shared/projects-protocol";
+import type { ProjectSummaryPayload } from "@vibe-vr/shared/projects-protocol";
 import type { RefObject } from "react";
 import type { ProjectsStatus } from "../projects/use-projects.ts";
 import type { ProjectScope } from "./filters.ts";

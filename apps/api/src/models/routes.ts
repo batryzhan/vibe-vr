@@ -2,7 +2,7 @@
  * Which models this deployment will run a turn on.
  *
  * The picker in the browser is populated from here rather than from a list compiled into it,
- * because the two would drift the moment `NAP_ALLOWED_MODELS` changed — and they would drift
+ * because the two would drift the moment `VIBE_VR_ALLOWED_MODELS` changed — and they would drift
  * silently, into a menu offering a model every turn is then refused for naming. One source,
  * and it is the same list the turn route enforces.
  *
@@ -11,8 +11,8 @@
  * everything a person needs to tell two models apart.
  */
 
-import { ModelListSchema } from "@nap/shared/models-protocol";
-import type { StoredKeyRecord } from "@nap/shared/ports/user-key-store";
+import { ModelListSchema } from "@vibe-vr/shared/models-protocol";
+import type { StoredKeyRecord } from "@vibe-vr/shared/ports/user-key-store";
 import type { Hono } from "hono";
 import type { AuthVariables } from "../auth/require-user.ts";
 import { availableModels, isFree } from "../turns/model-access.ts";
@@ -23,6 +23,8 @@ export type ModelRouteDeps = {
   fallback: string;
   /** What a turn runs on when the asker has no key. Always free. */
   freeModel: string;
+  /** True when the deployment's configured provider key funds every allowed model. */
+  serverFundedModels?: boolean;
   /**
    * The key this caller brought, if any. Absent means nobody has one — which is what an app
    * assembled without a key store means, and is the answer that offers least.
@@ -39,7 +41,9 @@ export function registerModelRoutes(
     // Only the platform matters here; the key itself is never opened for this, because
     // nothing on this route needs to spend it.
     const key = stored === null ? null : { platform: stored.platform, apiKey: "" };
-    const available = new Set(availableModels(deps.allowed, key, deps.freeModel));
+    const available = new Set(
+      availableModels(deps.allowed, key, deps.freeModel, deps.serverFundedModels),
+    );
 
     return c.json(
       ModelListSchema.parse({

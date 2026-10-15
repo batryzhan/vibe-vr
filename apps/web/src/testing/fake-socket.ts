@@ -10,7 +10,7 @@
  * its own mock instead of against the reconnect, the dedupe and the replay.
  */
 
-import type { ClientFrame, ServerFrame } from "@nap/shared/ws-protocol";
+import type { ClientFrame, ServerFrame } from "@vibe-vr/shared/ws-protocol";
 import type { StreamSocket } from "../hooks/use-event-stream.ts";
 
 export class FakeSocket extends EventTarget implements StreamSocket {

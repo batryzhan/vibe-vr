@@ -11,7 +11,7 @@
  * wrong reason.
  */
 
-import type { SweepLock } from "@nap/shared/ports/sweep-lock";
+import type { SweepLock } from "@vibe-vr/shared/ports/sweep-lock";
 
 /** The single thing the contenders contend over. */
 type Key = { holder: InMemorySweepLock | null };

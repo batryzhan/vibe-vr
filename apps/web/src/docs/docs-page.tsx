@@ -39,7 +39,7 @@ export function DocsPage() {
             href="/"
             className="text-[var(--s-text-muted)] text-xs transition-colors hover:text-[var(--s-text-primary)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[var(--s-text-primary)]"
           >
-            Open nap
+            Open Vibe-VR
           </a>
         }
       />

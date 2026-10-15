@@ -1,10 +1,10 @@
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { FAKE_OWNER, InMemoryProjectStore } from "@nap/db/testing/in-memory-project-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { InMemoryTurnQueue } from "@nap/db/testing/in-memory-turn-queue";
-import { InMemoryTurnRateLimiter } from "@nap/db/testing/in-memory-turn-rate-limiter";
-import { UNTITLED_PROJECT } from "@nap/shared/project-title";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { FAKE_OWNER, InMemoryProjectStore } from "@vibe-vr/db/testing/in-memory-project-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { InMemoryTurnQueue } from "@vibe-vr/db/testing/in-memory-turn-queue";
+import { InMemoryTurnRateLimiter } from "@vibe-vr/db/testing/in-memory-turn-rate-limiter";
+import { UNTITLED_PROJECT } from "@vibe-vr/shared/project-title";
 import type { Hono } from "hono";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../app.ts";
@@ -34,6 +34,7 @@ function app(
   registry = new TurnRegistry(),
   logger = silent(),
   projects = unnamedProject(),
+  supportsImages = false,
 ) {
   return {
     projects,
@@ -47,6 +48,7 @@ function app(
         upgradeWebSocket: async () => new Response(null),
       },
       turns: {
+        supportsImages,
         queue,
         registry,
         projects,
@@ -79,6 +81,32 @@ const FREE_MODEL = "openai/gpt-oss-20b:free";
 const OPENROUTER_KEY = { platform: "openrouter", apiKey: "sk-or-theirs" } as const;
 
 describe("POST /sessions/:sessionId/turns", () => {
+  it("durably queues supported inline image references", async () => {
+    const queue = new InMemoryTurnQueue();
+    const { app: hono } = app(queue, new TurnRegistry(), silent(), unnamedProject(), true);
+    const referenceImage = "data:image/png;base64,aGVsbG8=";
+    const response = await post(hono, `/sessions/${SESSION}/turns`, {
+      message: "Build this",
+      referenceImage,
+    });
+    expect(response.status).toBe(202);
+    expect(queue.enqueued[0]?.referenceImage).toBe(referenceImage);
+  });
+
+  it("rejects image URLs and providers without image support before enqueueing", async () => {
+    const queue = new InMemoryTurnQueue();
+    const { app: hono } = app(queue);
+    for (const referenceImage of [
+      "https://example.com/image.jpg",
+      "data:image/png;base64,aGVsbG8=",
+    ]) {
+      expect(
+        (await post(hono, `/sessions/${SESSION}/turns`, { message: "Build this", referenceImage }))
+          .status,
+      ).toBe(400);
+    }
+    expect(queue.enqueued).toHaveLength(0);
+  });
   it("accepts the message and answers before the turn is done", async () => {
     // A turn is a minute of model calls and sandbox commands. The client already has the
     // whole story over the socket, so holding the request open buys nothing and loses to the
@@ -222,7 +250,10 @@ describe("POST /api/turns/:turnId/clarify", () => {
 
     expect(res.status).toBe(200);
     await expect(res.json()).resolves.toEqual({ accepted: true, state: "planning_scene" });
-    expect(submittedAnswers).toEqual(["Use 1.2m width by 0.6m depth", "Proportional chair scaling"]);
+    expect(submittedAnswers).toEqual([
+      "Use 1.2m width by 0.6m depth",
+      "Proportional chair scaling",
+    ]);
     expect(registry.getTurn(turnId)?.state).toBe("planning_scene");
   });
 
@@ -276,7 +307,6 @@ describe("POST /api/turns/:turnId/clarify", () => {
   });
 });
 
-
 describe("when the app is built without a turn queue", () => {
   it("has no turn routes at all", async () => {
     const unwired = createApp({
@@ -305,6 +335,9 @@ describe("limits", () => {
     freePerUser?: number;
     /** No key of their own, so the free tier's rules and the free tier's limiters apply. */
     noKey?: boolean;
+    /** A server-side provider key pays for every configured model. */
+    serverFundedModels?: boolean;
+    allowedModels?: string[];
     perUser?: number;
     total?: number;
     running?: { sandboxId: string | null; userId?: string }[];
@@ -336,10 +369,13 @@ describe("limits", () => {
         queue: options.queue,
         registry: new TurnRegistry(),
         projects: unnamedProject(),
-        allowedModels: ALLOWED,
+        allowedModels: options.allowedModels ?? ALLOWED,
         keys: async () => (options.noKey === true ? null : OPENROUTER_KEY),
         freeModel: FREE_MODEL,
         defaultModel: ALLOWED[0] ?? "",
+        ...(options.serverFundedModels === undefined
+          ? {}
+          : { serverFundedModels: options.serverFundedModels }),
         sessions: new InMemorySessionStore([
           {
             sessionId: SESSION,
@@ -404,7 +440,7 @@ describe("limits", () => {
     // any more: which default is right depends on who is asking — a paid one for somebody
     // spending their own money, a free one for everybody else — and that is a fact only this
     // layer has. Leaving it unset would mean a key-less turn silently falling through to
-    // `NAP_MODEL`, which this deployment pays for.
+    // `VIBE_VR_MODEL`, which this deployment pays for.
     const queue = new InMemoryTurnQueue();
     const hono = limited({ queue });
 
@@ -435,6 +471,22 @@ describe("limits", () => {
     await post(hono, `/sessions/${SESSION}/turns`, { message: "hello" });
 
     expect(queue.enqueued[0]).toMatchObject({ billsToUser: false, model: FREE_MODEL });
+  });
+
+  it("lets a keyless caller select a Dahl model funded by the deployment", async () => {
+    const queue = new InMemoryTurnQueue();
+    const model = "deepseek-ai/DeepSeek-V4-Flash-0731";
+    const hono = limited({
+      queue,
+      noKey: true,
+      serverFundedModels: true,
+      allowedModels: [FREE_MODEL, model],
+    });
+
+    const response = await post(hono, `/sessions/${SESSION}/turns`, { message: "hello", model });
+
+    expect(response.status).toBe(202);
+    expect(queue.enqueued[0]).toMatchObject({ model, billsToUser: false });
   });
 
   it("refuses a paid model to somebody with no key, and says a key is what is missing", async () => {

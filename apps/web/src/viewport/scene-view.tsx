@@ -14,7 +14,7 @@
  * scene graph stays put, so switching back resumes on the next frame.
  */
 
-import type { BuiltScene } from "@nap/procedural/build";
+import type { BuiltScene } from "@vibe-vr/procedural/build";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import {

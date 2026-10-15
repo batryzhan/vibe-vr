@@ -25,22 +25,21 @@ const display = Bricolage_Grotesque({
  * The origin social crawlers resolve `opengraph-image.png` against — the deployed site, per
  * `docs/DEPLOY.md`.
  *
- * It has to be absolute and it has to be public: X, LinkedIn and Slack fetch the image from
- * their own servers, so a relative URL resolves against nothing they can reach. Next builds one
- * from `metadataBase`, and *without* it falls back to `localhost:3000` with only a build-time
- * warning — a card that renders with no picture and nothing failing anywhere. It is written out
- * rather than read from a Vercel system variable for that reason: the failure is silent, so the
- * value should not depend on an environment being set up the way we remember.
+ * It has to be absolute and it has to be public: social crawlers fetch the image from their own
+ * servers. Production can set NEXT_PUBLIC_SITE_URL; Vercel's deployment URL and localhost are
+ * the fallbacks for preview deployments and local development.
  */
-const siteUrl = "https://nap-tawny.vercel.app";
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 // Says the same thing as the hero, in the register a search result needs: the joke is the
 // page's, and a snippet has to survive being read with no page around it.
-const description = "Describe an app and go take a nap. Nap writes the code in a live sandbox.";
+const description = "Create and refine 3D scenes with AI in Vibe-VR.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "nap",
+  title: "Vibe-VR",
   description,
   // The image itself is the `opengraph-image.png` / `twitter-image.png` beside this file: Next
   // reads them off disk at build time and emits the URL, type and pixel dimensions itself. Only
@@ -48,8 +47,8 @@ export const metadata: Metadata = {
   // title otherwise, which is the bare word and reads as a mistake.
   openGraph: {
     type: "website",
-    siteName: "nap",
-    title: "nap — describe an app, then go take a nap",
+    siteName: "Vibe-VR",
+    title: "Vibe-VR — AI 3D creation workspace",
     description,
     url: siteUrl,
   },
@@ -57,7 +56,7 @@ export const metadata: Metadata = {
   // thumbnail the size of a favicon. It is not inferred from having an image.
   twitter: {
     card: "summary_large_image",
-    title: "nap — describe an app, then go take a nap",
+    title: "Vibe-VR — AI 3D creation workspace",
     description,
   },
 };

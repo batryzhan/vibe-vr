@@ -25,7 +25,7 @@ import { useEffect, useRef, useState } from "react";
 import { ApiKeyPanel } from "../account/api-key-panel.tsx";
 import { useApiKey } from "../account/use-api-key.ts";
 import { authClient } from "../auth/client.ts";
-import { NapLoader } from "../brand/nap-loader.tsx";
+import { VibeVrLoader } from "../brand/vibe-vr-loader.tsx";
 import { useModels } from "../chat/use-models.ts";
 import { useProjects } from "../projects/use-projects.ts";
 import { useStartProject } from "../projects/use-start-project.ts";
@@ -59,7 +59,7 @@ export function LiveDashboard() {
         className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-surface text-ink-2"
         role="status"
       >
-        <NapLoader className="size-20" />
+        <VibeVrLoader className="size-20" />
         <p className="text-sm">Getting your workspace ready…</p>
       </main>
     );

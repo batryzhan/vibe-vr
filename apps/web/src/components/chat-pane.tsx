@@ -1,11 +1,11 @@
 "use client";
 
-import type { ModelChoice } from "@nap/shared/models-protocol";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { ModelChoice } from "@vibe-vr/shared/models-protocol";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { useMemo, useRef, useState } from "react";
 import { ApiKeyPanel } from "../account/api-key-panel.tsx";
 import { useApiKey } from "../account/use-api-key.ts";
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 import { ChatInput } from "../chat/chat-input.tsx";
 import { ChatTranscript } from "../chat/chat-transcript.tsx";
 import { JobStrip } from "../chat/job-strip.tsx";
@@ -81,10 +81,10 @@ export function ChatPane({
   pending?: string | undefined;
   running?: boolean;
   error?: string | undefined;
-  onSubmit?: (message: string) => void;
+  onSubmit?: (message: string, referenceImage?: string) => void;
   onCancel?: () => void;
   /** Re-sends a failed turn's message. Optional so the many render tests need not supply one. */
-  onRetry?: ((message: string) => void) | undefined;
+  onRetry?: ((message: string, referenceImage?: string) => void) | undefined;
   /** The project's files, for the composer's `@` menu. */
   files?: readonly string[] | undefined;
   /** What this deployment will run a turn on, and which of them is chosen. */
@@ -163,7 +163,7 @@ export function ChatPane({
           ref={scroller} // `overflow-x-hidden`, not `auto`: tool output is arbitrary text, and a long line
           // belongs scrolling inside its own `OutputBlock` rather than dragging the whole
           // conversation sideways.
-          className="nap-scroll relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden"
+          className="vibe-vr-scroll relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden"
         >
           {empty && loading ? (
             <TranscriptSkeleton />
@@ -252,7 +252,7 @@ function Working({
 function EmptyState({ onPick }: { onPick: (message: string) => void }) {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-5 px-6 py-10 text-center">
-      <NapMark className="size-9 text-muted" />
+      <VibeVrMark className="size-9 text-muted" />
 
       <div className="flex flex-col gap-1.5">
         <p className="font-display font-semibold text-[15px] text-ink">Describe the app you want</p>
@@ -345,11 +345,11 @@ export function LiveChatPane({
         pending={pending}
         running={running}
         error={error}
-        onSubmit={(message) => void submit(message, model)}
+        onSubmit={(message, referenceImage) => void submit(message, model, referenceImage)}
         onCancel={() => void cancel()}
         // The same submission path as the input: a retry is an ordinary turn, and routing it
         // anywhere else would give it different rate-limit and optimistic-message behaviour.
-        onRetry={(message) => void submit(message, model)}
+        onRetry={(message, referenceImage) => void submit(message, model, referenceImage)}
         files={files ?? []}
         models={models?.models ?? []}
         model={model ?? models?.fallback}

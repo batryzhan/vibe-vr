@@ -18,8 +18,8 @@
  * this is the existing event stream rather than a second instrumentation path.
  */
 
-import { NapEventSchema } from "@nap/shared/events";
-import type { Result } from "@nap/shared/result";
+import { NapEventSchema } from "@vibe-vr/shared/events";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import { describeParseFailure } from "./parse-failure.ts";
 

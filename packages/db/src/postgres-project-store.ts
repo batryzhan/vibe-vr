@@ -14,7 +14,7 @@
  * so whatever removes them has to run first, and has to be able to see both.
  */
 
-import type { ProjectStatus, ProjectStore, ProjectSummary } from "@nap/shared/ports/project-store";
+import type { ProjectStatus, ProjectStore, ProjectSummary } from "@vibe-vr/shared/ports/project-store";
 import { and, desc, eq, isNotNull, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { projects, sessions } from "./schema.ts";

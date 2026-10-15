@@ -21,19 +21,19 @@
  */
 
 import { randomUUID } from "node:crypto";
-import { NapAgentService } from "@nap/agent/agent-service";
-import { ClaudeProvider, DEFAULT_MODEL_CONFIG } from "@nap/agent/claude-provider";
-import { createOpenRouterClient, toOpenRouterModel } from "@nap/agent/openrouter";
-import { type CaseReport, EVAL_CASES, summarize } from "@nap/agent/scene-eval/cases";
-import { buildScene } from "@nap/procedural/build";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { foldSceneSpec } from "@nap/scene-spec/fold";
-import { AnySceneProposalSchema } from "@nap/scene-spec/proposal";
-import { sceneLogEvents } from "@nap/scene-spec/scene-events";
-import type { SceneSpec } from "@nap/scene-spec/schema";
-import { loadEnvFile } from "@nap/shared/env-file";
-import type { NapEvent, NapEventType } from "@nap/shared/events";
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
+import { NapAgentService } from "@vibe-vr/agent/agent-service";
+import { ClaudeProvider, DEFAULT_MODEL_CONFIG } from "@vibe-vr/agent/claude-provider";
+import { createOpenRouterClient, toOpenRouterModel } from "@vibe-vr/agent/openrouter";
+import { type CaseReport, EVAL_CASES, summarize } from "@vibe-vr/agent/scene-eval/cases";
+import { buildScene } from "@vibe-vr/procedural/build";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { foldSceneSpec } from "@vibe-vr/scene-spec/fold";
+import { AnySceneProposalSchema } from "@vibe-vr/scene-spec/proposal";
+import { sceneLogEvents } from "@vibe-vr/scene-spec/scene-events";
+import type { SceneSpec } from "@vibe-vr/scene-spec/schema";
+import { loadEnvFile } from "@vibe-vr/shared/env-file";
+import type { NapEvent, NapEventType } from "@vibe-vr/shared/events";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 const PROVIDER = "openrouter";
 const SESSION_ID = randomUUID();

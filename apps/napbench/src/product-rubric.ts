@@ -1,7 +1,7 @@
 /**
  * What a judge is told, and the version stamp that makes two judgements comparable.
  *
- * **The rubric lives here rather than in `@nap/bench`, and that is the same decision as the port.**
+ * **The rubric lives here rather than in `@vibe-vr/bench`, and that is the same decision as the port.**
  * `product/judgement.ts` is explicit that nothing provider-shaped appears in the seam — no model
  * id, no prompt, no threshold — because none of it distinguishes one judgement from another once
  * it has been made. A prompt is how *this* judge was asked; a scripted judge is asked nothing at
@@ -21,8 +21,8 @@
  * need not, and anything that adds, removes or re-argues a dimension must.
  */
 
-import { DIMENSION_SUMMARIES, POLISH, PRODUCT_DIMENSIONS } from "@nap/bench/product/dimension";
-import { CONFIDENCE_LEVELS, GRADES } from "@nap/bench/product/grade";
+import { DIMENSION_SUMMARIES, POLISH, PRODUCT_DIMENSIONS } from "@vibe-vr/bench/product/dimension";
+import { CONFIDENCE_LEVELS, GRADES } from "@vibe-vr/bench/product/grade";
 
 /**
  * The instrument's version, recorded on every judgement and checked by `compare`.

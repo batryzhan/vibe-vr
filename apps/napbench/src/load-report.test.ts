@@ -7,8 +7,8 @@
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { serialiseBenchReport } from "@nap/bench/report";
-import { benchReport } from "@nap/bench/testing/bench-report";
+import { serialiseBenchReport } from "@vibe-vr/bench/report";
+import { benchReport } from "@vibe-vr/bench/testing/bench-report";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { loadBenchReport } from "./load-report.ts";
 import { writeBenchReport } from "./write-report.ts";

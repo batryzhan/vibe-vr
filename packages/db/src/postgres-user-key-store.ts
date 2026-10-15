@@ -10,7 +10,7 @@
  * layer speaks strings.
  */
 
-import type { NewStoredKey, StoredKeyRecord, UserKeyStore } from "@nap/shared/ports/user-key-store";
+import type { NewStoredKey, StoredKeyRecord, UserKeyStore } from "@vibe-vr/shared/ports/user-key-store";
 import { eq, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { userApiKeys } from "./schema.ts";

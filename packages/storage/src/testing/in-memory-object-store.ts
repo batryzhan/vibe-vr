@@ -14,8 +14,8 @@
  * whose upload failed, and there is no other way to produce that failure on demand.
  */
 
-import type { ObjectStore, ObjectStoreError } from "@nap/shared/ports/object-store";
-import type { Result, VoidResult } from "@nap/shared/result";
+import type { ObjectStore, ObjectStoreError } from "@vibe-vr/shared/ports/object-store";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 
 export class InMemoryObjectStore implements ObjectStore {
   readonly #objects = new Map<string, Uint8Array>();

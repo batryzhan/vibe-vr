@@ -6,8 +6,8 @@
  * a user at their cap could not continue the conversation they are already in.
  */
 
-import { FAKE_OWNER, InMemoryProjectStore } from "@nap/db/testing/in-memory-project-store";
-import type { ProjectSummary } from "@nap/shared/ports/project-store";
+import { FAKE_OWNER, InMemoryProjectStore } from "@vibe-vr/db/testing/in-memory-project-store";
+import type { ProjectSummary } from "@vibe-vr/shared/ports/project-store";
 import { describe, expect, it } from "vitest";
 import { checkSandboxQuota } from "./sandbox-quota.ts";
 

@@ -27,7 +27,7 @@ directory that none of this repository's gates can see — `test/architecture.ts
 Python, Biome does not lint it, `tsc` cannot check it, and vitest collects nothing from it.
 
 There is also a constraint the container has to answer to. The thing under measurement reaches
-*outward*: E2B sandboxes over the network, a Chrome binary at `NAP_CHROME_PATH`, credentials in
+*outward*: E2B sandboxes over the network, a Chrome binary at `VIBE_VR_CHROME_PATH`, credentials in
 `apps/api/.env`, an OpenRouter account. Running the trial inside a container would mean rebuilding
 all of that inside the image, in exchange for isolating a process whose entire job is to talk to
 someone else's cloud.
@@ -86,7 +86,7 @@ installed; `agent.py` is the part that imports Harbor and is almost nothing — 
 pytest run with the framework installed, since a file coupled to somebody else's classes that no
 gate ever imports is exactly the shape of the mistake this repository has already made once.
 
-The registry under `harbor/tasks/` is **generated** from `@nap/bench/suite` by `bun run harbor:tasks`
+The registry under `harbor/tasks/` is **generated** from `@vibe-vr/bench/suite` by `bun run harbor:tasks`
 and is not committed, because a hand-maintained copy would be a second answer to "what does the
 benchmark measure".
 

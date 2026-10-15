@@ -27,9 +27,9 @@
  * a test. `unseen-card.tsx` is only what it looks like.
  */
 
-import type { JobOutcome, NapEvent, NapEventOf } from "@nap/shared/events";
-import { foldJobs, isJobFailed, type JobState, openJob } from "@nap/shared/job-state";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { JobOutcome, NapEvent, NapEventOf } from "@vibe-vr/shared/events";
+import { foldJobs, isJobFailed, type JobState, openJob } from "@vibe-vr/shared/job-state";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { turnFailureCopy } from "../errors/failure-copy.ts";
 import { shortSha } from "./job-summary.ts";
 
@@ -79,7 +79,7 @@ export type UnseenSummary = {
  *
  * Keyed on the four *outcomes* rather than on the seven phases, because nothing gets this far
  * without a conclusion in the log — an open job has decided nothing, which is the whole rule
- * above. A fifth outcome added in `@nap/shared` fails typecheck here rather than rendering an
+ * above. A fifth outcome added in `@vibe-vr/shared` fails typecheck here rather than rendering an
  * empty sentence.
  */
 const OUTCOMES: Record<JobOutcome, string> = {

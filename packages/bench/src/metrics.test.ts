@@ -7,7 +7,7 @@
  * to the event contract breaks these tests rather than quietly changing what they measure.
  */
 
-import { type NapEvent, type NapEventOf, NapEventSchema } from "@nap/shared/events";
+import { type NapEvent, type NapEventOf, NapEventSchema } from "@vibe-vr/shared/events";
 import { describe, expect, it } from "vitest";
 import { deriveRunMetrics, RunMetricsSchema } from "./metrics.ts";
 

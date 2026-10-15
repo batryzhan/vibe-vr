@@ -375,6 +375,54 @@ describe("applyPatch", () => {
     expect(hashSceneSpec(spec)).toBe(before);
   });
 
+  it("adds a material so a following node edit can reference it", () => {
+    const spec = towerSpec();
+    const before = hashSceneSpec(spec);
+    const result = applyPatch(
+      spec,
+      patchFor(before, [
+        {
+          op: "add_material",
+          material: {
+            id: "forest-green",
+            name: "Forest green fabric",
+            color: "#2f6f4e",
+            metalness: 0,
+            roughness: 0.96,
+          },
+        },
+      ]),
+      before,
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.value.materials.at(-1)?.color).toBe("#2f6f4e");
+    expect(hashSceneSpec(spec)).toBe(before);
+  });
+
+  it("rejects adding a duplicate material id", () => {
+    const spec = towerSpec();
+    const before = hashSceneSpec(spec);
+    const result = applyPatch(
+      spec,
+      patchFor(before, [
+        {
+          op: "add_material",
+          material: {
+            id: TOWER_MATERIAL_ID,
+            name: "Duplicate",
+            color: "#2f6f4e",
+            metalness: 0,
+            roughness: 1,
+          },
+        },
+      ]),
+      before,
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe("duplicate_material");
+    expect(hashSceneSpec(spec)).toBe(before);
+  });
+
   it("rejects a malformed parameter path with the editable keys named", () => {
     const spec = towerSpec();
     const before = hashSceneSpec(spec);

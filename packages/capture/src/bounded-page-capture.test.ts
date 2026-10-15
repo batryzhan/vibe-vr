@@ -2,8 +2,8 @@ import type {
   PageCapture,
   PageCaptureError,
   PageCaptureOptions,
-} from "@nap/shared/ports/page-capture";
-import type { Result } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/page-capture";
+import type { Result } from "@vibe-vr/shared/result";
 import { describe, expect, it, vi } from "vitest";
 import { BoundedPageCapture } from "./bounded-page-capture.ts";
 

@@ -25,7 +25,7 @@
  * See docs/adr/0005.
  */
 
-import type { Result, VoidResult } from "@nap/shared/result";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 import {
   type AccessibilityCheck,
   DEFAULT_FAIL_ON_IMPACT,

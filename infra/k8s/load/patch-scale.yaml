@@ -2,7 +2,7 @@
 # schedule what they ask for.
 #
 # **The coupling is the point and it is unchanged.** `maxReplicaCount` is still
-# ceil(NAP_MAX_SANDBOXES_TOTAL / NAP_WORKER_CONCURRENCY), and `targetQueryValue` is still one
+# ceil(VIBE_VR_MAX_SANDBOXES_TOTAL / VIBE_VR_WORKER_CONCURRENCY), and `targetQueryValue` is still one
 # worker's concurrency — ceil(200 / 25) = 8. `test/k8s.test.ts` runs the same rule over this
 # overlay that it runs over the base, so an overlay that raised the ceiling and left the scaler
 # behind is a failing test rather than a cluster spending on pods that can only queue.

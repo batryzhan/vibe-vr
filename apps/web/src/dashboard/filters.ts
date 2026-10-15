@@ -7,7 +7,7 @@
  * checked.
  */
 
-import type { ProjectSummaryPayload } from "@nap/shared/projects-protocol";
+import type { ProjectSummaryPayload } from "@vibe-vr/shared/projects-protocol";
 
 /**
  * The three lists the sidebar offers.

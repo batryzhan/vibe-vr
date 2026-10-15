@@ -8,8 +8,8 @@
  * answered in `corpus-discrimination.integration.test.ts` by watching a real one do it.
  */
 
-import { PRODUCT_DIMENSIONS } from "@nap/bench/product/dimension";
-import type { ProductEvaluationInput } from "@nap/bench/product/evaluation";
+import { PRODUCT_DIMENSIONS } from "@vibe-vr/bench/product/dimension";
+import type { ProductEvaluationInput } from "@vibe-vr/bench/product/evaluation";
 import { describe, expect, it } from "vitest";
 import { CORPUS_ROOT } from "./corpus-fixtures.ts";
 import {

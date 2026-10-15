@@ -1,4 +1,4 @@
-import type { FileListing } from "@nap/shared/files-protocol";
+import type { FileListing } from "@vibe-vr/shared/files-protocol";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { FileTreePane } from "./file-tree-pane.tsx";

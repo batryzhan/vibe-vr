@@ -5,7 +5,7 @@
  * mean two independent allowances, so the free-tier ceiling that makes an open demo door
  * affordable silently multiplies by the replica count. The window moves into a table, and the
  * three properties the in-process version was careful about move with it — see
- * `@nap/shared/ports/turn-rate-limit` for what they are and why each is load-bearing.
+ * `@vibe-vr/shared/ports/turn-rate-limit` for what they are and why each is load-bearing.
  *
  * **The database's clock, everywhere.** Every timestamp is written by `now()` and every comparison
  * is made against it inside the same statement, so the window never depends on whose replica
@@ -23,7 +23,7 @@
  * independent questions and have no reason to queue behind each other.
  */
 
-import type { RateDecision, TurnRateLimiter } from "@nap/shared/ports/turn-rate-limit";
+import type { RateDecision, TurnRateLimiter } from "@vibe-vr/shared/ports/turn-rate-limit";
 import { sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 

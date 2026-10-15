@@ -72,7 +72,7 @@ describe("the dashboard hero", () => {
   it("adds quiet Nap stickers around the otherwise empty prompt band", () => {
     show();
 
-    expect(screen.getByTestId("nap-stickers")).toBeInTheDocument();
+    expect(screen.getByTestId("vibe-vr-stickers")).toBeInTheDocument();
   });
 
   /**
@@ -85,10 +85,10 @@ describe("the dashboard hero", () => {
   it("gives each sticker its own behaviour rather than four copies of one", () => {
     show();
 
-    const stickers = [...screen.getByTestId("nap-stickers").querySelectorAll(".nap-sticker")];
+    const stickers = [...screen.getByTestId("vibe-vr-stickers").querySelectorAll(".vibe-vr-sticker")];
     const kinds = stickers.map((sticker) =>
       [...sticker.classList].find(
-        (name) => name.startsWith("nap-sticker-") && name !== "nap-sticker-awake",
+        (name) => name.startsWith("vibe-vr-sticker-") && name !== "vibe-vr-sticker-awake",
       ),
     );
 

@@ -15,7 +15,7 @@ describe("the front page's hero", () => {
     );
   });
 
-  it("says what Threepod is rather than gesturing at AI", () => {
+  it("says what Vibe-VR is rather than gesturing at AI", () => {
     show();
 
     expect(screen.getByText(/conversational procedural construction layer/i)).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe("the front page's hero", () => {
     expect(screen.getByRole("figure", { name: /sample chair model/i })).toBeInTheDocument();
   });
 
-  it("says the chair is a sample, not something Threepod generated", () => {
+  it("says the chair is a sample, not something Vibe-VR generated", () => {
     show();
 
     expect(screen.getByText(/pictured: a sample 3d scene/i)).toBeInTheDocument();

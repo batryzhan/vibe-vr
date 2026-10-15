@@ -1,4 +1,4 @@
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { jobView } from "../chat/job-summary.ts";

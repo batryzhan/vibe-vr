@@ -7,7 +7,7 @@
  * guessing at it.
  */
 
-import type { RanCheck } from "@nap/verify/run-checks";
+import type { RanCheck } from "@vibe-vr/verify/run-checks";
 import { describe, expect, it } from "vitest";
 import { repairCommitSubject, repairPrompt } from "./repair-prompt.ts";
 import { failureOf } from "./verify-turn.ts";

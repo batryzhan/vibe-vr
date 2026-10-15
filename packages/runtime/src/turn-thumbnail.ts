@@ -17,10 +17,10 @@
  * which would look exactly like the user's app being broken.
  */
 
-import type { ObjectStore } from "@nap/shared/ports/object-store";
-import type { PageCapture } from "@nap/shared/ports/page-capture";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { Result } from "@nap/shared/result";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
+import type { PageCapture } from "@vibe-vr/shared/ports/page-capture";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { Result } from "@vibe-vr/shared/result";
 
 export type ThumbnailError = { message: string };
 

@@ -32,7 +32,7 @@ A job is *working*, *verifying* or *repairing* while it is open, and once closed
 ended: **verified** (checks passed, so the commit is a checkpoint), **unverified** (the turn changed
 no files, so there was nothing to check — not a failure and not a success), **exhausted** (three
 repairs spent with checks still red) or **abandoned** (the turn it was riding on was cancelled or
-refused). `foldJobs` in `@nap/shared` is the one function that decides all of it.
+refused). `foldJobs` in `@vibe-vr/shared` is the one function that decides all of it.
 
 **Verification** — what the system finds, as against what the model claims. A turn that changed the
 workspace is committed and then checked: the project's own checks, cheapest first, stopping at the
@@ -44,9 +44,9 @@ preview probe — the browser stays NapBench's alone, per `docs/adr/0001`.
 failure and the gap is load-bearing in both directions: a project with no `test` script has not
 failed its tests, and treating a missing script as a failure would put every fresh project into a
 repair loop it cannot leave. Which checks exist is discovered from the project rather than declared
-by the model. Owned by `@nap/verify` and shared with NapBench, which adds scoring metadata to it —
+by the model. Owned by `@vibe-vr/verify` and shared with NapBench, which adds scoring metadata to it —
 see the NapBench **Check** entry, and `docs/adr/0007`. The passed/failed/absent triple itself sits
-one layer lower still, in `@nap/shared`, because `verification.completed` carries it into the log.
+one layer lower still, in `@vibe-vr/shared`, because `verification.completed` carries it into the log.
 
 **Verdict** — what a whole *run* of the checks came to, as against the outcome of any one of them:
 **passed**, **failed**, or **errored**. The third is the one worth the word. Failed is the project's
@@ -55,7 +55,7 @@ the command, or the preview listens inside and is unreachable from outside — a
 that would ask a model to fix a machine it cannot see, so its checks come back *absent*. **An
 errored run is never written as a verification.** `verification.completed` carries checks and no
 verdict on purpose, and an all-absent payload folds to `verified`; the job ends **abandoned**
-instead. `runChecks` in `@nap/verify` is where a verdict comes from, and it is branched on before
+instead. `runChecks` in `@vibe-vr/verify` is where a verdict comes from, and it is branched on before
 anything is persisted rather than persisted itself.
 
 **Job brief** — the `<job>` section of the assembled prompt: the job's **objective**, and the
@@ -65,7 +65,7 @@ rejected, so without this each repair is free to make the last one again. Near-u
 that is the point: the situation it exists for is a long repair with a full context, which is
 exactly when the turn that stated the objective has fallen out of the window. Handed to the
 `ContextEngine` like `history` is, because the component that owns the token budget performs no
-I/O. `renderJobBrief` in `@nap/context` writes it.
+I/O. `renderJobBrief` in `@vibe-vr/context` writes it.
 
 **Stale** — of a past turn in the assembled conversation: old enough that its tool traffic is
 emptied whether or not the budget needs the room. What survives is prose on both sides and each
@@ -242,7 +242,7 @@ benchmark; everything else is a variable. **This word collides**: a NapBench tas
 specification of work to be repeated, where the runtime's unit of actual work being done once is a
 **Job**. The two are different concepts and keep different names rather than one being renamed.
 
-**Check** — a `@nap/verify` **Check** plus the scoring metadata that makes it an acceptance
+**Check** — a `@vibe-vr/verify` **Check** plus the scoring metadata that makes it an acceptance
 criterion: the category it scores into, a weight, and whether it is required. The primitive — one
 thing run, that passed, failed or was absent — is shared with the runtime's verifier, because it
 was never NapBench's alone; what is NapBench's is that a score is made of nothing else. Three kinds:

@@ -51,7 +51,7 @@ step "deploy"
 {
   printf 'BETTER_AUTH_SECRET=%s\n' "$(openssl rand -base64 24)"
   # Exactly 32 bytes once decoded, which `apps/api/src/env.ts` refuses to boot without.
-  printf 'NAP_KEY_ENCRYPTION_SECRET=%s\n' "$(openssl rand -base64 32)"
+  printf 'VIBE_VR_KEY_ENCRYPTION_SECRET=%s\n' "$(openssl rand -base64 32)"
 } >"$ROOT/infra/k8s/proof/generated.env"
 kubectl apply -k "$ROOT/infra/k8s/proof"
 kubectl -n "$NAMESPACE" rollout status deployment/nap-postgres --timeout=300s

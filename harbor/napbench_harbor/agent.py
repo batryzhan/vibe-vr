@@ -32,7 +32,7 @@ from napbench_harbor.trial import (
 )
 
 #: Where the Nap checkout is, when it is not the parent of this package.
-REPO_ROOT_ENV = "NAP_REPO_ROOT"
+REPO_ROOT_ENV = "VIBE_VR_REPO_ROOT"
 
 #: Flags handed to ``napbench`` verbatim, as one string — ``--real --model=…``. Absent means
 #: a dry run: free, offline, and the scores mean nothing. Spending money stays something

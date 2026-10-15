@@ -11,8 +11,8 @@
  * turn itself. Nothing else is slowed, because nothing else was measured.
  */
 
-import type { LLMProvider, LLMRequest, LLMTurn } from "@nap/shared/ports/llm-provider";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import type { LLMProvider, LLMRequest, LLMTurn } from "@vibe-vr/shared/ports/llm-provider";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 import { CALIBRATION, sampleRange } from "./calibration.ts";
 
 /** How to wait. Injected so a test can assert on the durations without spending them. */

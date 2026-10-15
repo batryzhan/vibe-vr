@@ -150,10 +150,10 @@ export function Capabilities() {
           */}
           <div
             ref={host}
-            className="nap-space-host-md relative mt-16"
+            className="vibe-vr-space-host-md relative mt-16"
             style={{ "--space-w": SPACE.w, "--space-h": SPACE.h } as CSSProperties}
           >
-            <div className="nap-space-md">
+            <div className="vibe-vr-space-md">
               {/*
                 The skin sits at the path's own origin, which is outside the space: the blend
                 paints past every tile. It is colour and nothing else, so it is hidden from

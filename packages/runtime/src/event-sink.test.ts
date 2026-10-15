@@ -1,7 +1,7 @@
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import type { EventBus } from "@nap/shared/ports/event-bus";
-import type { EventStore, PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import type { EventBus } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore, PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { describe, expect, it } from "vitest";
 import { EventSink } from "./event-sink.ts";
 

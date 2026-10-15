@@ -19,8 +19,8 @@ import type {
   PageCapture,
   PageCaptureError,
   PageCaptureOptions,
-} from "@nap/shared/ports/page-capture";
-import type { Result } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/page-capture";
+import type { Result } from "@vibe-vr/shared/result";
 
 export type BoundedPageCaptureOptions = {
   /** How many captures may be in flight. Must be at least one, or nothing is ever photographed. */

@@ -18,11 +18,11 @@
  * of *when* to tear down — that belongs to the reaper and to project close.
  */
 
-import { bundle, currentSha } from "@nap/sandbox/git";
-import type { ObjectStore } from "@nap/shared/ports/object-store";
-import type { SandboxError, SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
-import type { Result } from "@nap/shared/result";
+import { bundle, currentSha } from "@vibe-vr/sandbox/git";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
+import type { SandboxError, SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
+import type { Result } from "@vibe-vr/shared/result";
 
 export type TeardownFailureReason =
   /**

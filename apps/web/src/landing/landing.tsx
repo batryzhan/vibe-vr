@@ -32,7 +32,7 @@ export type AuthState = "pending" | "signed-out";
 
 export function Landing({ auth, hero }: { auth: AuthState; hero: ReactNode }) {
   return (
-    <div className="ai-stage-ink threepod relative flex min-h-dvh flex-col bg-[var(--s-surface-1)]">
+    <div className="ai-stage-ink vibe-vr relative flex min-h-dvh flex-col bg-[var(--s-surface-1)]">
       {/*
         Drawn over the hero rather than above it, which is why the positioning is passed in here
         rather than living in the bar: the stage is meant to be the first thing on the page. It

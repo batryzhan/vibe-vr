@@ -1,4 +1,4 @@
-import { towerSpec } from "@nap/scene-spec/tower";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
 import { describe, expect, it } from "vitest";
 import { type Bounds, buildScene } from "./build.ts";
 

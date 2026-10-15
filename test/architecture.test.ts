@@ -73,23 +73,23 @@ describe("dependency direction", () => {
     expect(checkDependencyDirection(readWorkspaceManifests())).toEqual([]);
   });
 
-  it("keeps @nap/bench's internal runtime dependencies below it", () => {
-    // docs/adr/0001 permits @nap/bench to carry sibling packages as devDependencies, for
+  it("keeps @vibe-vr/bench's internal runtime dependencies below it", () => {
+    // docs/adr/0001 permits @vibe-vr/bench to carry sibling packages as devDependencies, for
     // their published in-memory fakes — and the checker above reads `dependencies` only,
     // so that arrangement passes partly by not being looked at. This asserts the half that
     // matters directly: what a consumer of the pure core pulls in at runtime.
     //
-    // @nap/verify joined @nap/shared here at docs/adr/0007, and the list is exhaustive on
+    // @vibe-vr/verify joined @vibe-vr/shared here at docs/adr/0007, and the list is exhaustive on
     // purpose: what the ADR forbids is the pure core reaching *sideways or up*, so a third
     // entry appearing without a decision behind it is the thing worth failing on.
     //
     // Third-party dependencies are not the subject. The pure core validates every task and
-    // report it parses, so it depends on zod exactly as @nap/shared does; what would break
+    // report it parses, so it depends on zod exactly as @vibe-vr/shared does; what would break
     // the ADR is an unsanctioned *workspace* package.
-    const bench = readWorkspaceManifests().find((m) => m.name === "@nap/bench");
-    expect(bench?.dependencies.filter((dep) => dep.startsWith("@nap/")).toSorted()).toEqual([
-      "@nap/shared",
-      "@nap/verify",
+    const bench = readWorkspaceManifests().find((m) => m.name === "@vibe-vr/bench");
+    expect(bench?.dependencies.filter((dep) => dep.startsWith("@vibe-vr/")).toSorted()).toEqual([
+      "@vibe-vr/shared",
+      "@vibe-vr/verify",
     ]);
   });
 
@@ -98,22 +98,22 @@ describe("dependency direction", () => {
     // renamed or added and the rule table never learned about it.
     const names = readWorkspaceManifests().map((m) => m.name);
     expect(names.toSorted()).toEqual([
-      "@nap/agent",
-      "@nap/api",
-      "@nap/bench",
-      "@nap/capture",
-      "@nap/context",
-      "@nap/db",
-      "@nap/loadgen",
-      "@nap/napbench",
-      "@nap/procedural",
-      "@nap/runtime",
-      "@nap/sandbox",
-      "@nap/scene-spec",
-      "@nap/shared",
-      "@nap/storage",
-      "@nap/verify",
-      "@nap/web",
+      "@vibe-vr/agent",
+      "@vibe-vr/api",
+      "@vibe-vr/bench",
+      "@vibe-vr/capture",
+      "@vibe-vr/context",
+      "@vibe-vr/db",
+      "@vibe-vr/loadgen",
+      "@vibe-vr/napbench",
+      "@vibe-vr/procedural",
+      "@vibe-vr/runtime",
+      "@vibe-vr/sandbox",
+      "@vibe-vr/scene-spec",
+      "@vibe-vr/shared",
+      "@vibe-vr/storage",
+      "@vibe-vr/verify",
+      "@vibe-vr/web",
     ]);
   });
 });
@@ -151,42 +151,42 @@ describe("dependency direction at the import — the checker actually catches vi
   ];
 
   it("catches the edge docs/adr/0007 exists to forbid", () => {
-    // The demonstration this check was written for: @nap/verify reaching up into the thing
+    // The demonstration this check was written for: @vibe-vr/verify reaching up into the thing
     // that grades the system it serves.
     const violations = checkSourceImports(
-      pkg("@nap/verify", ["@nap/shared", "@nap/bench"], {
-        "packages/verify/src/preview.ts": 'import { CATEGORIES } from "@nap/bench/category";',
+      pkg("@vibe-vr/verify", ["@vibe-vr/shared", "@vibe-vr/bench"], {
+        "packages/verify/src/preview.ts": 'import { CATEGORIES } from "@vibe-vr/bench/category";',
       }),
     );
     expect(violations).toHaveLength(1);
     expect(violations[0]?.from).toBe("packages/verify/src/preview.ts");
-    expect(violations[0]?.to).toBe("@nap/bench");
+    expect(violations[0]?.to).toBe("@vibe-vr/bench");
   });
 
   it("counts a type-only import, which is the form a violation is likeliest to take", () => {
     // `import type` erases at runtime, so nothing in a build or a bundle notices it. It is
-    // still a layering edge: the compiler had to read @nap/bench to check this file.
+    // still a layering edge: the compiler had to read @vibe-vr/bench to check this file.
     const violations = checkSourceImports(
-      pkg("@nap/verify", ["@nap/shared", "@nap/bench"], {
+      pkg("@vibe-vr/verify", ["@vibe-vr/shared", "@vibe-vr/bench"], {
         "packages/verify/src/preview.ts":
-          'import type { TaskCategory } from "@nap/bench/category";',
+          'import type { TaskCategory } from "@vibe-vr/bench/category";',
       }),
     );
     expect(violations).toHaveLength(1);
-    expect(violations[0]?.to).toBe("@nap/bench");
+    expect(violations[0]?.to).toBe("@vibe-vr/bench");
   });
 
   it("resolves the subpath form to its package", () => {
-    // Specifiers here are always deep — `@nap/bench/category`, never `@nap/bench` — because
+    // Specifiers here are always deep — `@vibe-vr/bench/category`, never `@vibe-vr/bench` — because
     // every package exports `./*`. Matching the bare name would have caught nothing at all.
     const violations = checkSourceImports(
-      pkg("@nap/agent", ["@nap/shared", "@nap/db"], {
+      pkg("@vibe-vr/agent", ["@vibe-vr/shared", "@vibe-vr/db"], {
         "packages/agent/src/x.ts":
-          'import { schema } from "@nap/db/testing/in-memory-event-store";',
+          'import { schema } from "@vibe-vr/db/testing/in-memory-event-store";',
       }),
     );
     expect(violations).toHaveLength(1);
-    expect(violations[0]?.to).toBe("@nap/db");
+    expect(violations[0]?.to).toBe("@vibe-vr/db");
   });
 
   it("catches an import of a package the manifest never declared", () => {
@@ -194,8 +194,8 @@ describe("dependency direction at the import — the checker actually catches vi
     // resolves at dev time and in the deployed image — which is built by one workspace-wide
     // install from the whole repo — while package.json claims no such edge exists.
     const violations = checkSourceImports(
-      pkg("@nap/runtime", ["@nap/shared"], {
-        "packages/runtime/src/turn.ts": 'import { run } from "@nap/verify/preview";',
+      pkg("@vibe-vr/runtime", ["@vibe-vr/shared"], {
+        "packages/runtime/src/turn.ts": 'import { run } from "@vibe-vr/verify/preview";',
       }),
     );
     expect(violations).toHaveLength(1);
@@ -206,9 +206,9 @@ describe("dependency direction at the import — the checker actually catches vi
     // A test importing a sibling with no devDependency on it is the same hole: it works only
     // because of hoisting, and it breaks the moment the package is installed on its own.
     const violations = checkSourceImports(
-      pkg("@nap/agent", ["@nap/shared"], {
+      pkg("@vibe-vr/agent", ["@vibe-vr/shared"], {
         "packages/agent/src/x.test.ts":
-          'const { SYSTEM_PROMPT } = await import("@nap/context/system-prompt");',
+          'const { SYSTEM_PROMPT } = await import("@vibe-vr/context/system-prompt");',
       }),
     );
     expect(violations).toHaveLength(1);
@@ -221,28 +221,28 @@ describe("dependency direction at the import — the checker actually catches vi
     // is about what shipped source may reach for; a declared test-only edge is not that.
     const violations = checkSourceImports(
       pkg(
-        "@nap/bench",
-        ["@nap/shared"],
+        "@vibe-vr/bench",
+        ["@vibe-vr/shared"],
         {
           "packages/bench/src/runner.test.ts":
-            'import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";',
+            'import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";',
         },
-        ["@nap/sandbox"],
+        ["@vibe-vr/sandbox"],
       ),
     );
     expect(violations).toEqual([]);
   });
 
   it("holds shipped source to the table even when the manifest declares the edge", () => {
-    // A devDependency is not a licence for src to use it: declaring @nap/sandbox is how the
-    // fakes get in, and the two rules would disagree about @nap/bench's core if this one
+    // A devDependency is not a licence for src to use it: declaring @vibe-vr/sandbox is how the
+    // fakes get in, and the two rules would disagree about @vibe-vr/bench's core if this one
     // read the manifest rather than the layer table.
     const violations = checkSourceImports(
       pkg(
-        "@nap/bench",
-        ["@nap/shared"],
-        { "packages/bench/src/runner.ts": 'import { x } from "@nap/sandbox/template";' },
-        ["@nap/sandbox"],
+        "@vibe-vr/bench",
+        ["@vibe-vr/shared"],
+        { "packages/bench/src/runner.ts": 'import { x } from "@vibe-vr/sandbox/template";' },
+        ["@vibe-vr/sandbox"],
       ),
     );
     expect(violations).toHaveLength(1);
@@ -251,9 +251,9 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("allows a package to import itself", () => {
     const violations = checkSourceImports(
-      pkg("@nap/shared", [], {
+      pkg("@vibe-vr/shared", [], {
         "packages/shared/src/version.test.ts":
-          'import pkg from "@nap/shared" with { type: "json" };',
+          'import pkg from "@vibe-vr/shared" with { type: "json" };',
       }),
     );
     expect(violations).toEqual([]);
@@ -261,7 +261,7 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("ignores third-party specifiers and relative ones", () => {
     const violations = checkSourceImports(
-      pkg("@nap/context", ["@nap/shared"], {
+      pkg("@vibe-vr/context", ["@vibe-vr/shared"], {
         "packages/context/src/engine.ts":
           'import { z } from "zod";\nimport { budget } from "./budget.ts";',
       }),
@@ -271,9 +271,9 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("lets apps import anything they declare", () => {
     const violations = checkSourceImports(
-      pkg("@nap/api", ["@nap/runtime", "@nap/shared"], {
+      pkg("@vibe-vr/api", ["@vibe-vr/runtime", "@vibe-vr/shared"], {
         "apps/api/src/index.ts":
-          'import { SingleAgentRuntime } from "@nap/runtime/single-agent-runtime";',
+          'import { SingleAgentRuntime } from "@vibe-vr/runtime/single-agent-runtime";',
       }),
     );
     expect(violations).toEqual([]);
@@ -281,9 +281,9 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("still requires an app to declare what it imports", () => {
     const violations = checkSourceImports(
-      pkg("@nap/api", ["@nap/shared"], {
+      pkg("@vibe-vr/api", ["@vibe-vr/shared"], {
         "apps/api/src/index.ts":
-          'import { SingleAgentRuntime } from "@nap/runtime/single-agent-runtime";',
+          'import { SingleAgentRuntime } from "@vibe-vr/runtime/single-agent-runtime";',
       }),
     );
     expect(violations).toHaveLength(1);
@@ -292,10 +292,10 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("reads re-exports, side-effect imports and require as the edges they are", () => {
     const violations = checkSourceImports(
-      pkg("@nap/verify", ["@nap/shared"], {
-        "packages/verify/src/a.ts": 'export { CATEGORIES } from "@nap/bench/category";',
-        "packages/verify/src/b.ts": 'import "@nap/bench/register";',
-        "packages/verify/src/c.ts": 'const bench = require("@nap/bench/report");',
+      pkg("@vibe-vr/verify", ["@vibe-vr/shared"], {
+        "packages/verify/src/a.ts": 'export { CATEGORIES } from "@vibe-vr/bench/category";',
+        "packages/verify/src/b.ts": 'import "@vibe-vr/bench/register";',
+        "packages/verify/src/c.ts": 'const bench = require("@vibe-vr/bench/report");',
       }),
     );
     expect(violations.map((v) => v.from).toSorted()).toEqual([
@@ -307,9 +307,9 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("holds a script to the manifest, since hoisting is what makes its imports resolve too", () => {
     const violations = checkSourceImports(
-      pkg("@nap/runtime", ["@nap/shared"], {
+      pkg("@vibe-vr/runtime", ["@vibe-vr/shared"], {
         "packages/runtime/scripts/harness.ts":
-          'import { OpenRouter } from "@nap/agent/openrouter";',
+          'import { OpenRouter } from "@vibe-vr/agent/openrouter";',
       }),
     );
     expect(violations).toHaveLength(1);
@@ -321,13 +321,13 @@ describe("dependency direction at the import — the checker actually catches vi
     // never ships as a module. It answers to the manifest, not to the layer table.
     const violations = checkSourceImports(
       pkg(
-        "@nap/runtime",
-        ["@nap/shared"],
+        "@vibe-vr/runtime",
+        ["@vibe-vr/shared"],
         {
           "packages/runtime/scripts/harness.ts":
-            'import { OpenRouter } from "@nap/agent/openrouter";',
+            'import { OpenRouter } from "@vibe-vr/agent/openrouter";',
         },
-        ["@nap/agent"],
+        ["@vibe-vr/agent"],
       ),
     );
     expect(violations).toEqual([]);
@@ -339,13 +339,13 @@ describe("dependency direction at the import — the checker actually catches vi
     // while staying invisible to the direction check.
     const violations = checkSourceImports(
       pkg(
-        "@nap/runtime",
-        ["@nap/shared"],
+        "@vibe-vr/runtime",
+        ["@vibe-vr/shared"],
         {
           "packages/runtime/src/turn.ts":
-            'import { AgentService } from "@nap/agent/agent-service";',
+            'import { AgentService } from "@vibe-vr/agent/agent-service";',
         },
-        ["@nap/agent"],
+        ["@vibe-vr/agent"],
       ),
     );
     expect(violations).toHaveLength(1);
@@ -353,14 +353,14 @@ describe("dependency direction at the import — the checker actually catches vi
   });
 
   it("refuses the benchmark to a test, declared or not", () => {
-    // The one edge the exemption does not cover. docs/adr/0007: a test importing @nap/bench
+    // The one edge the exemption does not cover. docs/adr/0007: a test importing @vibe-vr/bench
     // still has to typecheck, so it still makes every scoring change a production change.
     const violations = checkSourceImports(
       pkg(
-        "@nap/runtime",
-        ["@nap/shared"],
-        { "packages/runtime/src/turn.test.ts": 'import { score } from "@nap/bench/score";' },
-        ["@nap/bench"],
+        "@vibe-vr/runtime",
+        ["@vibe-vr/shared"],
+        { "packages/runtime/src/turn.test.ts": 'import { score } from "@vibe-vr/bench/score";' },
+        ["@vibe-vr/bench"],
       ),
     );
     expect(violations).toHaveLength(1);
@@ -369,8 +369,8 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("still lets the benchmark app's own tests use it", () => {
     const violations = checkSourceImports(
-      pkg("@nap/napbench", ["@nap/bench"], {
-        "apps/napbench/src/run.test.ts": 'import { score } from "@nap/bench/score";',
+      pkg("@vibe-vr/napbench", ["@vibe-vr/bench"], {
+        "apps/napbench/src/run.test.ts": 'import { score } from "@vibe-vr/bench/score";',
       }),
     );
     expect(violations).toEqual([]);
@@ -378,8 +378,8 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("fails loudly on a package the rule table has never heard of", () => {
     const violations = checkSourceImports(
-      pkg("@nap/mystery", ["@nap/shared"], {
-        "packages/mystery/src/x.ts": 'import { ok } from "@nap/shared/result";',
+      pkg("@vibe-vr/mystery", ["@vibe-vr/shared"], {
+        "packages/mystery/src/x.ts": 'import { ok } from "@vibe-vr/shared/result";',
       }),
     );
     expect(violations).toHaveLength(1);
@@ -388,9 +388,9 @@ describe("dependency direction at the import — the checker actually catches vi
 
   it("reports every violating file, not just the first", () => {
     const violations = checkSourceImports(
-      pkg("@nap/verify", ["@nap/shared", "@nap/bench"], {
-        "packages/verify/src/a.ts": 'import { a } from "@nap/bench/category";',
-        "packages/verify/src/b.ts": 'import { b } from "@nap/runtime/single-agent-runtime";',
+      pkg("@vibe-vr/verify", ["@vibe-vr/shared", "@vibe-vr/bench"], {
+        "packages/verify/src/a.ts": 'import { a } from "@vibe-vr/bench/category";',
+        "packages/verify/src/b.ts": 'import { b } from "@vibe-vr/runtime/single-agent-runtime";',
       }),
     );
     expect(violations).toHaveLength(2);
@@ -402,38 +402,26 @@ describe("dependency direction — the checker actually catches violations", () 
   // cases are the reason this file is worth having.
   it("rejects shared depending on anything internal", () => {
     const violations = checkDependencyDirection([
-      { name: "@nap/shared", dependencies: ["@nap/runtime"] },
+      { name: "@vibe-vr/shared", dependencies: ["@vibe-vr/runtime"] },
     ]);
     expect(violations).toHaveLength(1);
-    expect(violations[0]?.from).toBe("@nap/shared");
-    expect(violations[0]?.to).toBe("@nap/runtime");
+    expect(violations[0]?.from).toBe("@vibe-vr/shared");
+    expect(violations[0]?.to).toBe("@vibe-vr/runtime");
   });
 
   it("rejects a leaf package depending on a sibling leaf", () => {
     const violations = checkDependencyDirection([
-      { name: "@nap/agent", dependencies: ["@nap/db"] },
+      { name: "@vibe-vr/agent", dependencies: ["@vibe-vr/db"] },
     ]);
     expect(violations).toHaveLength(1);
     expect(violations[0]?.reason).toContain("may only depend on");
   });
 
-  it("rejects agent importing the E2B SDK instead of the SandboxManager interface", () => {
-    // PLAN.md §0: "agent imports the SandboxManager interface, never the E2B
-    // adapter." E2B belongs to @nap/sandbox alone.
-    const violations = checkDependencyDirection([{ name: "@nap/agent", dependencies: ["e2b"] }]);
-    expect(violations).toHaveLength(1);
-    expect(violations[0]?.reason).toContain("SandboxManager");
-  });
-
-  it("allows sandbox to depend on the E2B SDK", () => {
-    expect(checkDependencyDirection([{ name: "@nap/sandbox", dependencies: ["e2b"] }])).toEqual([]);
-  });
-
   it("allows runtime to depend on every inner package", () => {
     const violations = checkDependencyDirection([
       {
-        name: "@nap/runtime",
-        dependencies: ["@nap/context", "@nap/agent", "@nap/sandbox", "@nap/db", "@nap/shared"],
+        name: "@vibe-vr/runtime",
+        dependencies: ["@vibe-vr/context", "@vibe-vr/agent", "@vibe-vr/sandbox", "@vibe-vr/db", "@vibe-vr/shared"],
       },
     ]);
     expect(violations).toEqual([]);
@@ -443,7 +431,7 @@ describe("dependency direction — the checker actually catches violations", () 
     // docs/adr/0001: the deployed image is one workspace-wide install, so a browser driver
     // added to any package is a browser driver the production API carries.
     const violations = checkDependencyDirection([
-      { name: "@nap/capture", dependencies: ["playwright-core"] },
+      { name: "@vibe-vr/capture", dependencies: ["playwright-core"] },
     ]);
     expect(violations).toHaveLength(1);
     expect(violations[0]?.reason).toContain("BrowserSession");
@@ -455,31 +443,31 @@ describe("dependency direction — the checker actually catches violations", () 
     // driver into production through the back door — which is the exact thing
     // docs/adr/0001 justifies the rule by.
     const violations = checkDependencyDirection([
-      { name: "@nap/capture", dependencies: [], devDependencies: ["playwright-core"] },
+      { name: "@vibe-vr/capture", dependencies: [], devDependencies: ["playwright-core"] },
     ]);
     expect(violations).toHaveLength(1);
     expect(violations[0]?.reason).toContain("BrowserSession");
   });
 
   it("allows a sibling package in devDependencies", () => {
-    // docs/adr/0001: @nap/bench carries siblings as devDependencies for their published
+    // docs/adr/0001: @vibe-vr/bench carries siblings as devDependencies for their published
     // fakes, which is what makes the runner unit-testable. Only the *externals* rule
     // widens to devDependencies; the direction rule stays on runtime dependencies.
     const violations = checkDependencyDirection([
-      { name: "@nap/bench", dependencies: ["@nap/shared"], devDependencies: ["@nap/sandbox"] },
+      { name: "@vibe-vr/bench", dependencies: ["@vibe-vr/shared"], devDependencies: ["@vibe-vr/sandbox"] },
     ]);
     expect(violations).toEqual([]);
   });
 
   it("allows the benchmark app to depend on Playwright", () => {
     expect(
-      checkDependencyDirection([{ name: "@nap/napbench", dependencies: ["playwright-core"] }]),
+      checkDependencyDirection([{ name: "@vibe-vr/napbench", dependencies: ["playwright-core"] }]),
     ).toEqual([]);
   });
 
-  it("rejects the benchmark core reaching past @nap/shared", () => {
+  it("rejects the benchmark core reaching past @vibe-vr/shared", () => {
     const violations = checkDependencyDirection([
-      { name: "@nap/bench", dependencies: ["@nap/runtime"] },
+      { name: "@vibe-vr/bench", dependencies: ["@vibe-vr/runtime"] },
     ]);
     expect(violations).toHaveLength(1);
     expect(violations[0]?.reason).toContain("may only depend on");
@@ -487,21 +475,21 @@ describe("dependency direction — the checker actually catches violations", () 
 
   it("allows apps to depend on any package", () => {
     const violations = checkDependencyDirection([
-      { name: "@nap/api", dependencies: ["@nap/runtime", "@nap/shared"] },
+      { name: "@vibe-vr/api", dependencies: ["@vibe-vr/runtime", "@vibe-vr/shared"] },
     ]);
     expect(violations).toEqual([]);
   });
 
   it("ignores third-party dependencies", () => {
     expect(
-      checkDependencyDirection([{ name: "@nap/context", dependencies: ["zod", "@nap/shared"] }]),
+      checkDependencyDirection([{ name: "@vibe-vr/context", dependencies: ["zod", "@vibe-vr/shared"] }]),
     ).toEqual([]);
   });
 
   it("reports every violation, not just the first", () => {
     const violations = checkDependencyDirection([
-      { name: "@nap/shared", dependencies: ["@nap/db"] },
-      { name: "@nap/agent", dependencies: ["@nap/runtime"] },
+      { name: "@vibe-vr/shared", dependencies: ["@vibe-vr/db"] },
+      { name: "@vibe-vr/agent", dependencies: ["@vibe-vr/runtime"] },
     ]);
     expect(violations).toHaveLength(2);
   });
@@ -509,7 +497,7 @@ describe("dependency direction — the checker actually catches violations", () 
   it("fails loudly on an unknown package rather than passing it", () => {
     // Silence on an unrecognised name is how this check would rot.
     const violations = checkDependencyDirection([
-      { name: "@nap/mystery", dependencies: ["@nap/runtime"] },
+      { name: "@vibe-vr/mystery", dependencies: ["@vibe-vr/runtime"] },
     ]);
     expect(violations).toHaveLength(1);
     expect(violations[0]?.reason).toContain("unknown");

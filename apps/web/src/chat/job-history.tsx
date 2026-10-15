@@ -31,7 +31,7 @@ export function JobHistory({ entries }: { entries: readonly JobHistoryEntry[] })
     */
     <ul
       aria-label="Job history"
-      className="nap-scroll flex max-h-[45vh] flex-col gap-2 overflow-y-auto pt-0.5"
+      className="vibe-vr-scroll flex max-h-[45vh] flex-col gap-2 overflow-y-auto pt-0.5"
     >
       {entries.map((entry) => (
         <li

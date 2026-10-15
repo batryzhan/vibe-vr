@@ -1,6 +1,6 @@
-import { FakePageCapture } from "@nap/capture/testing/fake-page-capture";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { FakePageCapture } from "@vibe-vr/capture/testing/fake-page-capture";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { captureThumbnail, thumbnailKey } from "./turn-thumbnail.ts";
 

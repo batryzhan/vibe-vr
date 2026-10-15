@@ -15,8 +15,8 @@
  * at its own boundaries.
  */
 
-import type { TurnFailureReason } from "@nap/shared/events";
-import type { TokenUsage } from "@nap/shared/ports/llm-provider";
+import type { TurnFailureReason } from "@vibe-vr/shared/events";
+import type { TokenUsage } from "@vibe-vr/shared/ports/llm-provider";
 
 /**
  * Round trips through the model in one turn.

@@ -125,7 +125,7 @@ export function ListIcon({ className = "size-4" }: IconProps) {
  */
 export function SpinnerIcon({ className = "size-4" }: IconProps) {
   return (
-    <svg aria-hidden="true" {...STROKE} className={`nap-spin ${className}`}>
+    <svg aria-hidden="true" {...STROKE} className={`vibe-vr-spin ${className}`}>
       <path d="M14 8a6 6 0 1 1-2.2-4.6" />
     </svg>
   );

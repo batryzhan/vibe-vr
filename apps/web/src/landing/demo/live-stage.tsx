@@ -51,7 +51,7 @@ function skinFor(frame: Frame, cell: number): string {
 /** Where the traced path is drawn from. The skin bulges outside the boxes, so this is padded. */
 const VIEW = { x: -80, y: -80, w: SPACE.w + 160, h: SPACE.h + 160 };
 
-/** The design space, handed to the stylesheet. Unitless — see `.nap-space` in `globals.css`. */
+/** The design space, handed to the stylesheet. Unitless — see `.vibe-vr-space` in `globals.css`. */
 const spaceVars = { "--space-w": SPACE.w, "--space-h": SPACE.h } as CSSProperties;
 
 const boxStyle = (box: Box): CSSProperties => ({
@@ -167,10 +167,10 @@ export function LiveStage({ beatRef }: { beatRef?: RefObject<HTMLElement | null>
       aria-hidden="true"
       // The design space, scaled to whatever width the column gives it — the same pair of classes
       // the poured bento uses, and the reason every number in `script.ts` can be a plain pixel.
-      className="nap-space-host relative w-full"
+      className="vibe-vr-space-host relative w-full"
       style={spaceVars}
     >
-      <div className="nap-space">
+      <div className="vibe-vr-space">
         <svg
           className="pointer-events-none absolute overflow-visible"
           style={{ left: VIEW.x, top: VIEW.y, width: VIEW.w, height: VIEW.h }}
@@ -193,7 +193,7 @@ export function LiveStage({ beatRef }: { beatRef?: RefObject<HTMLElement | null>
             className="absolute inset-0 flex items-center justify-center gap-2"
             style={{ opacity: still.panel }}
           >
-            <span className="nap-spin size-3 rounded-full border-[1.5px] border-[var(--s-border-1)] border-t-[var(--s-text-body)]" />
+            <span className="vibe-vr-spin size-3 rounded-full border-[1.5px] border-[var(--s-border-1)] border-t-[var(--s-text-body)]" />
             <span className="text-[13px] text-[var(--s-text-body)]">Working</span>
           </div>
           <div
@@ -220,7 +220,7 @@ export function LiveStage({ beatRef }: { beatRef?: RefObject<HTMLElement | null>
               <span ref={line}>{still.typed}</span>
               <span
                 ref={caret}
-                className="nap-caret ml-[1px] inline-block h-[17px] w-[1.5px] bg-[var(--s-text-primary)] align-middle"
+                className="vibe-vr-caret ml-[1px] inline-block h-[17px] w-[1.5px] bg-[var(--s-text-primary)] align-middle"
                 style={{ opacity: still.caret ? 1 : 0 }}
               />
             </span>
@@ -256,7 +256,7 @@ export function LiveStage({ beatRef }: { beatRef?: RefObject<HTMLElement | null>
                       rows.current[index] = element;
                     }}
                     data-state={still.steps[index]}
-                    className="nap-demo-step flex items-center gap-2.5"
+                    className="vibe-vr-demo-step flex items-center gap-2.5"
                   >
                     <Icon className="size-3.5 shrink-0 text-[var(--s-text-subtle)]" />
                     <span className="shrink-0 text-[13px] text-[var(--s-text-body)]">
@@ -265,10 +265,10 @@ export function LiveStage({ beatRef }: { beatRef?: RefObject<HTMLElement | null>
                     <span className="min-w-0 flex-1 truncate font-mono text-[12px] text-[var(--s-text-muted)]">
                       {step.target}
                     </span>
-                    <span className="nap-demo-running size-3.5 shrink-0">
-                      <span className="nap-spin block size-3.5 rounded-full border-[1.5px] border-[var(--s-border-1)] border-t-[var(--s-text-body)]" />
+                    <span className="vibe-vr-demo-running size-3.5 shrink-0">
+                      <span className="vibe-vr-spin block size-3.5 rounded-full border-[1.5px] border-[var(--s-border-1)] border-t-[var(--s-text-body)]" />
                     </span>
-                    <CheckIcon className="nap-demo-done size-3.5 shrink-0 text-[var(--s-text-subtle)]" />
+                    <CheckIcon className="vibe-vr-demo-done size-3.5 shrink-0 text-[var(--s-text-subtle)]" />
                   </li>
                 );
               })}
@@ -277,7 +277,7 @@ export function LiveStage({ beatRef }: { beatRef?: RefObject<HTMLElement | null>
 
           <div
             ref={previewGroup}
-            className="nap-demo-preview absolute inset-0 px-5 py-4"
+            className="vibe-vr-demo-preview absolute inset-0 px-5 py-4"
             style={{ opacity: 0 }}
           >
             <span className="block h-2.5 w-24 rounded-full bg-[var(--s-text-subtle)]/60" />

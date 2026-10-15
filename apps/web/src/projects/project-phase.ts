@@ -17,7 +17,7 @@
  * will get, so the order is stated once, here, and every clause says which fact it defends.
  */
 
-import { type ProjectSummaryPayload, projectState } from "@nap/shared/projects-protocol";
+import { type ProjectSummaryPayload, projectState } from "@vibe-vr/shared/projects-protocol";
 import type { PreviewState } from "../preview/preview-state.ts";
 
 export type ProjectPhase =

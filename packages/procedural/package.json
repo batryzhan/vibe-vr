@@ -1,5 +1,5 @@
 {
-  "name": "@nap/procedural",
+  "name": "@vibe-vr/procedural",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,12 +10,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nap/scene-spec": "workspace:*",
-    "@nap/shared": "workspace:*",
+    "@vibe-vr/scene-spec": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
     "three": "0.186.1"
   },
   "devDependencies": {
-    "@nap/storage": "workspace:*",
+    "@vibe-vr/storage": "workspace:*",
     "@types/three": "^0.186.0"
   }
 }

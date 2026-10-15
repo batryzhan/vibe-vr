@@ -1,4 +1,4 @@
-import type { SceneMaterial } from "@nap/scene-spec/schema";
+import type { SceneMaterial } from "@vibe-vr/scene-spec/schema";
 import { describe, expect, it } from "vitest";
 import { assembleComponents, buildComponent } from "./component.ts";
 import { collar, footedPost, panel } from "./detail.ts";

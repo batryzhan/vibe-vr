@@ -11,17 +11,17 @@
  * disagrees with itself by the third edit.
  */
 
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemoryProjectSandboxStore } from "@nap/db/testing/in-memory-project-sandbox-store";
-import { FAKE_OWNER, InMemoryProjectStore } from "@nap/db/testing/in-memory-project-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { InMemoryTurnQueue } from "@nap/db/testing/in-memory-turn-queue";
-import { InMemoryUserKeyStore } from "@nap/db/testing/in-memory-user-key-store";
-import { TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemoryProjectSandboxStore } from "@vibe-vr/db/testing/in-memory-project-sandbox-store";
+import { FAKE_OWNER, InMemoryProjectStore } from "@vibe-vr/db/testing/in-memory-project-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { InMemoryTurnQueue } from "@vibe-vr/db/testing/in-memory-turn-queue";
+import { InMemoryUserKeyStore } from "@vibe-vr/db/testing/in-memory-user-key-store";
+import { TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { encryptionKeyFrom } from "../account/secret-box.ts";
 import type { AppDeps } from "../app.ts";
 import { TurnRegistry } from "../turns/registry.ts";

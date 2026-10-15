@@ -10,27 +10,20 @@
  * R2 — and a bucket would make this neither free nor deterministic.
  */
 
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { E2BSandboxManager } from "@nap/sandbox/e2b-sandbox-manager";
-import { commitAll, currentSha } from "@nap/sandbox/git";
-import { NAP_TEMPLATE, TEMPLATE_FILES, TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { DockerSandboxManager } from "@vibe-vr/sandbox/docker-sandbox-manager";
+import { commitAll, currentSha } from "@vibe-vr/sandbox/git";
+import { TEMPLATE_FILES, TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { afterAll, beforeAll, expect, it } from "vitest";
 import { openProject } from "./restore.ts";
 import { tearDownProject } from "./teardown.ts";
-
-if (process.env.E2B_API_KEY === undefined || process.env.E2B_API_KEY === "") {
-  throw new Error(
-    "E2B_API_KEY is not set, so the snapshot round trip cannot verify anything. " +
-      "Put it in apps/api/.env or export it, then re-run `bun run test:integration`.",
-  );
-}
 
 const PROJECT = "5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f607182";
 const FILE = "src/restored.ts";
 const CONTENTS = "export const survived = true;\n";
 
-const manager = new E2BSandboxManager({ template: NAP_TEMPLATE });
+const manager = new DockerSandboxManager();
 const objects = new InMemoryObjectStore();
 const snapshots = new InMemorySnapshotStore();
 

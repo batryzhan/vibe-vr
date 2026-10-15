@@ -17,7 +17,7 @@
  * reason a build failed is at the end of what it printed (`renderCheckOutput`).
  */
 
-import type { FailedAttempt } from "@nap/shared/ports/context-engine";
+import type { FailedAttempt } from "@vibe-vr/shared/ports/context-engine";
 import { truncateToTokens } from "./tokens.ts";
 
 export type JobBriefOptions = {

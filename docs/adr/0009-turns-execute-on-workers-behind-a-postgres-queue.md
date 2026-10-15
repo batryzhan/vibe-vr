@@ -42,7 +42,7 @@ are the semantics. `apps/api/src/worker.ts` is the process that drains it.
 Four reasons, in the order they actually decided it.
 
 **The event log, not the queue, is what makes recovery correct.** A Job is a fold over the durable
-event log — `foldJobs` in `@nap/shared`, with no jobs table behind it — so whether a turn ran, how
+event log — `foldJobs` in `@vibe-vr/shared`, with no jobs table behind it — so whether a turn ran, how
 far it got, how many repairs it has spent and whether its commit was checkpointed are all answers
 Postgres already holds. Redelivery is therefore not a feature we want: re-running a turn a worker
 half-executed would spend tokens and money on work the log already records, and the correct
@@ -102,6 +102,6 @@ process holds connections for the queue, the event log, the LISTEN socket (ADR-0
 reaper's advisory lock; the cluster run peaked at 51 connections across nine pods. A pool that is
 too small looks like latency, not like an error.
 
-**The queue is not the ceiling on spend, and must not be mistaken for one.** `NAP_MAX_SANDBOXES_TOTAL`
+**The queue is not the ceiling on spend, and must not be mistaken for one.** `VIBE_VR_MAX_SANDBOXES_TOTAL`
 is, through `sandbox_reservations`; the worker's `maxReplicaCount` is derived from it precisely so
 that no scaling decision on queue depth can outrun it.

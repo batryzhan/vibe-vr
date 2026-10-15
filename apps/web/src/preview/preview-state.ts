@@ -14,8 +14,8 @@
  *     `cancelled` are the agent stopping, and a pane claiming the sandbox died would be a lie.
  */
 
-import type { NapEventOf } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEventOf } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 type FailureReason = NapEventOf<"turn.failed">["payload"]["reason"];
 

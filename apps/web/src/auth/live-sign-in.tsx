@@ -51,7 +51,7 @@ const UNREACHABLE = "We couldn't reach the server. Check your connection and try
  */
 const COOKIE_BLOCKED =
   "Your browser blocked the sign-in cookie, so we couldn't keep you signed in. Safari and Brave " +
-  "block cookies set by another site, and Nap's API is on one. Open Nap in Chrome or Firefox, or " +
+  "block cookies set by another site, and Vibe-VR's API is on one. Open Vibe-VR in Chrome or Firefox, or " +
   "turn off “Prevent cross-site tracking” in Safari's privacy settings.";
 
 /**

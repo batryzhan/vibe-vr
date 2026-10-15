@@ -25,13 +25,14 @@
  * to — and a client waiting on a socket would simply never hear anything.
  */
 
-import { getLogger } from "@nap/shared/logging";
-import type { ModelCredentials } from "@nap/shared/ports/llm-provider";
-import type { ProjectStore } from "@nap/shared/ports/project-store";
-import type { SessionRecord, SessionStore } from "@nap/shared/ports/session-store";
-import type { TurnQueue } from "@nap/shared/ports/turn-queue";
-import type { TurnRateLimiter } from "@nap/shared/ports/turn-rate-limit";
-import { isUnnamed, titleFromPrompt } from "@nap/shared/project-title";
+import { getLogger } from "@vibe-vr/shared/logging";
+import type { ModelCredentials } from "@vibe-vr/shared/ports/llm-provider";
+import type { ProjectStore } from "@vibe-vr/shared/ports/project-store";
+import type { SessionRecord, SessionStore } from "@vibe-vr/shared/ports/session-store";
+import type { TurnQueue } from "@vibe-vr/shared/ports/turn-queue";
+import type { TurnRateLimiter } from "@vibe-vr/shared/ports/turn-rate-limit";
+import { isUnnamed, titleFromPrompt } from "@vibe-vr/shared/project-title";
+import { ReferenceImageSchema } from "@vibe-vr/shared/reference-image";
 import type { Context, Hono } from "hono";
 import { z } from "zod";
 import { findOwnedSession } from "../auth/owned-session.ts";
@@ -80,6 +81,9 @@ export type TurnRouteDeps = {
   freeModel: string;
   /** What a turn runs on when the asker has a key and names nothing. */
   defaultModel: string;
+  /** The deployment key funds the full allowlist instead of only the free model. */
+  serverFundedModels?: boolean;
+  supportsImages?: boolean;
   limits?: {
     rate: TurnRateLimiter;
     /**
@@ -120,6 +124,7 @@ const TurnBodySchema = z.object({
    * models are the ones they would choose.
    */
   model: z.string().min(1).optional(),
+  referenceImage: ReferenceImageSchema.optional(),
 });
 
 const ClarifyBodySchema = z.object({
@@ -139,6 +144,10 @@ export function registerTurnRoutes(
       return c.json({ error: body.error.issues.map((issue) => issue.message).join("; ") }, 400);
     }
 
+    if (body.data.referenceImage !== undefined && !deps.supportsImages) {
+      return c.json({ error: "The configured provider does not support reference images." }, 400);
+    }
+
     // Whose account this turn is billed to, which is also what decides which models they may
     // name. One lookup answers both, and both are needed before anything is spent.
     const key = (await deps.keys?.(c.get("userId"))) ?? null;
@@ -151,6 +160,9 @@ export function registerTurnRoutes(
       allowed: deps.allowedModels,
       freeModel: deps.freeModel,
       defaultModel: deps.defaultModel,
+      ...(deps.serverFundedModels === undefined
+        ? {}
+        : { serverFundedModels: deps.serverFundedModels }),
     });
     if (!access.ok) {
       return c.json({ error: access.message, code: access.code }, refusalStatus(access.code));
@@ -183,6 +195,9 @@ export function registerTurnRoutes(
       userId: c.get("userId"),
       kind: "turn",
       message: body.data.message,
+      ...(body.data.referenceImage === undefined
+        ? {}
+        : { referenceImage: body.data.referenceImage }),
       // Concrete by now. The resolver always returns a model rather than leaving a default to be
       // applied later, because the default that would be applied is a *paid* one and forgetting
       // it is this deployment buying tokens for a stranger.

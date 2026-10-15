@@ -17,8 +17,8 @@
  * per-line, and two events appended in the same millisecond sort arbitrarily by them.
  */
 
-import type { NapEvent } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEvent } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 export type EventLogLine = {
   level: "debug" | "info" | "warn";

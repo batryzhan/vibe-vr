@@ -11,8 +11,8 @@
  * hide a broken subscriber behind a green test.
  */
 
-import type { EventBus, EventHandler, Unsubscribe } from "@nap/shared/ports/event-bus";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { EventBus, EventHandler, Unsubscribe } from "@vibe-vr/shared/ports/event-bus";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 export class InMemoryEventBus implements EventBus {
   readonly #bySession = new Map<string, Set<EventHandler>>();

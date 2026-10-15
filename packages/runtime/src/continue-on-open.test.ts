@@ -11,19 +11,19 @@
  * Every case below says whether a turn ran, and the ones that say no are the majority.
  */
 
-import { completedTurn, ScriptedAgent } from "@nap/agent/testing/scripted-agent";
-import { NoopMemoryProvider } from "@nap/context/noop-memory-provider";
-import { StubContextEngine } from "@nap/context/testing/stub-context-engine";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { TEMPLATE_DEV_PORT } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { FAKE_COMMIT_SHA, scriptGit } from "@nap/sandbox/testing/script-git";
-import type { NapEvent, NapEventType, PromptSource } from "@nap/shared/events";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
-import { foldJobs, MAX_REPAIR_ATTEMPTS } from "@nap/shared/job-state";
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
+import { completedTurn, ScriptedAgent } from "@vibe-vr/agent/testing/scripted-agent";
+import { NoopMemoryProvider } from "@vibe-vr/context/noop-memory-provider";
+import { StubContextEngine } from "@vibe-vr/context/testing/stub-context-engine";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { TEMPLATE_DEV_PORT } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { FAKE_COMMIT_SHA, scriptGit } from "@vibe-vr/sandbox/testing/script-git";
+import type { NapEvent, NapEventType, PromptSource } from "@vibe-vr/shared/events";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
+import { foldJobs, MAX_REPAIR_ATTEMPTS } from "@vibe-vr/shared/job-state";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { SingleAgentRuntime } from "./single-agent-runtime.ts";
 

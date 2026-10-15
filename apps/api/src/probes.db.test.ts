@@ -1,7 +1,7 @@
 import { setTimeout as sleep } from "node:timers/promises";
-import { createDatabase, pingDatabase } from "@nap/db/client";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
+import { createDatabase, pingDatabase } from "@vibe-vr/db/client";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
 import { describe, expect, inject, it } from "vitest";
 import { createApp } from "./app.ts";
 import { createHealthProbe, type HealthCheck } from "./health.ts";

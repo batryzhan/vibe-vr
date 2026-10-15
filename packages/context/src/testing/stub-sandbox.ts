@@ -19,8 +19,8 @@ import type {
   Sandbox,
   SandboxError,
   SandboxManager,
-} from "@nap/shared/ports/sandbox-manager";
-import type { Result, VoidResult } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/sandbox-manager";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 
 /** Directory path → its direct children, matching what a real `listFiles` returns. */
 export type FileTree = Record<string, FileNode[]>;

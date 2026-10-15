@@ -1,7 +1,7 @@
 /**
  * Checks that a sandbox created from the Nap template really is a ready-to-run project.
  *
- * This does not build the template — that is `bun run template:build`, a manual step.
+ * The Docker image is built automatically when the first sandbox is created.
  * If the template is missing, these fail, and that is the intended signal.
  *
  * The assertion that earns this task is `node_modules`: the whole reason for a custom
@@ -11,17 +11,10 @@
  */
 
 import { afterAll, beforeAll, expect, it } from "vitest";
-import { E2BSandboxManager } from "./e2b-sandbox-manager.ts";
-import { NAP_TEMPLATE, TEMPLATE_DEV_PORT, TEMPLATE_FILES, TEMPLATE_WORKDIR } from "./template.ts";
+import { DockerSandboxManager } from "./docker-sandbox-manager.ts";
+import { TEMPLATE_DEV_PORT, TEMPLATE_FILES, TEMPLATE_WORKDIR } from "./template.ts";
 
-if (process.env.E2B_API_KEY === undefined || process.env.E2B_API_KEY === "") {
-  throw new Error(
-    "E2B_API_KEY is not set, so the template check cannot verify anything. " +
-      "Put it in apps/api/.env or export it, then re-run `bun run test:integration`.",
-  );
-}
-
-const manager = new E2BSandboxManager({ template: NAP_TEMPLATE });
+const manager = new DockerSandboxManager();
 
 let sandboxId: string;
 /** Time from "create a project" to "sandbox usable". */
@@ -37,8 +30,8 @@ beforeAll(async () => {
 
   if (!created.ok) {
     throw new Error(
-      `could not create a sandbox from template "${NAP_TEMPLATE}": ${created.error.message}. ` +
-        "If it does not exist yet, run `bun run template:build` in packages/sandbox.",
+      `could not create a local Docker sandbox: ${created.error.message}. ` +
+        "Confirm Docker Desktop is running and retry.",
     );
   }
   sandboxId = created.value.id;

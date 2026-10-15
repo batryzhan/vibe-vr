@@ -13,7 +13,7 @@
  * every process agrees on is the store's own.
  */
 
-import { LEASE_GRACE_MS, LEASE_TTL_MS, ORPHAN_SWEEP_LIMIT } from "@nap/shared/lease-windows";
+import { LEASE_GRACE_MS, LEASE_TTL_MS, ORPHAN_SWEEP_LIMIT } from "@vibe-vr/shared/lease-windows";
 import type {
   CancelOutcome,
   EnqueueTurnRequest,
@@ -24,7 +24,7 @@ import type {
   TurnRequestKind,
   TurnRequestSettlement,
   TurnRequestState,
-} from "@nap/shared/ports/turn-queue";
+} from "@vibe-vr/shared/ports/turn-queue";
 
 type Row = {
   id: string;
@@ -32,6 +32,7 @@ type Row = {
   userId: string;
   kind: TurnRequestKind;
   message: string | null;
+  referenceImage?: string | undefined;
   model: string;
   billsToUser: boolean;
   state: TurnRequestState;
@@ -74,6 +75,7 @@ export class InMemoryTurnQueue implements TurnQueue {
       userId: request.userId,
       kind: request.kind,
       message: request.message,
+      ...(request.referenceImage === undefined ? {} : { referenceImage: request.referenceImage }),
       model: request.model,
       billsToUser: request.billsToUser,
       state: "queued",
@@ -107,6 +109,9 @@ export class InMemoryTurnQueue implements TurnQueue {
       userId: candidate.userId,
       kind: candidate.kind,
       message: candidate.message,
+      ...(candidate.referenceImage === undefined
+        ? {}
+        : { referenceImage: candidate.referenceImage }),
       model: candidate.model,
       billsToUser: candidate.billsToUser,
     };
@@ -167,7 +172,7 @@ export class InMemoryTurnQueue implements TurnQueue {
 
   async orphanExpired(limit = ORPHAN_SWEEP_LIMIT): Promise<OrphanedTurnRequest[]> {
     // The fence: expiry alone is not enough, because a worker only learns it lost its lease on
-    // its next renewal. See `@nap/shared/lease-windows`.
+    // its next renewal. See `@vibe-vr/shared/lease-windows`.
     const reclaimable = this.#now() - this.#leaseGraceMs;
 
     const expired = this.#rows
@@ -226,6 +231,7 @@ export class InMemoryTurnQueue implements TurnQueue {
       userId: row.userId,
       kind: row.kind,
       message: row.message,
+      ...(row.referenceImage === undefined ? {} : { referenceImage: row.referenceImage }),
       model: row.model,
       billsToUser: row.billsToUser,
     }));

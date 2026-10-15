@@ -3,7 +3,7 @@
  *
  * A repair is a Turn whose prompt came from the verifier rather than from the user
  * (`docs/adr/0006`), and this is that prompt. It is prose, so it is here rather than in
- * `@nap/verify`: the verifier's result is data on purpose — its other reader is an event
+ * `@vibe-vr/verify`: the verifier's result is data on purpose — its other reader is an event
  * payload — and turning data into a sentence for a model is the composition step.
  *
  * Three things it deliberately does.
@@ -20,7 +20,7 @@
  * of fixing what the command found.
  */
 
-import { MAX_REPAIR_ATTEMPTS } from "@nap/shared/job-state";
+import { MAX_REPAIR_ATTEMPTS } from "@vibe-vr/shared/job-state";
 import type { CheckFailure } from "./verify-turn.ts";
 
 export type RepairPromptOptions = {

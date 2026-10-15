@@ -3,7 +3,8 @@
  *
  * A turn is not one request. The model asks for tools, reads what they returned, and asks
  * again; the loop here is what turns that exchange into a single unit of work with one
- * `turn.started` at the front and exactly one terminal event at the end.
+ * exactly one terminal event at the end. The runtime emits `turn.started` when its workspace is
+ * ready, before calling the agent.
  *
  * Three properties are worth more than the rest of this file.
  *
@@ -22,24 +23,46 @@
  * The caller that owns those things is the runtime — see `docs/PLAN.md` §0.
  */
 
-import type { SceneHead } from "@nap/scene-spec/fold";
-import type { NapEvent, NapEventOf, TurnFailureReason } from "@nap/shared/events";
-import type { AgentService, AgentTurnRequest } from "@nap/shared/ports/agent-service";
-import type { PendingEvent } from "@nap/shared/ports/event-store";
+import type { SceneHead } from "@vibe-vr/scene-spec/fold";
+import type { NapEvent, NapEventOf, TurnFailureReason } from "@vibe-vr/shared/events";
+import type { AgentService, AgentTurnRequest } from "@vibe-vr/shared/ports/agent-service";
+import type { PendingEvent } from "@vibe-vr/shared/ports/event-store";
 import type {
   LLMContentBlock,
   LLMMessage,
   LLMProvider,
   LLMToolCall,
   LLMTurn,
-} from "@nap/shared/ports/llm-provider";
+} from "@vibe-vr/shared/ports/llm-provider";
+import { classifySceneRequest } from "./dahl-provider.ts";
 import { DeltaStream } from "./delta-stream.ts";
+import { buildDemoChair, isDefaultChairRequest } from "./demo-chair.ts";
 import { TurnBudget, type TurnBudgetOptions } from "./safety/budget.ts";
 import { TOOL_DEFINITIONS } from "./tools/definitions.ts";
 import { executeTool, type ToolContext } from "./tools/execute.ts";
+import { readSceneHead, summarizeScene } from "./tools/scene.ts";
 
 type Payload<T extends NapEvent["type"]> = NapEventOf<T>["payload"];
 const CANCELLED = Symbol("cancelled");
+const SCENE_TOOL_NAMES = new Set(["get_scene", "propose_scene_patch", "propose_desk"]);
+
+const SCENE_AGENT_PROMPT = `
+<3d-scene-editing>
+For a request to create or change a 3D scene, treat the scene tools as the source of truth. Do not edit application files or run code to represent a scene change.
+- Use the authoritative scene snapshot supplied with the request. If it contains a scene, use its full revision hash as baseHash. If it says no scene exists, create directly without calling get_scene.
+- Use propose_scene_patch with a complete valid SceneSpec to create a scene, or a concise patch to edit an existing one.
+- For an edit, pass baseHash, ops as a JSON array, and rationale at the top level. Each op is an object: add a material with {op:"add_material",material:{id,name,color,metalness,roughness}} before an add_node that uses its materialId. add_node is {op:"add_node",parentId,node}; never stringify ops or nest the patch.
+- For creation, spec must be a JSON object with version, id, seed, units, axes, nodes, materials, and root; spec.id must be a valid UUID, never a display name. Never put a JSON string inside spec.
+- SceneSpec v1 uses metres, a right-handed coordinate system, and Y-up. The root and every node need stable ids and valid transforms. Supported procedural geometry is box and cylinder; materials use a hex color, metalness, and roughness.
+- Keep geometry within the requested object and the renderer's supported primitives. Do not claim unsupported lighting, textures, or arbitrary mesh/code generation.
+- Act as a product designer: a short request delegates the unspecified design choices to you. Choose a cohesive, refined design and build it immediately; ask questions only when essential for an edit. Explicit requests for simplicity, style, dimensions or materials take priority.
+- Design silhouette first, then structure, then a few intentional details. For an unspecified chair, use a refined contemporary wood chair: seat about 0.46 m high and 0.46 m wide, four grounded legs, rear supports, a distinct backrest, subtle stretchers and softened seat edges. Add a thin upholstered seat pad only if it suits the chosen style. Ensure all structural parts connect and the object reads clearly from three-quarter view.
+- Use 2–4 coordinated materials with realistic roughness: warm wood, a restrained dark structural accent and optionally muted upholstery. Avoid random saturated colors and excessive metalness on wood or fabric. Use supported box bevels of roughly 0.002–0.012 m, never above half the smallest dimension, and tapered cylinders where appropriate.
+- Aim for approximately 10–22 purposeful geometry nodes for an ordinary furniture object. Complexity is not quality: retain a clear silhouette, consistent thicknesses, symmetry and appropriate negative space. Avoid unrelated floors, pedestals, text, decorative clutter or whole rooms unless requested.
+- For a bare request for a chair, use this complete design brief rather than a six-block placeholder: a beveled walnut seat, four subtly tapered legs, four slim apron rails directly beneath the seat, two rear uprights connected to the rear legs, three spaced narrow back slats and a top rail joining the uprights. Use a lighter warm accent for the slats. Keep the back's negative space visible and the rails attached at their endpoints. Build these parts together in the first proposal. Adapt this brief when the user specifies another chair style or explicitly asks for a minimal model.
+- Work efficiently: make one complete scene proposal with all parts and materials. Do not issue a sequence of tiny additions, narrate a lengthy plan or call get_scene when the supplied snapshot is sufficient. Check dimensions, ground contact, material references, hierarchy and bevel limits before submitting. After acceptance, give a short confirmation in the user's language; do not rebuild or embellish an already successful proposal.
+- A proposal is not applied until validation succeeds. If the tool rejects it or returns a newer revision, use the latest tool result, fix the reported issue, and retry; then describe the accepted result plainly.
+</3d-scene-editing>`;
 
 export type AgentServiceOptions = {
   provider: LLMProvider;
@@ -116,6 +139,61 @@ class Turn {
       payload: { source: this.#request.promptSource ?? "user" },
     });
 
+    const firstUserMessage = latestUserMessage(this.#messages);
+    const routing = this.#request.referenceImage
+      ? { type: "object_creation" as const, needsSpatial: false, needsComposition: false }
+      : classifySceneRequest(firstUserMessage);
+    const sceneContext =
+      routing.type !== "simple_edit" ? await this.#readSceneContext() : undefined;
+
+    if (
+      !this.#request.referenceImage &&
+      sceneContext?.startsWith("There is no existing") &&
+      isDefaultChairRequest(firstUserMessage)
+    ) {
+      this.#emit({
+        type: "system.notice",
+        payload: { level: "info", text: "Building a detailed chair from a validated design." },
+      });
+      const cancelled = await this.#runTools("", [
+        {
+          id: crypto.randomUUID(),
+          name: "propose_scene_patch",
+          input: {
+            spec: buildDemoChair(),
+            rationale:
+              "A refined walnut chair with tapered legs, connected apron rails, oak back slats and an olive upholstered seat.",
+          },
+        },
+      ]);
+      if (cancelled) return this.#fail("cancelled", "The turn was cancelled.");
+      if (this.#scene.head !== null) {
+        this.#emit({
+          type: "agent.message",
+          payload: {
+            text: /[а-я]/i.test(firstUserMessage)
+              ? "Готово: стул из ореха с коническими ножками, дубовыми планками спинки и мягким оливковым сиденьем. Можно менять размеры, материалы и детали."
+              : "Created a walnut chair with tapered legs, oak back slats and an olive upholstered seat. You can refine its dimensions, materials and details.",
+          },
+        });
+        return this.#complete();
+      }
+    }
+
+    if (routing.type !== "simple_edit") {
+      this.#messages.push({
+        role: "user",
+        content: `Design direction for the request above (respect all explicit user constraints): choose a coherent premium design, real proportions, refined supported bevels and 2–4 coordinated realistic materials. Deliver the complete object in one proposal, including its structural connections and a few purposeful details. Avoid an unfinished blockout. ${
+          this.#request.referenceImage
+            ? "Use the attached image as the design source. Match the main object's visible silhouette, proportions, part count and colors with supported geometry. Infer hidden surfaces conservatively. Create a 3D approximation, not a flat image plane. Do not substitute a default chair design or add unrelated objects. Respect the user's requested changes to the reference."
+            : sceneContext?.startsWith("There is no existing") &&
+                /chair|стул/i.test(firstUserMessage)
+              ? "For this chair include a beveled walnut seat, four tapered legs, four slim apron rails, two rear uprights, three spaced back slats and one top rail; use a lighter wood accent on the slats. All parts must connect. This is a single furniture object, without a floor or pedestal."
+              : "Preserve existing scene objects unless the user requests their replacement."
+        }`,
+      });
+    }
+
     for (;;) {
       if (this.#cancelled()) return this.#fail("cancelled", "The turn was cancelled.");
 
@@ -146,9 +224,24 @@ class Turn {
       // streamed output while the transport tears itself down in the background.
       const completed = await stopAware(
         this.#turn.complete({
-          systemPrompt: this.#request.context.systemPrompt,
+          systemPrompt:
+            routing.type === "simple_edit"
+              ? this.#request.context.systemPrompt
+              : `${this.#request.context.systemPrompt}\n\n${SCENE_AGENT_PROMPT}\n\n<authoritative-scene>\n${sceneContext}\n</authoritative-scene>`,
           messages: this.#messages,
-          tools: TOOL_DEFINITIONS,
+          ...(this.#request.referenceImage === undefined
+            ? {}
+            : { referenceImage: this.#request.referenceImage }),
+          tools:
+            routing.type === "simple_edit"
+              ? TOOL_DEFINITIONS
+              : TOOL_DEFINITIONS.filter((tool) => SCENE_TOOL_NAMES.has(tool.name)),
+          ...(sceneContext === undefined ? {} : { sceneContext }),
+          onActivity: (message) => {
+            if (!this.#cancelled()) {
+              this.#emit({ type: "system.notice", payload: { level: "info", text: message } });
+            }
+          },
           onThinkingDelta: (delta) => thinking.push(delta),
           onTextDelta: (delta) => prose.push(delta),
           ...(this.#request.signal === undefined ? {} : { signal: this.#request.signal }),
@@ -188,6 +281,21 @@ class Turn {
 
       const cancelled = await this.#runTools(result.text, result.toolCalls);
       if (cancelled) return this.#fail("cancelled", "The turn was cancelled.");
+    }
+  }
+
+  /** Read the same revision the scene tools validate against before specialists run. */
+  async #readSceneContext(): Promise<string> {
+    const read = this.#request.readSessionEvents;
+    if (read === undefined)
+      return "Scene history is unavailable; do not invent ids or coordinates.";
+    try {
+      const head = readSceneHead(await read(this.#request.sessionId));
+      return head === null
+        ? "There is no existing 3D scene; recommend a layout without inventing existing object ids."
+        : summarizeScene(head);
+    } catch {
+      return "Scene history could not be read; do not invent ids or coordinates.";
     }
   }
 
@@ -283,6 +391,18 @@ class Turn {
       createdAt: this.#now(),
     } as PendingEvent);
   }
+}
+
+function latestUserMessage(messages: readonly LLMMessage[]): string {
+  for (let index = messages.length - 1; index >= 0; index--) {
+    const message = messages[index];
+    if (message?.role !== "user") continue;
+    if (typeof message.content === "string") return message.content;
+    return message.content
+      .flatMap((block) => (block.type === "text" ? [block.text] : []))
+      .join("\n");
+  }
+  return "";
 }
 
 /** Resolves promptly on abort even if an upstream streaming request is slow to settle. */

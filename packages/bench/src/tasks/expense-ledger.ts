@@ -27,7 +27,7 @@
  * entirely if the agent named the form differently.
  */
 
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 import { defineTask } from "../task.ts";
 import { TEMPLATE_PREVIEW_PORT, TEMPLATE_PREVIEW_TIMEOUT_MS } from "./template.ts";
 

@@ -24,29 +24,29 @@
  * one fixture at a time — a corpus photographed on two machines is nine applications differing in
  * a way nobody intended.
  *
- * Needs a Chrome or Chromium at `NAP_CHROME_PATH`, and nothing else. No credentials, no network,
+ * Needs a Chrome or Chromium at `VIBE_VR_CHROME_PATH`, and nothing else. No credentials, no network,
  * no sandbox, no money.
  */
 
 import { mkdir, writeFile } from "node:fs/promises";
-import { CORPUS_FIXTURES } from "@nap/bench/product/corpus";
-import { CAPTURE_VIEWPORTS } from "@nap/bench/surface";
-import { viewportSize } from "@nap/bench/viewport";
-import { loadEnvFile } from "@nap/shared/env-file";
+import { CORPUS_FIXTURES } from "@vibe-vr/bench/product/corpus";
+import { CAPTURE_VIEWPORTS } from "@vibe-vr/bench/surface";
+import { viewportSize } from "@vibe-vr/bench/viewport";
+import { loadEnvFile } from "@vibe-vr/shared/env-file";
 import { corpusFixtureDir, corpusPageUrl, corpusScreenshotFile } from "../src/corpus-fixtures.ts";
 import { launchPlaywrightBrowser } from "../src/playwright-browser-session.ts";
 
 const ENV_FILE = "apps/api/.env";
 
-// The same file the benchmark reads, and for the same reason: `NAP_CHROME_PATH` is already in it
+// The same file the benchmark reads, and for the same reason: `VIBE_VR_CHROME_PATH` is already in it
 // on any machine that has run a real benchmark, and asking for it to be exported as well would be
 // a second place for one path to be wrong.
 loadEnvFile(ENV_FILE, process.env);
 
-const chromePath = process.env.NAP_CHROME_PATH;
+const chromePath = process.env.VIBE_VR_CHROME_PATH;
 if (!chromePath) {
   console.error(
-    "NAP_CHROME_PATH is not set, and the corpus is photographed with a real browser.\n" +
+    "VIBE_VR_CHROME_PATH is not set, and the corpus is photographed with a real browser.\n" +
       `Point it at a Chrome or Chromium binary — in ${ENV_FILE} or exported — then retry.`,
   );
   process.exit(1);

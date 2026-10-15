@@ -46,10 +46,10 @@ describe("judgeModelOf", () => {
   });
 
   it("can be pointed at another model without editing code", () => {
-    expect(judgeModelOf({ NAP_JUDGE_MODEL: "openai/other" })).toBe("openai/other");
+    expect(judgeModelOf({ VIBE_VR_JUDGE_MODEL: "openai/other" })).toBe("openai/other");
   });
 
   it("ignores an override that was set to nothing", () => {
-    expect(judgeModelOf({ NAP_JUDGE_MODEL: "" })).toBe(DEFAULT_JUDGE_MODEL);
+    expect(judgeModelOf({ VIBE_VR_JUDGE_MODEL: "" })).toBe(DEFAULT_JUDGE_MODEL);
   });
 });

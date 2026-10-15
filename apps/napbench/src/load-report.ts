@@ -8,13 +8,13 @@
  * the disk is untrusted input and is validated before anything is subtracted from it.
  *
  * The filesystem half of comparison, and therefore the half that lives in the app rather than
- * in `@nap/bench`. See `docs/adr/0001`.
+ * in `@vibe-vr/bench`. See `docs/adr/0001`.
  */
 
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { type BenchReport, parseBenchReport } from "@nap/bench/report";
-import type { Result } from "@nap/shared/result";
+import { type BenchReport, parseBenchReport } from "@vibe-vr/bench/report";
+import type { Result } from "@vibe-vr/shared/result";
 
 /**
  * Reads the report a reference names, or explains why it could not.

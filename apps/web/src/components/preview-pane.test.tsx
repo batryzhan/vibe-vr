@@ -129,7 +129,7 @@ describe("a project that has been put away", () => {
     // is asserted above.
     const { container } = render(<PreviewPane phase={{ kind: "starting" }} />);
 
-    expect(container.querySelector(".nap-loader")).toBeInTheDocument();
+    expect(container.querySelector(".vibe-vr-loader")).toBeInTheDocument();
   });
 
   it("shows a refusal next to the button that caused it", () => {

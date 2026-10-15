@@ -9,7 +9,7 @@
  * tool is usually asking exactly that.
  */
 
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 import { GithubButton } from "./github-button.tsx";
 
 export function SiteFooter() {
@@ -17,9 +17,9 @@ export function SiteFooter() {
     <footer className="border-[var(--s-border-1)] border-t px-6 py-10">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 sm:flex-row sm:justify-between">
         <div className="flex items-center gap-2">
-          <NapMark className="size-8 text-[var(--s-text-primary)]" />
+          <VibeVrMark className="size-8 text-[var(--s-text-primary)]" />
           <p className="text-[var(--s-text-muted)] text-sm">
-            <span className="font-semibold text-[var(--s-text-primary)]">Threepod</span> — describe
+            <span className="font-semibold text-[var(--s-text-primary)]">Vibe-VR</span> — describe
             3D scenes, build, edit, iterate.
           </p>
         </div>

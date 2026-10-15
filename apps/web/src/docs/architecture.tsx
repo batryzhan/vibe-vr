@@ -21,9 +21,9 @@ Worker  claim ─► renew ─► settle        ← executes; serves nothing
    └── Runtime  (turn orchestration)    ← intelligence
          ├── ContextEngine ──► MemoryProvider
          ├── AgentService  ──► LLMProvider
-         ├── SandboxManager ────────────► E2B sandbox      ← execution
+         ├── SandboxManager ────────────► Docker container ← execution
          ├── EventStore (Postgres)         /workspace (git repo)
-         ├── Verifier (@nap/verify)        vite dev :5173 → preview URL
+         ├── Verifier (@vibe-vr/verify)        vite dev :5173 → preview URL
          └── EventBus (in-process, or Postgres NOTIFY)
 
 Reaper (exactly one)                    ← idle sweep · capacity · the janitor`;
@@ -128,9 +128,10 @@ export function Architecture() {
       <Figure label="Which package may import which.">{DIRECTION}</Figure>
 
       <P>
-        <Code>agent</Code> imports the <Term>SandboxManager</Term> interface and never the E2B
-        adapter, which is what makes swapping E2B for something else a one-package change rather
-        than an audit. <Code>verify</Code> sits below both the runtime and the benchmark: the
+        <Code>agent</Code> imports the <Term>SandboxManager</Term> interface and never the Docker
+        adapter, which keeps sandbox lifecycle inside one package. Local projects run in
+        resource-limited Docker containers with previews bound to localhost. <Code>verify</Code>
+        sits below both the runtime and the benchmark: the
         runtime uses it to arbitrate a turn&rsquo;s claim, the benchmark uses it to build a score,
         and the edge that must never exist is the system under test importing the thing that grades
         it.

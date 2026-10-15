@@ -24,10 +24,10 @@ announce(nap, "api listening", {
   port: nap.env.PORT,
   // Whether the dashboard's cards will get pictures. Off is a perfectly good state to run in, but
   // it is indistinguishable from a capture that keeps failing unless the boot says which.
-  screenshots: nap.env.NAP_CHROME_PATH === undefined ? "off" : "on",
-  turnsPerHour: nap.env.NAP_TURNS_PER_HOUR,
-  maxSandboxesPerUser: nap.env.NAP_MAX_SANDBOXES_PER_USER,
-  maxSandboxesTotal: nap.env.NAP_MAX_SANDBOXES_TOTAL,
+  screenshots: nap.env.VIBE_VR_CHROME_PATH === undefined ? "off" : "on",
+  turnsPerHour: nap.env.VIBE_VR_TURNS_PER_HOUR,
+  maxSandboxesPerUser: nap.env.VIBE_VR_MAX_SANDBOXES_PER_USER,
+  maxSandboxesTotal: nap.env.VIBE_VR_MAX_SANDBOXES_TOTAL,
 });
 
 export default {

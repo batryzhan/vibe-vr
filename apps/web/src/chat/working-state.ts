@@ -11,8 +11,8 @@
  * cases are parallel calls and a log that begins mid-turn, and neither needs a DOM to test.
  */
 
-import type { ToolName } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { ToolName } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import type { TranscriptItem } from "./transcript.ts";
 
 type Step = Extract<TranscriptItem, { kind: "step" }>;

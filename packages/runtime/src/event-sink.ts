@@ -23,10 +23,10 @@
  * inside the chain link, so the event behind the one being retried cannot overtake it.
  */
 
-import type { NapEventOf } from "@nap/shared/events";
-import { getLogger } from "@nap/shared/logging";
-import type { EventBus } from "@nap/shared/ports/event-bus";
-import type { EventStore, PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEventOf } from "@vibe-vr/shared/events";
+import { getLogger } from "@vibe-vr/shared/logging";
+import type { EventBus } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore, PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { APPEND_ATTEMPTS, appendBackoffMs, isTransientAppendFailure } from "./append-retry.ts";
 import { eventLogLine } from "./turn-log.ts";
 

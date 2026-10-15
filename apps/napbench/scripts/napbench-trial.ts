@@ -26,9 +26,9 @@ import { spawn } from "node:child_process";
 import { createWriteStream } from "node:fs";
 import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { DEFAULT_CATEGORY_WEIGHTS } from "@nap/bench/category";
-import { deriveRunMetrics } from "@nap/bench/metrics";
-import { evaluatorErrorReport, parseBenchReport, serialiseBenchReport } from "@nap/bench/report";
+import { DEFAULT_CATEGORY_WEIGHTS } from "@vibe-vr/bench/category";
+import { deriveRunMetrics } from "@vibe-vr/bench/metrics";
+import { evaluatorErrorReport, parseBenchReport, serialiseBenchReport } from "@vibe-vr/bench/report";
 import { RESULTS_DIR_ENV } from "../src/results-dir.ts";
 import {
   napbenchArgv,

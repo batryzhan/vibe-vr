@@ -2,7 +2,7 @@
  * The concrete logger: pino, writing JSON to a stream.
  *
  * The context plumbing that makes ids reach code deep in the stack is not here — it is in
- * `@nap/shared/logging`, because the runtime and the agent need it too and the dependency
+ * `@vibe-vr/shared/logging`, because the runtime and the agent need it too and the dependency
  * direction gives them one shared home. This module is only the half that picks a library and
  * a destination, which is a decision for whatever boots the process.
  *
@@ -12,7 +12,7 @@
  * wanted, belongs in a pipe outside the process.
  */
 
-import type { Logger } from "@nap/shared/logging";
+import type { Logger } from "@vibe-vr/shared/logging";
 import { type DestinationStream, pino } from "pino";
 
 export type CreateLoggerOptions = {

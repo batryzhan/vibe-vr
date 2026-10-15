@@ -28,8 +28,8 @@
  * The verdict exists to be branched on before anything is written, not to be persisted.
  */
 
-import type { CheckOutcome } from "@nap/shared/check-outcome";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import type { CheckOutcome } from "@vibe-vr/shared/check-outcome";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 import { type CommandOutput, captureCommandOutput } from "./command-output.ts";
 import type { CheckName, DiscoveredCheck } from "./discover-checks.ts";
 import { type DiagnosePreviewOptions, diagnosePreview } from "./preview.ts";

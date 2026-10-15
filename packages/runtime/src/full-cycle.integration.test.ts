@@ -21,38 +21,34 @@
  * harness. So this run costs sandbox seconds and a handful of objects, and no model call.
  */
 
-import { NapAgentService } from "@nap/agent/agent-service";
-import { ScriptedLLMProvider } from "@nap/agent/testing/scripted-llm-provider";
-import { NapContextEngine } from "@nap/context/context-engine";
-import { NoopMemoryProvider } from "@nap/context/noop-memory-provider";
-import { createDatabase } from "@nap/db/client";
-import { InProcessEventBus } from "@nap/db/in-process-event-bus";
-import { PostgresEventStore } from "@nap/db/postgres-event-store";
-import { PostgresProjectSandboxStore } from "@nap/db/postgres-project-sandbox-store";
-import { PostgresSessionStore } from "@nap/db/postgres-session-store";
-import { PostgresSnapshotStore } from "@nap/db/postgres-snapshot-store";
-import { users } from "@nap/db/schema";
-import { createProjectSession } from "@nap/db/session-bootstrap";
-import { expectEventSequence } from "@nap/db/testing/event-assertions";
-import { type MigratedPostgres, startMigratedPostgres } from "@nap/db/testing/postgres-container";
-import { E2BSandboxManager } from "@nap/sandbox/e2b-sandbox-manager";
-import { NAP_TEMPLATE, TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
-import type { TurnOutcome } from "@nap/shared/ports/runtime";
-import { createR2Client, R2ObjectStore } from "@nap/storage/r2-object-store";
+import { NapAgentService } from "@vibe-vr/agent/agent-service";
+import { ScriptedLLMProvider } from "@vibe-vr/agent/testing/scripted-llm-provider";
+import { NapContextEngine } from "@vibe-vr/context/context-engine";
+import { NoopMemoryProvider } from "@vibe-vr/context/noop-memory-provider";
+import { createDatabase } from "@vibe-vr/db/client";
+import { InProcessEventBus } from "@vibe-vr/db/in-process-event-bus";
+import { PostgresEventStore } from "@vibe-vr/db/postgres-event-store";
+import { PostgresProjectSandboxStore } from "@vibe-vr/db/postgres-project-sandbox-store";
+import { PostgresSessionStore } from "@vibe-vr/db/postgres-session-store";
+import { PostgresSnapshotStore } from "@vibe-vr/db/postgres-snapshot-store";
+import { users } from "@vibe-vr/db/schema";
+import { createProjectSession } from "@vibe-vr/db/session-bootstrap";
+import { expectEventSequence } from "@vibe-vr/db/testing/event-assertions";
+import { type MigratedPostgres, startMigratedPostgres } from "@vibe-vr/db/testing/postgres-container";
+import { DockerSandboxManager } from "@vibe-vr/sandbox/docker-sandbox-manager";
+import { TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import type { TurnOutcome } from "@vibe-vr/shared/ports/runtime";
+import { createR2Client, R2ObjectStore } from "@vibe-vr/storage/r2-object-store";
 import { afterAll, beforeAll, expect, it } from "vitest";
 import { type SweepResult, sweepIdleProjects } from "./reaper.ts";
 import { SingleAgentRuntime } from "./single-agent-runtime.ts";
 
 // Thrown rather than skipped. This is the milestone's acceptance test, and "green end to end"
 // is not something a suite that quietly ran nothing can report.
-const missing = [
-  "E2B_API_KEY",
-  "R2_ACCOUNT_ID",
-  "R2_BUCKET",
-  "R2_ACCESS_KEY_ID",
-  "R2_SECRET_ACCESS_KEY",
-].filter((name) => !process.env[name]);
+const missing = ["R2_ACCOUNT_ID", "R2_BUCKET", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY"].filter(
+  (name) => !process.env[name],
+);
 
 if (missing.length > 0) {
   throw new Error(
@@ -87,7 +83,7 @@ const SECOND_MESSAGE = "Read Survivor and add a Sequel beside it";
  */
 const PREVIEW_TIMEOUT_MS = 60_000;
 
-const sandbox = new E2BSandboxManager({ template: NAP_TEMPLATE });
+const sandbox = new DockerSandboxManager();
 const objects = new R2ObjectStore(createR2Client(r2));
 
 /** Every sandbox this file caused to exist, so a failure part-way through still cleans up. */

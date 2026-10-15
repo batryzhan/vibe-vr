@@ -7,8 +7,8 @@
  * every integration run would demand the variables be exported by hand, and the
  * "put it in .env" instruction the suites print would be wrong.
  *
- * Variables already present in the environment win, so an explicit
- * `E2B_API_KEY=… bun run test:integration` still overrides the file.
+ * Variables already present in the environment win, so explicit shell settings still
+ * override the file.
  */
 
 import { existsSync } from "node:fs";

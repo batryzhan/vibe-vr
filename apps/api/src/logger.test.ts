@@ -1,9 +1,9 @@
-import { getLogger, withLogContext } from "@nap/shared/logging";
+import { getLogger, withLogContext } from "@vibe-vr/shared/logging";
 import { describe, expect, it } from "vitest";
 import { createLogger } from "./logger.ts";
 
 /**
- * The context semantics are `@nap/shared/logging`'s and are tested there. What is left for
+ * The context semantics are `@vibe-vr/shared/logging`'s and are tested there. What is left for
  * here is the half this module owns: that a real pino logger writes what we expect, and that
  * it works as the `Logger` the whole repo is written against — which a recorder in the base
  * package's tests cannot prove.

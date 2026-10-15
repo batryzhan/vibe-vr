@@ -20,7 +20,7 @@
  * cannot answer at all". The first survives JSON as a value; the second is meant to vanish.
  */
 
-import type { NapEvent, ToolName } from "@nap/shared/events";
+import type { NapEvent, ToolName } from "@vibe-vr/shared/events";
 import { z } from "zod";
 import { CostEstimateSchema, estimateCost } from "./pricing.ts";
 

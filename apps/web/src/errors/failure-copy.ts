@@ -15,11 +15,11 @@
  * distinguishes this failure from the next one, and the rate limiter in particular already writes
  * a better sentence than anything that could be reconstructed here from a status code.
  *
- * Keyed as a `Record` over the reason union, so another failure reason added in `@nap/shared`
+ * Keyed as a `Record` over the reason union, so another failure reason added in `@vibe-vr/shared`
  * fails typecheck here rather than rendering an empty box.
  */
 
-import type { NapEventOf } from "@nap/shared/events";
+import type { NapEventOf } from "@vibe-vr/shared/events";
 
 type TurnFailureReason = NapEventOf<"turn.failed">["payload"]["reason"];
 

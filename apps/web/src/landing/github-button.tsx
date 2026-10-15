@@ -11,7 +11,7 @@
 
 import { GithubIcon } from "../ui/icons.tsx";
 
-export const REPO_URL = "https://github.com/mangit955/nap";
+export const REPO_URL = "https://github.com/batryzhan/vibe-vr";
 
 export function GithubButton({ className = "" }: { className?: string }) {
   return (

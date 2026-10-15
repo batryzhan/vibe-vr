@@ -1,5 +1,5 @@
-import { POLISH, PRODUCT_DIMENSIONS } from "@nap/bench/product/dimension";
-import { GRADES } from "@nap/bench/product/grade";
+import { POLISH, PRODUCT_DIMENSIONS } from "@vibe-vr/bench/product/dimension";
+import { GRADES } from "@vibe-vr/bench/product/grade";
 import { describe, expect, it } from "vitest";
 import { PRODUCT_RUBRIC, PRODUCT_RUBRIC_VERSION } from "./product-rubric.ts";
 

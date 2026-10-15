@@ -1,4 +1,4 @@
-import { RESULTS_DIR } from "@nap/bench/results-dir";
+import { RESULTS_DIR } from "@vibe-vr/bench/results-dir";
 import { describe, expect, it } from "vitest";
 import { RESULTS_DIR_ENV, resolveResultsDir } from "./results-dir.ts";
 

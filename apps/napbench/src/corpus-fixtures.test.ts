@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { CORPUS_FIXTURES } from "@nap/bench/product/corpus";
-import { CAPTURE_VIEWPORTS } from "@nap/bench/surface";
+import { CORPUS_FIXTURES } from "@vibe-vr/bench/product/corpus";
+import { CAPTURE_VIEWPORTS } from "@vibe-vr/bench/surface";
 import { describe, expect, it } from "vitest";
 import {
   CORPUS_PAGE,

@@ -14,7 +14,7 @@ and needs no cluster.
 | File | What it holds |
 |---|---|
 | `namespace.yaml` | The namespace, and a ServiceAccount with no RBAC and no mounted token |
-| `configmap.yaml` | Every `NAP_*` tunable, and nothing anybody could spend |
+| `configmap.yaml` | Every `VIBE_VR_*` tunable, and nothing anybody could spend |
 | `secret.example.yaml` | The *shape* of `nap-secrets`, every value empty. **Not applied** |
 | `deployment-api.yaml` | The pods that serve; probes on `/livez` and `/readyz` |
 | `service-api.yaml` | The only Service, plus the API's PodDisruptionBudget |

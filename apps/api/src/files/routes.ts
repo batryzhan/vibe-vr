@@ -16,10 +16,10 @@
  * will come back with the next turn, and something wrong on our side.
  */
 
-import { listProjectFiles } from "@nap/sandbox/project-files";
-import type { FileContent, FileListing } from "@nap/shared/files-protocol";
-import type { SandboxError, SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SessionStore } from "@nap/shared/ports/session-store";
+import { listProjectFiles } from "@vibe-vr/sandbox/project-files";
+import type { FileContent, FileListing } from "@vibe-vr/shared/files-protocol";
+import type { SandboxError, SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SessionStore } from "@vibe-vr/shared/ports/session-store";
 import type { Hono } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { findOwnedSession } from "../auth/owned-session.ts";

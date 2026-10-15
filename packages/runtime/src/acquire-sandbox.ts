@@ -8,17 +8,17 @@
  * somebody's work rather than merely failing their turn.
  */
 
-import { getLogger } from "@nap/shared/logging";
-import type { ObjectStore } from "@nap/shared/ports/object-store";
+import { getLogger } from "@vibe-vr/shared/logging";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
 import type {
   ActivationFailure,
   Reservation,
   SandboxCapacity,
-} from "@nap/shared/ports/sandbox-capacity";
-import type { SandboxError, SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SessionRecord, SessionStore } from "@nap/shared/ports/session-store";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
-import type { Result, VoidResult } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/sandbox-capacity";
+import type { SandboxError, SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SessionRecord, SessionStore } from "@vibe-vr/shared/ports/session-store";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 import { openProject } from "./restore.ts";
 
 /** A sandbox to work in, whether this call created it, and anything the user should be told. */

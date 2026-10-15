@@ -18,24 +18,16 @@
  * every model equally and invisibly. Build and typecheck are the two that hold on an untouched
  * template; browser checks are not, since the template renders no application of its own.
  *
- * **Needs: `E2B_API_KEY`, and the network.** It creates one real sandbox and destroys it, which
+ * **Needs Docker, and the network.** It creates one real sandbox and destroys it, which
  * costs seconds of sandbox time and no model calls. Credentials come from `apps/api/.env` via
  * the integration setup.
  */
 
-import { BENCH_TASKS } from "@nap/bench/suite";
-import { E2BSandboxManager } from "@nap/sandbox/e2b-sandbox-manager";
-import { NAP_TEMPLATE } from "@nap/sandbox/template";
+import { BENCH_TASKS } from "@vibe-vr/bench/suite";
+import { DockerSandboxManager } from "@vibe-vr/sandbox/docker-sandbox-manager";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-if (process.env.E2B_API_KEY === undefined || process.env.E2B_API_KEY === "") {
-  throw new Error(
-    "E2B_API_KEY is not set, so the task commands cannot be checked against a real template. " +
-      "Put it in apps/api/.env or export it, then re-run `bun run test:integration`.",
-  );
-}
-
-const sandbox = new E2BSandboxManager({ template: NAP_TEMPLATE });
+const sandbox = new DockerSandboxManager();
 let sandboxId: string;
 
 beforeAll(async () => {

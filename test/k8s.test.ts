@@ -32,7 +32,7 @@ import {
  *
  * The numbers are read from the code they have to agree with rather than repeated: the heartbeat
  * window comes from `DEFAULT_HEARTBEAT`, the drain from the ConfigMap, the worker ceiling from
- * `NAP_MAX_SANDBOXES_TOTAL`. A test that hard-coded them would keep passing after somebody changed
+ * `VIBE_VR_MAX_SANDBOXES_TOTAL`. A test that hard-coded them would keep passing after somebody changed
  * the application and left the cluster behind.
  */
 
@@ -125,7 +125,7 @@ describe("the worker's drain", () => {
     const data = config?.doc.data;
     const drain = Number(
       typeof data === "object" && data !== null
-        ? ((data as Record<string, string>).NAP_DRAIN_TIMEOUT_SECONDS ?? Number.NaN)
+        ? ((data as Record<string, string>).VIBE_VR_DRAIN_TIMEOUT_SECONDS ?? Number.NaN)
         : Number.NaN,
     );
     expect(drain).toBeGreaterThan(0);
@@ -200,7 +200,7 @@ stringData:
    * `generated.env`, and this is what stops them being pasted back as literals for convenience.
    *
    * The reason is not that a placeholder here would be dangerous — nothing in either overlay
-   * reaches a vendor. It is that `NAP_KEY_ENCRYPTION_SECRET` must decode to exactly 32 bytes, so
+   * reaches a vendor. It is that `VIBE_VR_KEY_ENCRYPTION_SECRET` must decode to exactly 32 bytes, so
    * every value satisfying it looks exactly like a live credential to a secret scanner no matter
    * how obviously fake the plaintext is. Both spellings were tried and both were reported; the
    * only shape that does not is the absent one. A fake indistinguishable from the real thing has
@@ -211,7 +211,7 @@ stringData:
 
     const literals = [...text.matchAll(/^\s*-\s+([A-Z0-9_]+)=/gm)].map(([, key]) => key);
 
-    expect(literals).not.toContain("NAP_KEY_ENCRYPTION_SECRET");
+    expect(literals).not.toContain("VIBE_VR_KEY_ENCRYPTION_SECRET");
     expect(literals).not.toContain("BETTER_AUTH_SECRET");
     // And the file that does carry them is still wired up, or the overlay simply has no secret.
     expect(text).toContain("generated.env");
@@ -232,7 +232,6 @@ stringData:
         "    literals:",
         "      - DATABASE_URL=postgres://nap:placeholder@db.example.invalid/nap",
         "      - OPENROUTER_API_KEY=sk-or-v1-something",
-        "      - E2B_API_KEY=proof-not-a-key",
       ].join("\n"),
       "synthetic",
     );
@@ -346,8 +345,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata: { name: nap-config }
 data:
-  NAP_MAX_SANDBOXES_TOTAL: "10"
-  NAP_WORKER_CONCURRENCY: "5"
+  VIBE_VR_MAX_SANDBOXES_TOTAL: "10"
+  VIBE_VR_WORKER_CONCURRENCY: "5"
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
@@ -370,8 +369,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata: { name: nap-config }
 data:
-  NAP_MAX_SANDBOXES_TOTAL: "10"
-  NAP_WORKER_CONCURRENCY: "5"
+  VIBE_VR_MAX_SANDBOXES_TOTAL: "10"
+  VIBE_VR_WORKER_CONCURRENCY: "5"
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
@@ -384,7 +383,7 @@ spec:
 `),
     );
     expect(violations).toHaveLength(1);
-    expect(violations[0]).toContain("not one worker's NAP_WORKER_CONCURRENCY");
+    expect(violations[0]).toContain("not one worker's VIBE_VR_WORKER_CONCURRENCY");
   });
 });
 
@@ -469,7 +468,7 @@ spec:
       containers:
         - name: worker
           env:
-            - { name: NAP_WORKER_HEARTBEAT_FILE, value: /tmp/nap-worker-alive }
+            - { name: VIBE_VR_WORKER_HEARTBEAT_FILE, value: /tmp/nap-worker-alive }
           livenessProbe:
             exec:
               command: ["/bin/sh", "-c", "test $(( $(date +%s) - $(stat -c %Y /tmp/alive) )) -lt 120"]
@@ -605,7 +604,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata: { name: nap-config }
 data:
-  NAP_DRAIN_TIMEOUT_SECONDS: "600"
+  VIBE_VR_DRAIN_TIMEOUT_SECONDS: "600"
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject

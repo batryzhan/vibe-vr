@@ -13,7 +13,7 @@
  * Shutdown is `boot.ts`'s, and it is the interesting half of this file even though none of it is
  * written here. On `SIGTERM` the loop stops claiming, the turns already running are waited for —
  * with their leases renewed throughout, or the janitor would orphan work that is still
- * progressing — and anything still going at `NAP_DRAIN_TIMEOUT_SECONDS` is aborted, which commits
+ * progressing — and anything still going at `VIBE_VR_DRAIN_TIMEOUT_SECONDS` is aborted, which commits
  * nothing and closes its job `abandoned`. Every request is settled on the way out either way, so a
  * rolling restart never leaves a chat pane waiting on an event nobody will write.
  *
@@ -26,14 +26,14 @@ import { announce } from "./boot-line.ts";
 const nap = await bootNap("worker");
 
 announce(nap, "worker claiming", {
-  concurrency: nap.env.NAP_WORKER_CONCURRENCY,
-  drainTimeoutSeconds: nap.env.NAP_DRAIN_TIMEOUT_SECONDS,
+  concurrency: nap.env.VIBE_VR_WORKER_CONCURRENCY,
+  drainTimeoutSeconds: nap.env.VIBE_VR_DRAIN_TIMEOUT_SECONDS,
   // Not the worker's concurrency, and the gap between the two is the point: every committed turn
   // is photographed, and this is how many browsers may be open at once while it happens.
-  captureConcurrency: nap.env.NAP_CAPTURE_CONCURRENCY,
-  screenshots: nap.env.NAP_CHROME_PATH === undefined ? "off" : "on",
+  captureConcurrency: nap.env.VIBE_VR_CAPTURE_CONCURRENCY,
+  screenshots: nap.env.VIBE_VR_CHROME_PATH === undefined ? "off" : "on",
   // Not the reaper's idle threshold, which this process no longer acts on: this is how long the
   // sandboxes it creates live before the provider's own timer takes them.
-  sandboxTtlMinutes: nap.env.NAP_SANDBOX_TTL_MINUTES,
-  maxSandboxesTotal: nap.env.NAP_MAX_SANDBOXES_TOTAL,
+  sandboxTtlMinutes: nap.env.VIBE_VR_SANDBOX_TTL_MINUTES,
+  maxSandboxesTotal: nap.env.VIBE_VR_MAX_SANDBOXES_TOTAL,
 });

@@ -13,10 +13,10 @@
  *
  * Two consumers arrived at the same three answers independently, which is why the type lives
  * below both rather than in either of them (docs/adr/0007). It sits in `shared` rather than in
- * `@nap/verify` — one layer further down than that decision put it — for a mechanical reason:
+ * `@vibe-vr/verify` — one layer further down than that decision put it — for a mechanical reason:
  * `verification.completed` carries these outcomes, the event contract is defined exactly once
  * in `events.ts`, and nothing below `shared` may be imported from it. Running a check is still
- * `@nap/verify`'s; only the word for what running one produced is everybody's.
+ * `@vibe-vr/verify`'s; only the word for what running one produced is everybody's.
  */
 
 import { z } from "zod";

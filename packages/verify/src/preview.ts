@@ -17,7 +17,7 @@
  * sitting in an archived report.
  */
 
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 
 /**
  * curl's "could not connect to host", which is the only answer that means the application

@@ -1,10 +1,10 @@
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemoryProjectSandboxStore } from "@nap/db/testing/in-memory-project-sandbox-store";
-import { InMemorySandboxCapacity } from "@nap/db/testing/in-memory-sandbox-capacity";
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemoryProjectSandboxStore } from "@vibe-vr/db/testing/in-memory-project-sandbox-store";
+import { InMemorySandboxCapacity } from "@vibe-vr/db/testing/in-memory-sandbox-capacity";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { putProjectAway } from "./close-project.ts";
 

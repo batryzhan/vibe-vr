@@ -44,7 +44,7 @@ describe("the dashboard frame", () => {
     show();
 
     expect(screen.getByRole("main")).toHaveClass("overflow-y-auto");
-    expect(screen.getByRole("main")).toHaveClass("nap-scroll-hidden");
+    expect(screen.getByRole("main")).toHaveClass("vibe-vr-scroll-hidden");
     expect(screen.getByRole("main").parentElement).toHaveClass("overflow-hidden");
   });
 

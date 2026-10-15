@@ -9,8 +9,8 @@
  * "a recovery action" a real assertion rather than a check that some words appeared.
  */
 
-import type { NapEvent, NapEventType } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEvent, NapEventType } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { SignInForm } from "../auth/sign-in-form.tsx";

@@ -9,7 +9,7 @@
  * - OrbitControls for pan, zoom, rotate.
  * - Subtle floor grid at y = 0 and 3-point studio lighting rig.
  * - Click-to-select raycasting with outline/emissive highlighting synced to SceneStore.
- * - Headless test hooks: window.__THREEPOD_PREVIEW__ and window.__THREEPOD_RENDER_CANDIDATE__
+ * - Headless test hooks: window.__VIBE_VR_PREVIEW__ and window.__VIBE_VR_RENDER_CANDIDATE__
  *   for Gate 3 Vision Validator screenshot captures.
  */
 
@@ -80,14 +80,14 @@ function configureRenderer(renderer: THREE.WebGLRenderer) {
 
 declare global {
   interface Window {
-    __THREEPOD_PREVIEW__?: {
+    __VIBE_VR_PREVIEW__?: {
       renderCandidate: (
         candidateJson: unknown,
         cameraAngle?: [number, number, number],
       ) => string;
       captureScreenshot: () => string;
     };
-    __THREEPOD_RENDER_CANDIDATE__?: (
+    __VIBE_VR_RENDER_CANDIDATE__?: (
       candidateJson: unknown,
       cameraAngle?: [number, number, number],
     ) => string;
@@ -223,19 +223,19 @@ export function SceneViewport({
       return captureScreenshot();
     };
 
-    window.__THREEPOD_PREVIEW__ = {
+    window.__VIBE_VR_PREVIEW__ = {
       renderCandidate,
       captureScreenshot,
     };
-    window.__THREEPOD_RENDER_CANDIDATE__ = renderCandidate;
+    window.__VIBE_VR_RENDER_CANDIDATE__ = renderCandidate;
 
     return () => {
       cancelAnimationFrame(animFrame);
       observer?.disconnect();
       controls?.dispose();
       renderer.dispose();
-      delete window.__THREEPOD_PREVIEW__;
-      delete window.__THREEPOD_RENDER_CANDIDATE__;
+      delete window.__VIBE_VR_PREVIEW__;
+      delete window.__VIBE_VR_RENDER_CANDIDATE__;
     };
   }, []);
 

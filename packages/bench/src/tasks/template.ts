@@ -1,8 +1,8 @@
 /**
  * What every task can assume about the project it is run against.
  *
- * **This duplicates `TEMPLATE_DEV_PORT` from `@nap/sandbox`, and it has to.** `docs/adr/0001`
- * makes this package pure — its only workspace dependency is `@nap/shared` — so a task cannot
+ * **This duplicates `TEMPLATE_DEV_PORT` from `@vibe-vr/sandbox`, and it has to.** `docs/adr/0001`
+ * makes this package pure — its only workspace dependency is `@vibe-vr/shared` — so a task cannot
  * import the sandbox template it is nonetheless served from. The schema's `preview.port` exists
  * for exactly this reason and says so.
  *

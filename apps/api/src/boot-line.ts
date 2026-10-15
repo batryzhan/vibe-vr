@@ -8,7 +8,7 @@
  * suite that runs on Node. This has no such import and is therefore held to the ordinary rule.
  */
 
-import type { Logger } from "@nap/shared/logging";
+import type { Logger } from "@vibe-vr/shared/logging";
 import type { NapRole } from "./compose.ts";
 import type { Env } from "./env.ts";
 
@@ -18,7 +18,7 @@ import type { Env } from "./env.ts";
  * question about the connection pool or the claiming loop.
  */
 export type Announcing = {
-  env: Pick<Env, "NODE_ENV" | "NAP_PLATFORM" | "NAP_EVENT_BUS" | "NAP_MODEL" | "NAP_EFFORT">;
+  env: Pick<Env, "NODE_ENV" | "VIBE_VR_PLATFORM" | "VIBE_VR_EVENT_BUS" | "VIBE_VR_MODEL" | "VIBE_VR_EFFORT">;
   role: NapRole;
   logger: Logger;
 };
@@ -37,12 +37,12 @@ export function announce(nap: Announcing, message: string, extra: Record<string,
     {
       role: nap.role,
       nodeEnv: env.NODE_ENV,
-      platform: env.NAP_PLATFORM,
+      platform: env.VIBE_VR_PLATFORM,
       // Whether this process can share a session with another one. `in-process` and two replicas
       // is a chat that stops moving, and that is worth being able to read off a boot line.
-      eventBus: env.NAP_EVENT_BUS,
-      model: env.NAP_MODEL,
-      effort: env.NAP_EFFORT,
+      eventBus: env.VIBE_VR_EVENT_BUS,
+      model: env.VIBE_VR_MODEL,
+      effort: env.VIBE_VR_EFFORT,
       ...extra,
     },
     message,

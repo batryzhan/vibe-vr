@@ -30,10 +30,10 @@ import { announce } from "./boot-line.ts";
 const nap = await bootNap("reaper");
 
 announce(nap, "reaper sweeping", {
-  reapIntervalSeconds: nap.env.NAP_REAP_INTERVAL_SECONDS,
-  reapIdleMinutes: nap.env.NAP_REAP_IDLE_MINUTES,
+  reapIntervalSeconds: nap.env.VIBE_VR_REAP_INTERVAL_SECONDS,
+  reapIdleMinutes: nap.env.VIBE_VR_REAP_IDLE_MINUTES,
   // The tighter of the two, deliberately: a chat pane waiting on a turn whose worker died cannot
   // wait a minute, and an idle project can.
-  janitorIntervalSeconds: nap.env.NAP_JANITOR_INTERVAL_SECONDS,
-  maxSandboxesTotal: nap.env.NAP_MAX_SANDBOXES_TOTAL,
+  janitorIntervalSeconds: nap.env.VIBE_VR_JANITOR_INTERVAL_SECONDS,
+  maxSandboxesTotal: nap.env.VIBE_VR_MAX_SANDBOXES_TOTAL,
 });

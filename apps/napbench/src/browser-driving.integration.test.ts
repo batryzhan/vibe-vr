@@ -7,7 +7,7 @@
  * nobody else could re-run. Splitting the two questions is the point — this one is about the
  * browser and is free, and the paid run then buys only the one about E2B's proxy.
  *
- * Needs: a Chrome or Chromium binary named by `NAP_CHROME_PATH`. No network, no credentials,
+ * Needs: a Chrome or Chromium binary named by `VIBE_VR_CHROME_PATH`. No network, no credentials,
  * no sandbox. It serves its own page on a loopback port, the way the capture package's
  * browser test does.
  */
@@ -16,7 +16,7 @@ import { createServer, type Server } from "node:http";
 import { chromium } from "playwright-core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-const CHROME = process.env.NAP_CHROME_PATH;
+const CHROME = process.env.VIBE_VR_CHROME_PATH;
 
 /**
  * Shaped like the starter template: an empty `#root` that only script can fill. A page whose

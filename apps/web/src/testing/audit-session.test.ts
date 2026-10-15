@@ -10,7 +10,7 @@
  * would be easy to replace this file with a tidier one and never notice the red row had gone.
  */
 
-import { foldJobs } from "@nap/shared/job-state";
+import { foldJobs } from "@vibe-vr/shared/job-state";
 import { describe, expect, it } from "vitest";
 import { auditSession, auditSessionIssues } from "./audit-session.ts";
 

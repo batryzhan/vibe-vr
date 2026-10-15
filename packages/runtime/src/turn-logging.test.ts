@@ -1,12 +1,12 @@
-import { type AgentScript, ScriptedAgent } from "@nap/agent/testing/scripted-agent";
-import { NoopMemoryProvider } from "@nap/context/noop-memory-provider";
-import { StubContextEngine } from "@nap/context/testing/stub-context-engine";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { scriptGit } from "@nap/sandbox/testing/script-git";
-import { type Logger, setRootLogger, withLogContext } from "@nap/shared/logging";
+import { type AgentScript, ScriptedAgent } from "@vibe-vr/agent/testing/scripted-agent";
+import { NoopMemoryProvider } from "@vibe-vr/context/noop-memory-provider";
+import { StubContextEngine } from "@vibe-vr/context/testing/stub-context-engine";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { scriptGit } from "@vibe-vr/sandbox/testing/script-git";
+import { type Logger, setRootLogger, withLogContext } from "@vibe-vr/shared/logging";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { SingleAgentRuntime } from "./single-agent-runtime.ts";
 

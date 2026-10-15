@@ -13,7 +13,7 @@
  * late for the 401s and 404s that never reach a handler at all.
  */
 
-import type { LogContext } from "@nap/shared/logging";
+import type { LogContext } from "@vibe-vr/shared/logging";
 
 /**
  * Ids are uuids everywhere in this system, and anything else in that position is a request

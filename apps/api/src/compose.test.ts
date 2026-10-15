@@ -1,22 +1,22 @@
-import { ScriptedLLMProvider } from "@nap/agent/testing/scripted-llm-provider";
-import { InMemoryCapacityReconciler } from "@nap/db/testing/in-memory-capacity-reconciler";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemoryProjectSandboxStore } from "@nap/db/testing/in-memory-project-sandbox-store";
-import { FAKE_OWNER, InMemoryProjectStore } from "@nap/db/testing/in-memory-project-store";
-import { InMemorySandboxCapacity } from "@nap/db/testing/in-memory-sandbox-capacity";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { InMemorySweepLock } from "@nap/db/testing/in-memory-sweep-lock";
-import { InMemoryTurnQueue } from "@nap/db/testing/in-memory-turn-queue";
-import { InMemoryTurnRateLimiter } from "@nap/db/testing/in-memory-turn-rate-limiter";
-import { InMemoryUserKeyStore } from "@nap/db/testing/in-memory-user-key-store";
-import { TEMPLATE_DEV_PORT } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
-import type { TurnQueue } from "@nap/shared/ports/turn-queue";
-import type { TurnRateLimiter } from "@nap/shared/ports/turn-rate-limit";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { ScriptedLLMProvider } from "@vibe-vr/agent/testing/scripted-llm-provider";
+import { InMemoryCapacityReconciler } from "@vibe-vr/db/testing/in-memory-capacity-reconciler";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemoryProjectSandboxStore } from "@vibe-vr/db/testing/in-memory-project-sandbox-store";
+import { FAKE_OWNER, InMemoryProjectStore } from "@vibe-vr/db/testing/in-memory-project-store";
+import { InMemorySandboxCapacity } from "@vibe-vr/db/testing/in-memory-sandbox-capacity";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { InMemorySweepLock } from "@vibe-vr/db/testing/in-memory-sweep-lock";
+import { InMemoryTurnQueue } from "@vibe-vr/db/testing/in-memory-turn-queue";
+import { InMemoryTurnRateLimiter } from "@vibe-vr/db/testing/in-memory-turn-rate-limiter";
+import { InMemoryUserKeyStore } from "@vibe-vr/db/testing/in-memory-user-key-store";
+import { TEMPLATE_DEV_PORT } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
+import type { TurnQueue } from "@vibe-vr/shared/ports/turn-queue";
+import type { TurnRateLimiter } from "@vibe-vr/shared/ports/turn-rate-limit";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import type { WSEvents } from "hono/ws";
 import { afterEach, describe, expect, it } from "vitest";
 import { encryptionKeyFrom } from "./account/secret-box.ts";
@@ -35,24 +35,24 @@ import { createLogger } from "./logger.ts";
  */
 
 const CONFIG: NapDeps["config"] = {
-  NAP_WEB_ORIGIN: "http://localhost:3000",
-  NAP_MODEL: "openai/gpt-5.6-luna",
-  NAP_FREE_MODEL: "openai/gpt-5.6-luna",
-  NAP_ALLOWED_MODELS: ["openai/gpt-5.6-luna"],
-  NAP_MAX_STEPS: 4,
-  NAP_CONTEXT_BUDGET_TOKENS: 10_000,
-  NAP_MAX_SANDBOXES_PER_USER: 2,
-  NAP_FREE_MAX_SANDBOXES_PER_USER: 1,
-  NAP_MAX_SANDBOXES_TOTAL: 10,
-  NAP_SANDBOX_TTL_MINUTES: 30,
-  NAP_REAP_IDLE_MINUTES: 10,
-  NAP_REAP_INTERVAL_SECONDS: 60,
-  NAP_JANITOR_INTERVAL_SECONDS: 60,
-  NAP_WORKER_CONCURRENCY: 4,
+  VIBE_VR_WEB_ORIGIN: "http://localhost:3000",
+  VIBE_VR_MODEL: "openai/gpt-5.6-luna",
+  VIBE_VR_FREE_MODEL: "openai/gpt-5.6-luna",
+  VIBE_VR_ALLOWED_MODELS: ["openai/gpt-5.6-luna"],
+  VIBE_VR_MAX_STEPS: 4,
+  VIBE_VR_CONTEXT_BUDGET_TOKENS: 10_000,
+  VIBE_VR_MAX_SANDBOXES_PER_USER: 2,
+  VIBE_VR_FREE_MAX_SANDBOXES_PER_USER: 1,
+  VIBE_VR_MAX_SANDBOXES_TOTAL: 10,
+  VIBE_VR_SANDBOX_TTL_MINUTES: 30,
+  VIBE_VR_REAP_IDLE_MINUTES: 10,
+  VIBE_VR_REAP_INTERVAL_SECONDS: 60,
+  VIBE_VR_JANITOR_INTERVAL_SECONDS: 60,
+  VIBE_VR_WORKER_CONCURRENCY: 4,
   // Short, because a test that leaves a turn hanging should fail rather than wait ten minutes for
   // the teardown's drain.
-  NAP_DRAIN_TIMEOUT_SECONDS: 1,
-  NAP_CAPTURE_CONCURRENCY: 1,
+  VIBE_VR_DRAIN_TIMEOUT_SECONDS: 1,
+  VIBE_VR_CAPTURE_CONCURRENCY: 1,
 };
 
 /** 32 bytes of base64, which is all `encryptionKeyFrom` asks of it. */
@@ -151,6 +151,35 @@ function compose(overrides: Partial<NapDeps> = {}) {
 }
 
 describe("composeNap", () => {
+  it("makes the Dahl allowlist selectable when its server key is configured", async () => {
+    const models = [
+      "zai-org/GLM-5.3-Flash",
+      "deepseek-ai/DeepSeek-V4-Flash-0731",
+      "MiniMaxAI/MiniMax-M2.7",
+    ];
+    const { app } = compose({
+      config: {
+        ...CONFIG,
+        VIBE_VR_PLATFORM: "dahl",
+        DAHL_API_KEY: "test-server-key",
+        VIBE_VR_MODEL: models[0] ?? "",
+        VIBE_VR_FREE_MODEL: models[0] ?? "",
+        VIBE_VR_ALLOWED_MODELS: models,
+      },
+    });
+
+    const response = await app.request("/models");
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as {
+      models: Array<{ id: string; available: boolean }>;
+      key: { configured: boolean };
+    };
+    expect(body.models).toEqual(
+      models.map((id) => ({ id, label: expect.any(String), free: false, available: true })),
+    );
+    expect(body.key).toEqual({ configured: false });
+  });
+
   it("mounts the routes the API serves", async () => {
     const { app } = compose();
 
@@ -222,7 +251,7 @@ describe("composeNap", () => {
 
     compose({
       reconcile: { reconciler: reconcile, inventory: new InMemorySandboxManager() },
-      config: { ...CONFIG, NAP_REAP_INTERVAL_SECONDS: 0.01 },
+      config: { ...CONFIG, VIBE_VR_REAP_INTERVAL_SECONDS: 0.01 },
     });
 
     await expect.poll(() => reconcile.reclaimCalls(), { timeout: 2000 }).toBeGreaterThan(0);
@@ -243,7 +272,7 @@ describe("composeNap", () => {
 
     compose({
       rateLimits: { rate: counting("rate"), freeRate: counting("freeRate") },
-      config: { ...CONFIG, NAP_REAP_INTERVAL_SECONDS: 0.01 },
+      config: { ...CONFIG, VIBE_VR_REAP_INTERVAL_SECONDS: 0.01 },
     });
 
     await expect.poll(() => swept.rate, { timeout: 2000 }).toBeGreaterThan(0);
@@ -355,7 +384,7 @@ describe("composeNap", () => {
     compose({
       role,
       projectSandboxes,
-      config: { ...CONFIG, NAP_REAP_INTERVAL_SECONDS: 0.01 },
+      config: { ...CONFIG, VIBE_VR_REAP_INTERVAL_SECONDS: 0.01 },
     });
 
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -388,7 +417,7 @@ describe("composeNap", () => {
     compose({
       role,
       queue: counting,
-      config: { ...CONFIG, NAP_JANITOR_INTERVAL_SECONDS: 0.01, NAP_REAP_INTERVAL_SECONDS: 0.01 },
+      config: { ...CONFIG, VIBE_VR_JANITOR_INTERVAL_SECONDS: 0.01, VIBE_VR_REAP_INTERVAL_SECONDS: 0.01 },
     });
 
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -413,7 +442,7 @@ describe("composeNap", () => {
       projects: projectHolding(SESSION),
       projectSandboxes,
       sandbox: turnableSandbox(),
-      config: { ...CONFIG, NAP_REAP_INTERVAL_SECONDS: 0.01 },
+      config: { ...CONFIG, VIBE_VR_REAP_INTERVAL_SECONDS: 0.01 },
     });
 
     await expect
@@ -455,7 +484,7 @@ describe("composeNap", () => {
           lastActiveAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
         },
       ]),
-      config: { ...CONFIG, NAP_REAP_INTERVAL_SECONDS: 0.01 },
+      config: { ...CONFIG, VIBE_VR_REAP_INTERVAL_SECONDS: 0.01 },
     });
 
     await expect.poll(() => heard, { timeout: 2000 }).toContain("preview.stopped");
@@ -492,7 +521,7 @@ describe("composeNap", () => {
       role: "reaper" as const,
       projectSandboxes,
       sandbox: turnableSandbox(),
-      config: { ...CONFIG, NAP_REAP_INTERVAL_SECONDS: 0.01 },
+      config: { ...CONFIG, VIBE_VR_REAP_INTERVAL_SECONDS: 0.01 },
     };
     compose({
       ...shared,
@@ -533,7 +562,7 @@ describe("composeNap", () => {
       userId: FAKE_OWNER,
       kind: "turn",
       message: "add a dark mode toggle",
-      model: CONFIG.NAP_MODEL,
+      model: CONFIG.VIBE_VR_MODEL,
       billsToUser: false,
     });
     await queue.claim("a-worker-on-another-pod");
@@ -588,7 +617,7 @@ describe("composeNap", () => {
       projectSandboxes,
       // Fast enough that the test does not wait a minute for the first tick, which is the one
       // thing about the reaper this cannot take from the config.
-      config: { ...CONFIG, NAP_REAP_INTERVAL_SECONDS: 0.01 },
+      config: { ...CONFIG, VIBE_VR_REAP_INTERVAL_SECONDS: 0.01 },
     });
 
     await expect

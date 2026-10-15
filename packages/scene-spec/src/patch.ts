@@ -11,12 +11,13 @@
  * untouched. The result re-validates before it is returned.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
-import { MAX_PATCH_OPS } from "./limits.ts";
+import { MAX_MATERIALS, MAX_PATCH_OPS } from "./limits.ts";
 import {
   BoxParamsSchema,
   CylinderParamsSchema,
+  MaterialSchema,
   NodeIdSchema,
   type SceneSpec,
   TransformSchema,
@@ -60,6 +61,10 @@ export const PatchOpSchema = z.discriminatedUnion("op", [
   RenameOpSchema,
   RemoveNodeOpSchema,
   z.strictObject({
+    op: z.literal("add_material"),
+    material: MaterialSchema,
+  }),
+  z.strictObject({
     op: z.literal("add_node"),
     parentId: NodeIdSchema,
     // The node arrives as unknown and is validated on insertion — an add carrying
@@ -88,6 +93,7 @@ export type PatchError = {
     | "unknown_param"
     | "invalid_value"
     | "unknown_material"
+    | "duplicate_material"
     | "duplicate_node_id"
     | "cannot_remove_root"
     | "invalid_result";
@@ -325,6 +331,27 @@ function applyOp(
       }
       draft.nodes = draft.nodes.filter((candidate) => !doomed.has(candidate.id));
       for (const id of doomed) byId.delete(id);
+      return undefined;
+    }
+    case "add_material": {
+      if (draft.materials.some((material) => material.id === op.material.id)) {
+        return {
+          code: "duplicate_material",
+          message: `material id "${op.material.id}" already exists`,
+          opIndex,
+          path: op.material.id,
+        };
+      }
+      if (draft.materials.length >= MAX_MATERIALS) {
+        return {
+          code: "invalid_value",
+          message: `the scene already has the maximum of ${MAX_MATERIALS} materials`,
+          opIndex,
+          path: "materials",
+          reason: "constraint",
+        };
+      }
+      draft.materials.push(structuredClone(op.material));
       return undefined;
     }
     case "add_node": {

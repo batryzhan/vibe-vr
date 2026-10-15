@@ -7,7 +7,7 @@
  * fourth event type. Pure mapping plus the fold — no store, no bus, no `seq`.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { foldSceneSpec, type SceneHead, type SceneLogEvent } from "./fold.ts";
 
 /** Narrows stored events to the fold's input; everything else is not scene state. */

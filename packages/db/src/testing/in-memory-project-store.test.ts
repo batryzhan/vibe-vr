@@ -1,4 +1,4 @@
-import type { ProjectSummary } from "@nap/shared/ports/project-store";
+import type { ProjectSummary } from "@vibe-vr/shared/ports/project-store";
 import { describe, expect, it } from "vitest";
 import { FAKE_OWNER, InMemoryProjectStore } from "./in-memory-project-store.ts";
 

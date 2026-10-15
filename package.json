@@ -1,5 +1,5 @@
 {
-  "name": "nap",
+  "name": "vibe-vr",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -9,7 +9,7 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "docker compose -f infra/docker-compose.yml up -d postgres && turbo run dev dev:worker",
     "dev:worker": "turbo run dev:worker",
     "dev:reaper": "turbo run dev:reaper",
     "build": "turbo run build",
@@ -38,11 +38,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.7",
-    "@nap/agent": "workspace:*",
-    "@nap/context": "workspace:*",
-    "@nap/sandbox": "workspace:*",
-    "@nap/shared": "workspace:*",
-    "@nap/verify": "workspace:*",
+    "@vibe-vr/agent": "workspace:*",
+    "@vibe-vr/context": "workspace:*",
+    "@vibe-vr/sandbox": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
+    "@vibe-vr/verify": "workspace:*",
     "@types/node": "26.1.2",
     "@vitejs/plugin-react": "6.0.5",
     "lefthook": "2.1.10",

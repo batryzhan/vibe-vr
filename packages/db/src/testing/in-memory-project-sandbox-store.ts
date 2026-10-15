@@ -10,7 +10,7 @@
  * derives it from the event log and a fake that faked the log too would be testing itself.
  */
 
-import type { IdleProject, ProjectSandboxStore } from "@nap/shared/ports/project-sandbox-store";
+import type { IdleProject, ProjectSandboxStore } from "@vibe-vr/shared/ports/project-sandbox-store";
 
 export type SeedProject = {
   projectId: string;

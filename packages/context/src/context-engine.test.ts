@@ -1,8 +1,8 @@
-import type { NapEvent } from "@nap/shared/events";
-import type { ContextRequest, FailedAttempt } from "@nap/shared/ports/context-engine";
-import type { LLMContentBlock, LLMMessage } from "@nap/shared/ports/llm-provider";
-import type { Memory, MemoryProvider } from "@nap/shared/ports/memory-provider";
-import type { FileNode } from "@nap/shared/ports/sandbox-manager";
+import type { NapEvent } from "@vibe-vr/shared/events";
+import type { ContextRequest, FailedAttempt } from "@vibe-vr/shared/ports/context-engine";
+import type { LLMContentBlock, LLMMessage } from "@vibe-vr/shared/ports/llm-provider";
+import type { Memory, MemoryProvider } from "@vibe-vr/shared/ports/memory-provider";
+import type { FileNode } from "@vibe-vr/shared/ports/sandbox-manager";
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_BUDGET_TOKENS,

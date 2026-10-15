@@ -27,14 +27,14 @@
  * mid-creation costs one slot for minutes rather than forever.
  */
 
-import { RESERVATION_TTL_MS } from "@nap/shared/capacity-windows";
+import { RESERVATION_TTL_MS } from "@vibe-vr/shared/capacity-windows";
 import type {
   ActivationFailure,
   CapacityRefusal,
   Reservation,
   SandboxCapacity,
-} from "@nap/shared/ports/sandbox-capacity";
-import type { Result, VoidResult } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/sandbox-capacity";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { sandboxReservations } from "./schema.ts";
@@ -42,7 +42,7 @@ import { sandboxReservations } from "./schema.ts";
 /**
  * What a reservation may cost this deployment before it is used, as a Postgres interval.
  *
- * The number itself lives in `@nap/shared/capacity-windows` beside the window the reclaiming
+ * The number itself lives in `@vibe-vr/shared/capacity-windows` beside the window the reclaiming
  * sweep waits, because the two have to agree and a constant in each file would drift.
  */
 const RESERVATION_TTL = `${RESERVATION_TTL_MS} milliseconds`;

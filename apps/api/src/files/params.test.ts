@@ -1,4 +1,4 @@
-import { TEMPLATE_WORKDIR } from "@nap/sandbox/template";
+import { TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
 import { describe, expect, it } from "vitest";
 import { parseProjectPath, parseSessionId } from "./params.ts";
 

@@ -29,6 +29,7 @@ export type TurnRequest = {
    */
   turnId: string;
   message: string;
+  referenceImage?: string | undefined;
   signal?: AbortSignal;
   /** Which model to run on. Absent is the deployment's default; the route validates it. */
   model?: string | undefined;

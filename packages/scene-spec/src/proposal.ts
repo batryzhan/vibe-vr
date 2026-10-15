@@ -14,13 +14,13 @@
  * with a lease and a store behind them; this file has neither and needs neither.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import { canonicalize } from "./canonical.ts";
 import { MAX_PATCH_OPS, MAX_SCENE_EVENT_BYTES } from "./limits.ts";
 import { applyPatch, type PatchError, PatchOpSchema } from "./patch.ts";
 import { hashSceneSpec } from "./revisions.ts";
-import { SceneSpecSchema, validateSceneSpec, type SceneSpec } from "./schema.ts";
+import { type SceneSpec, SceneSpecSchema, validateSceneSpec } from "./schema.ts";
 
 /** Lowercase SHA-256 hex. Canonical hashes are compared as strings, never rehashed. */
 export const HashHexSchema = z.string().regex(/^[0-9a-f]{64}$/, { message: "must be sha-256 hex" });
@@ -35,7 +35,7 @@ export const SceneProposalSchema = z.strictObject({
     .min(1)
     .max(MAX_PATCH_OPS)
     .describe(
-      "Closed-vocabulary edits: set_param, set_transform, set_material, rename, add_node, remove_node.",
+      "Closed-vocabulary edits: set_param, set_transform, set_material, rename, add_node, add_material, remove_node.",
     ),
   rationale: z
     .string()

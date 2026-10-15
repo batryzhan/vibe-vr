@@ -19,20 +19,20 @@
  * cleaned up too.
  */
 
-import { putProjectAway } from "@nap/runtime/close-project";
-import { deleteProject } from "@nap/runtime/delete-project";
-import { thumbnailKey } from "@nap/runtime/turn-thumbnail";
-import { getLogger } from "@nap/shared/logging";
-import type { EventBus } from "@nap/shared/ports/event-bus";
-import type { EventStore } from "@nap/shared/ports/event-store";
-import type { ObjectStore } from "@nap/shared/ports/object-store";
-import type { ProjectSandboxStore } from "@nap/shared/ports/project-sandbox-store";
-import type { ProjectStore, ProjectSummary } from "@nap/shared/ports/project-store";
-import type { SandboxCapacity } from "@nap/shared/ports/sandbox-capacity";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
-import type { TurnQueue } from "@nap/shared/ports/turn-queue";
-import { RenameProjectSchema } from "@nap/shared/projects-protocol";
+import { putProjectAway } from "@vibe-vr/runtime/close-project";
+import { deleteProject } from "@vibe-vr/runtime/delete-project";
+import { thumbnailKey } from "@vibe-vr/runtime/turn-thumbnail";
+import { getLogger } from "@vibe-vr/shared/logging";
+import type { EventBus } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore } from "@vibe-vr/shared/ports/event-store";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
+import type { ProjectSandboxStore } from "@vibe-vr/shared/ports/project-sandbox-store";
+import type { ProjectStore, ProjectSummary } from "@vibe-vr/shared/ports/project-store";
+import type { SandboxCapacity } from "@vibe-vr/shared/ports/sandbox-capacity";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
+import type { TurnQueue } from "@vibe-vr/shared/ports/turn-queue";
+import { RenameProjectSchema } from "@vibe-vr/shared/projects-protocol";
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AuthVariables } from "../auth/require-user.ts";
@@ -71,6 +71,7 @@ export type ProjectRouteDeps = {
     allowedModels: readonly string[];
     freeModel: string;
     defaultModel: string;
+    serverFundedModels?: boolean;
   };
   /**
    * The log a close writes `preview.stopped` to. The same store and bus everything else uses —
@@ -382,6 +383,9 @@ async function continueAccess(
     allowed: models.allowedModels,
     freeModel: models.freeModel,
     defaultModel: models.defaultModel,
+    ...(models.serverFundedModels === undefined
+      ? {}
+      : { serverFundedModels: models.serverFundedModels }),
   });
   if (!access.ok) return access;
 

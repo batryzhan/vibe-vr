@@ -18,16 +18,16 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { canonicalize } from "@nap/scene-spec/canonical";
-import { collectSceneChain } from "@nap/scene-spec/fold";
-import { validateProposal } from "@nap/scene-spec/proposal";
-import { createChildRevision, createGenesisRevision } from "@nap/scene-spec/revisions";
-import { readSceneHead, sceneLogEvents } from "@nap/scene-spec/scene-events";
-import type { SceneSpec } from "@nap/scene-spec/schema";
-import { TOWER_BASE_ID, TOWER_MID_ID, TOWER_TOP_ID, towerSpec } from "@nap/scene-spec/tower";
-import { NapEventSchema } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
-import { FileObjectStore } from "@nap/storage/file-object-store";
+import { canonicalize } from "@vibe-vr/scene-spec/canonical";
+import { collectSceneChain } from "@vibe-vr/scene-spec/fold";
+import { validateProposal } from "@vibe-vr/scene-spec/proposal";
+import { createChildRevision, createGenesisRevision } from "@vibe-vr/scene-spec/revisions";
+import { readSceneHead, sceneLogEvents } from "@vibe-vr/scene-spec/scene-events";
+import type { SceneSpec } from "@vibe-vr/scene-spec/schema";
+import { TOWER_BASE_ID, TOWER_MID_ID, TOWER_TOP_ID, towerSpec } from "@vibe-vr/scene-spec/tower";
+import { NapEventSchema } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import { FileObjectStore } from "@vibe-vr/storage/file-object-store";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { buildScene } from "./build.ts";
 import { boundsMatch, objectBounds } from "./export.ts";
@@ -183,7 +183,7 @@ describe("scene log persistence to the viewport boundary", () => {
 
     const group = builtSceneToGroup(rebuilt.value);
     try {
-      expect(group.name).toBe("threepod-scene");
+      expect(group.name).toBe("vibe-vr-scene");
       expect(group.children).toHaveLength(3);
       const nodeIds = group.children.map((child) => child.name).sort();
       expect(nodeIds).toEqual([TOWER_BASE_ID, TOWER_MID_ID, TOWER_TOP_ID].sort());

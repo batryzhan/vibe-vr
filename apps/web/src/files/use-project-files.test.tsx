@@ -1,6 +1,6 @@
-import type { NapEvent, NapEventType } from "@nap/shared/events";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEvent, NapEventType } from "@vibe-vr/shared/events";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { useFileContent, useProjectFiles } from "./use-project-files.ts";

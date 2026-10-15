@@ -22,8 +22,8 @@
  * anything that survives the call.
  */
 
-import type { NapEventOf, PromptSource, ToolName } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEventOf, PromptSource, ToolName } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 export type FileChange = {
   path: string;
@@ -47,7 +47,7 @@ export type StepStatus = "running" | "ok" | "failed";
 export type Speaker = "user" | "agent" | "verifier";
 
 export type TranscriptItem =
-  | { kind: "message"; key: number; from: Speaker; text: string }
+  | { kind: "message"; key: number; from: Speaker; text: string; referenceImage?: string }
   | { kind: "thinking"; key: number; text: string }
   | {
       kind: "step";
@@ -100,6 +100,7 @@ type TurnOutcome =
        * what a client joining late with `afterSeq` sees.
        */
       retryMessage: string | undefined;
+      retryReferenceImage?: string;
     };
 
 type Step = Extract<TranscriptItem, { kind: "step" }>;
@@ -151,6 +152,7 @@ export function buildTranscript(events: readonly StoredEvent[]): TranscriptItem[
   let openStep: Step | undefined;
   /** What the user last said, which is what a failed turn would offer to send again. */
   let lastUserMessage: string | undefined;
+  let lastUserImage: string | undefined;
 
   for (const event of events) {
     // `seq` is unique per session and never reused, so it is a stable React key for free —
@@ -160,11 +162,22 @@ export function buildTranscript(events: readonly StoredEvent[]): TranscriptItem[
     switch (event.type) {
       case "user.message": {
         const from = repairs.has(event.turnId) || awaitingRepair ? "verifier" : "user";
-        items.push({ kind: "message", key, from, text: event.payload.text });
+        items.push({
+          kind: "message",
+          key,
+          from,
+          text: event.payload.text,
+          ...(event.payload.referenceImage === undefined
+            ? {}
+            : { referenceImage: event.payload.referenceImage }),
+        });
         // Remembered for the turn this opens, so a failure downstream knows what to offer to
         // send again — and only when a person wrote it. Retrying means re-sending the request,
         // and a repair prompt is the verifier's account of a check that has not been re-run.
-        if (from === "user") lastUserMessage = event.payload.text;
+        if (from === "user") {
+          lastUserMessage = event.payload.text;
+          lastUserImage = event.payload.referenceImage;
+        }
         break;
       }
 
@@ -304,6 +317,7 @@ export function buildTranscript(events: readonly StoredEvent[]): TranscriptItem[
           reason: event.payload.reason,
           message: event.payload.message,
           retryMessage: lastUserMessage,
+          ...(lastUserImage === undefined ? {} : { retryReferenceImage: lastUserImage }),
         });
         break;
     }

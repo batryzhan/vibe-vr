@@ -15,12 +15,12 @@ The dependency direction is a table, not a habit. `test/architecture.ts` enumera
 workspace package may depend on, and a new package fails the suite until it appears there. So
 placement is a decision somebody has to make deliberately; there is no default to fall into. Apps
 are the exception — they are `"*"`, because composing everything is what an app is for. The table
-is read twice: against the manifests, and against the `@nap/*` specifiers each package's `src`
+is read twice: against the manifests, and against the `@vibe-vr/*` specifiers each package's `src`
 actually imports, since a manifest-only rule is enforced one level away from where violations get
 written.
 
 The browser is already spoken for. `EXCLUSIVE_EXTERNALS` assigns `puppeteer-core` to
-`@nap/capture`, on the grounds that nothing above the `PageCapture` interface may know a thumbnail
+`@vibe-vr/capture`, on the grounds that nothing above the `PageCapture` interface may know a thumbnail
 is made by rendering a page. A second browser driver arriving with no owner would quietly undo
 that reasoning.
 
@@ -37,8 +37,8 @@ adapter announces itself.
 
 Two units.
 
-**`packages/bench` (`@nap/bench`)** — the pure core, depending on no workspace package but
-`@nap/shared`.
+**`packages/bench` (`@vibe-vr/bench`)** — the pure core, depending on no workspace package but
+`@vibe-vr/shared`.
 The task schema, the check-result model, the `BrowserSession` port, scoring, the gate ladder,
 metric derivation from an event stream, report serialisation, comparison, and the benchmark task
 definitions themselves.
@@ -48,7 +48,7 @@ wiring, executes command checks through `SandboxManager.exec`, implements `Brows
 Playwright, writes screenshots and reports, and is the CLI.
 
 `playwright-core` is added to `EXCLUSIVE_EXTERNALS` in `test/architecture.ts`, owned by
-`@nap/napbench`.
+`@vibe-vr/napbench`.
 
 This mirrors a split the repository already made once: `packages/runtime/src/harness.ts` holds the
 decisions — argument parsing, event formatting, the rule that decides whether a run spends money —
@@ -80,27 +80,27 @@ Two `package.json` and two `tsconfig.json` to maintain instead of one, and both 
 inside `bun run typecheck` and `bun run lint` deliberately — a new directory is not automatically
 inside either.
 
-### `@nap/bench` devDepends on siblings, and that is on purpose
+### `@vibe-vr/bench` devDepends on siblings, and that is on purpose
 
-The evaluation runner lives in `@nap/bench` and is written against ports alone, which is what makes
+The evaluation runner lives in `@vibe-vr/bench` and is written against ports alone, which is what makes
 it unit-testable. Testing it needs the in-memory `SandboxManager` and `EventStore`, and those live
-in `@nap/sandbox` and `@nap/db` — so both appear in `@nap/bench`'s **devDependencies** while its
-runtime `dependencies` stay `@nap/shared` alone.
+in `@vibe-vr/sandbox` and `@vibe-vr/db` — so both appear in `@vibe-vr/bench`'s **devDependencies** while its
+runtime `dependencies` stay `@vibe-vr/shared` alone.
 
 This is recorded rather than left to be discovered, because `test/architecture.test.ts` reads only
 `dependencies`, so the arrangement passes the check partly by not being looked at. It is the same
-thing `@nap/runtime` already does with `@nap/agent`, and it is what `CLAUDE.md` means when it calls
+thing `@vibe-vr/runtime` already does with `@vibe-vr/agent`, and it is what `CLAUDE.md` means when it calls
 the fakes in `packages/*/src/testing/` production-quality code that every downstream package's tests
-depend on. The boundary that matters — what `@nap/bench` needs at runtime, and therefore what a
+depend on. The boundary that matters — what `@vibe-vr/bench` needs at runtime, and therefore what a
 consumer of it pulls in — is unchanged.
 
-The line to hold: a *runtime* dependency on a **workspace package** other than `@nap/shared` would
+The line to hold: a *runtime* dependency on a **workspace package** other than `@vibe-vr/shared` would
 break this ADR. A devDependency on a sibling's published fake does not.
 
 Third-party dependencies were never the subject, and the first one arrived immediately: the pure
 core validates every task it loads and every report it reads back, so it depends on `zod` exactly
-as `@nap/shared` does, and `CLAUDE.md` requires it at each of those boundaries. The guarding test
-filters to `@nap/`-prefixed dependencies for that reason. What "pure" means here is *no
+as `@vibe-vr/shared` does, and `CLAUDE.md` requires it at each of those boundaries. The guarding test
+filters to `@vibe-vr/`-prefixed dependencies for that reason. What "pure" means here is *no
 infrastructure* — no sandbox, no browser, no filesystem, no model — rather than no dependencies.
 
 ## Alternatives considered
@@ -108,7 +108,7 @@ infrastructure* — no sandbox, no browser, no filesystem, no model — rather t
 **One `packages/eval` above `runtime`.** Fewer moving parts and a single entry in the `ALLOWED`
 table. Rejected because the scoring engine would then share a unit with the E2B and Playwright
 drivers, and `playwright-core` would sit in `packages/`, where the exclusivity rule protecting
-`@nap/capture` starts to look arbitrary.
+`@vibe-vr/capture` starts to look arbitrary.
 
 **One `apps/napbench`.** Simplest of all: apps are already `"*"`, so `test/architecture.ts` needs
 no change whatsoever. Rejected precisely because of that — nothing would stop the scoring logic

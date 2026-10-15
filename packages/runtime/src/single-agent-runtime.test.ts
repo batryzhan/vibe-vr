@@ -1,6 +1,6 @@
-import { ScriptedAgent } from "@nap/agent/testing/scripted-agent";
-import { StubContextEngine } from "@nap/context/testing/stub-context-engine";
-import type { AgentService } from "@nap/shared/ports/agent-service";
+import { ScriptedAgent } from "@vibe-vr/agent/testing/scripted-agent";
+import { StubContextEngine } from "@vibe-vr/context/testing/stub-context-engine";
+import type { AgentService } from "@vibe-vr/shared/ports/agent-service";
 /**
  * What a turn did to the world, asserted through the log it left and the commands it ran.
  *
@@ -14,31 +14,31 @@ import type { AgentService } from "@nap/shared/ports/agent-service";
  * Nothing here asserts on model prose (docs/PLAN.md §3).
  */
 
-import { NapAgentService } from "@nap/agent/agent-service";
-import { ScriptedLLMProvider } from "@nap/agent/testing/scripted-llm-provider";
-import { NapContextEngine } from "@nap/context/context-engine";
-import { NoopMemoryProvider } from "@nap/context/noop-memory-provider";
-import { expectEventSequence } from "@nap/db/testing/event-assertions";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { scriptGit } from "@nap/sandbox/testing/script-git";
-import { hashSceneSpec } from "@nap/scene-spec/revisions";
-import { validateSceneSpec } from "@nap/scene-spec/schema";
-import { towerSpec } from "@nap/scene-spec/tower";
-import { NapEventSchema, type NapEventType } from "@nap/shared/events";
+import { NapAgentService } from "@vibe-vr/agent/agent-service";
+import { ScriptedLLMProvider } from "@vibe-vr/agent/testing/scripted-llm-provider";
+import { NapContextEngine } from "@vibe-vr/context/context-engine";
+import { NoopMemoryProvider } from "@vibe-vr/context/noop-memory-provider";
+import { expectEventSequence } from "@vibe-vr/db/testing/event-assertions";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { scriptGit } from "@vibe-vr/sandbox/testing/script-git";
+import { hashSceneSpec } from "@vibe-vr/scene-spec/revisions";
+import { validateSceneSpec } from "@vibe-vr/scene-spec/schema";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
+import { NapEventSchema, type NapEventType } from "@vibe-vr/shared/events";
 import type {
   AppendOptions,
   EventStore,
   PendingEvent,
   StoredEvent,
-} from "@nap/shared/ports/event-store";
-import type { ObjectStore } from "@nap/shared/ports/object-store";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+} from "@vibe-vr/shared/ports/event-store";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { commitMessage, SingleAgentRuntime } from "./single-agent-runtime.ts";
 
@@ -204,6 +204,22 @@ async function onlySandboxId(): Promise<string> {
 }
 
 describe("SingleAgentRuntime", () => {
+  it("persists the reference image with the message and passes it to the scene agent", async () => {
+    const agent = new ScriptedAgent(HAPPY_SCRIPT, true);
+    const referenceImage = "data:image/png;base64,aGVsbG8=";
+    const outcome = await runtime(agent).runTurn({
+      turnId: crypto.randomUUID(),
+      sessionId: SESSION_ID,
+      message: "Build the reference",
+      referenceImage,
+    });
+    expect(outcome.ok).toBe(true);
+    expect(agent.requests[0]?.referenceImage).toBe(referenceImage);
+    const userMessage = (await events.readFrom(SESSION_ID, 0)).find(
+      (event) => event.type === "user.message",
+    );
+    expect(userMessage?.payload).toMatchObject({ text: "Build the reference", referenceImage });
+  });
   it("appends every event before it publishes it", async () => {
     const recorder = new OrderRecorder();
     const wrapped = recorder.wrap(events, bus);
@@ -740,10 +756,10 @@ describe("telling the client where the preview is", () => {
     expectEventSequence(stored, [
       "user.message",
       "job.started",
-      "preview.ready",
       "turn.started",
       "agent.message",
       "turn.completed",
+      "preview.ready",
       // Nothing was committed by this agent, so nothing is verified.
       "job.completed",
     ]);
@@ -907,9 +923,9 @@ describe("opening a project that has been put away", () => {
       "user.message",
       "job.started",
       "system.notice",
-      "preview.ready",
       "turn.started",
       "agent.message",
+      "preview.ready",
       "turn.completed",
       "verification.started",
       "job.completed",

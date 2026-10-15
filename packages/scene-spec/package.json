@@ -1,5 +1,5 @@
 {
-  "name": "@nap/scene-spec",
+  "name": "@vibe-vr/scene-spec",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nap/shared": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
     "zod": "4.4.3"
   }
 }

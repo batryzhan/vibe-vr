@@ -13,7 +13,7 @@
  * otherwise make "the newest" ambiguous here while the Postgres store breaks the tie.
  */
 
-import type { NewSnapshot, SnapshotRecord, SnapshotStore } from "@nap/shared/ports/snapshot-store";
+import type { NewSnapshot, SnapshotRecord, SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
 
 export class InMemorySnapshotStore implements SnapshotStore {
   readonly #rows: SnapshotRecord[] = [];

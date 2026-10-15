@@ -1,4 +1,4 @@
-import type { NapEvent } from "@nap/shared/events";
+import type { NapEvent } from "@vibe-vr/shared/events";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { sockets } from "../testing/fake-socket.ts";

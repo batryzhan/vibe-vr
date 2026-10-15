@@ -17,7 +17,7 @@
  * needs either method: they are how one Postgres-backed component reads what another wrote.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 /** Where each session's reader has got to: everything strictly above the value is wanted. */
 export type SessionCursors = ReadonlyMap<string, number>;

@@ -23,7 +23,7 @@ harbor/
 ## Running a suite
 
 ```bash
-bun run harbor:tasks                       # regenerate the registry from @nap/bench/suite
+bun run harbor:tasks                       # regenerate the registry from @vibe-vr/bench/suite
 uv run --with 'harbor>=0.22,<0.23' harbor run \
   -p harbor/tasks/reading-list \
   -a napbench_harbor.agent:NapbenchAgent
@@ -31,14 +31,14 @@ uv run --with 'harbor>=0.22,<0.23' harbor run \
 
 The trial runs **on the host**, so it needs everything `bun run napbench` needs and in the same
 places: a checkout, `bun install` already done, and — for a real run — `apps/api/.env` and a Chrome
-at `NAP_CHROME_PATH`.
+at `VIBE_VR_CHROME_PATH`.
 
 Two environment variables change what a trial does:
 
 | Variable | Effect |
 |---|---|
 | `NAPBENCH_FLAGS` | Passed to `napbench` verbatim, e.g. `--real --model=openai/gpt-5.6-luna`. **Absent means a dry run**: free, offline, and the scores mean nothing. |
-| `NAP_REPO_ROOT` | Where the Nap checkout is, when it is not the parent of this directory. |
+| `VIBE_VR_REPO_ROOT` | Where the Nap checkout is, when it is not the parent of this directory. |
 
 Fan-out multiplies spend: every concurrent trial of a real run is a real E2B sandbox and real model
 calls, and nothing here caps that.

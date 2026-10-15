@@ -26,7 +26,7 @@
  * — not anything in this file.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import { describeParseFailure } from "./parse-failure.ts";
 import type { ScreenshotRef } from "./screenshot.ts";

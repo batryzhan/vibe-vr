@@ -18,7 +18,7 @@
 import { defineRailway, github, preserve, project, service } from "railway/iac";
 
 /** Every service builds the same image from the same commit. */
-const source = github("mangit955/nap");
+const source = github("batryzhan/vibe-vr");
 
 const build = {
   buildEnvironment: "V3",
@@ -31,26 +31,26 @@ const build = {
  * different role passed to `bootNap`.
  *
  * The settings named here are the ones a reader would otherwise have to discover from a dashboard.
- * `NAP_EVENT_BUS` is the one that must be true before anything else is: a worker publishing to an
+ * `VIBE_VR_EVENT_BUS` is the one that must be true before anything else is: a worker publishing to an
  * in-process bus announces a turn to nobody, since every socket watching it is on the API service.
  * Turns would run perfectly while every chat pane sat still — so the worker and the reaper refuse
  * to boot without it rather than letting that be found from a browser.
  *
  * Everything else is `preserve()`: the value is whatever is set on the service and nothing
  * overwrites it from here, which is how a credential stays out of a committed file. Two are absent
- * on purpose. `NAP_CHROME_PATH` is set by the image, because the browser and the path to it are
+ * on purpose. `VIBE_VR_CHROME_PATH` is set by the image, because the browser and the path to it are
  * one fact and a platform variable can only drift from it. The Google OAuth pair is unset rather
  * than blank — an empty variable is not an unset one, and half a pair fails boot.
  */
 const napEnv = {
-  NAP_EVENT_BUS: "postgres",
+  VIBE_VR_EVENT_BUS: "postgres",
   NODE_ENV: "production",
-  NAP_API_URL: "https://nap-api-production-731a.up.railway.app",
-  NAP_WEB_ORIGIN: "https://nap-tawny.vercel.app",
+  VIBE_VR_API_URL: "https://nap-api-production-731a.up.railway.app",
+  VIBE_VR_WEB_ORIGIN: "https://nap-tawny.vercel.app",
   DATABASE_URL: preserve(),
-  NAP_LISTEN_DATABASE_URL: preserve(),
+  VIBE_VR_LISTEN_DATABASE_URL: preserve(),
   BETTER_AUTH_SECRET: preserve(),
-  NAP_KEY_ENCRYPTION_SECRET: preserve(),
+  VIBE_VR_KEY_ENCRYPTION_SECRET: preserve(),
   E2B_API_KEY: preserve(),
   OPENROUTER_API_KEY: preserve(),
   GITHUB_CLIENT_ID: preserve(),
@@ -64,7 +64,7 @@ const napEnv = {
 /**
  * A turn is minutes of model and sandbox latency, and Railway's default grace period is **zero
  * seconds** — SIGTERM is followed immediately by SIGKILL. Without this the worker's own drain
- * (`NAP_DRAIN_TIMEOUT_SECONDS`, 600 by default) never gets to run: it stops claiming, keeps
+ * (`VIBE_VR_DRAIN_TIMEOUT_SECONDS`, 600 by default) never gets to run: it stops claiming, keeps
  * renewing its leases, and is killed mid-sentence anyway, so every turn in flight during a deploy
  * costs somebody a reopen. The number has to comfortably exceed that timeout for the same reason
  * `terminationGracePeriodSeconds: 900` sits around it in `infra/k8s/base`.

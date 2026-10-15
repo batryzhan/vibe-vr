@@ -1,5 +1,5 @@
-import { InMemoryCapacityReconciler } from "@nap/db/testing/in-memory-capacity-reconciler";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
+import { InMemoryCapacityReconciler } from "@vibe-vr/db/testing/in-memory-capacity-reconciler";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
 import { beforeEach, describe, expect, it } from "vitest";
 import { reconcileCapacity } from "./reconcile-capacity.ts";
 

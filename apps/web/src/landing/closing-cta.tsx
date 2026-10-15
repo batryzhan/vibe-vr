@@ -19,7 +19,7 @@ export function ClosingCta() {
   return (
     <section
       aria-labelledby="closing"
-      className="threepod-grid border-[var(--s-border-1)] border-t px-6 py-28 sm:py-36"
+      className="vibe-vr-grid border-[var(--s-border-1)] border-t px-6 py-28 sm:py-36"
     >
       <div ref={ref} {...revealProps(state)} className="flex flex-col items-center text-center">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--s-text-subtle)]">

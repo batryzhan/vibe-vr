@@ -11,8 +11,8 @@
  * deselect.
  */
 
-import type { Bounds, BuiltScene } from "@nap/procedural/build";
-import { builtSceneToGroup } from "@nap/procedural/three-adapter";
+import type { Bounds, BuiltScene } from "@vibe-vr/procedural/build";
+import { builtSceneToGroup } from "@vibe-vr/procedural/three-adapter";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 

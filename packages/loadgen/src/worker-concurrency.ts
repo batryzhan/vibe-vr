@@ -1,5 +1,5 @@
 /**
- * What `NAP_WORKER_CONCURRENCY` should start at, derived rather than guessed.
+ * What `VIBE_VR_WORKER_CONCURRENCY` should start at, derived rather than guessed.
  *
  * `docs/scaling-design.md` §24 item 1 says plainly that 5 is a guess and that the baseline run
  * is what sets it. This is the arithmetic that turns a measurement into that number, and it is

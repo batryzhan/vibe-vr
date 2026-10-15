@@ -20,7 +20,7 @@ import {
   type ServerFrame,
   ServerFrameSchema,
   type TurnStreamEvent,
-} from "@nap/shared/ws-protocol";
+} from "@vibe-vr/shared/ws-protocol";
 
 export type { TurnStreamEvent };
 import { useCallback, useEffect, useRef, useState } from "react";

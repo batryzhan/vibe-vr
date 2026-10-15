@@ -11,7 +11,7 @@
  * creates sandboxes and calls a model, and the default is then used silently.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { BENCHMARK_SUITE, type BenchSelection, SUITE_NAMES } from "./suite.ts";
 
 /**
@@ -38,7 +38,7 @@ export const NAPBENCH_USAGE = [
   "       bun run napbench --baseline=<run-id|path> --candidate=<run-id|path>",
   "",
   `  --suite=<name>          Run a named suite, serially (${SUITE_NAMES.join(" | ")})`,
-  "  --real                  Use real E2B, a real model and a real browser. Costs money.",
+  "  --real                  Use local Docker, a real model and a real browser. Model usage is billed.",
   `  --platform=<name>       openrouter | anthropic | bedrock (default ${NAPBENCH_DEFAULTS.platform}) — which account pays`,
   `  --model=<id>            Model for a real run (default ${NAPBENCH_DEFAULTS.model})`,
   `  --effort=<level>        low | medium | high | xhigh | max (default ${NAPBENCH_DEFAULTS.effort})`,

@@ -9,7 +9,7 @@
  * reads to decide what it edits.
  */
 
-import type { SceneNode, SceneSpec } from "@nap/scene-spec/schema";
+import type { SceneNode, SceneSpec } from "@vibe-vr/scene-spec/schema";
 
 export function SceneTree({
   spec,

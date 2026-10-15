@@ -1,4 +1,4 @@
-import type { NapEventType } from "@nap/shared/events";
+import type { NapEventType } from "@vibe-vr/shared/events";
 import { describe, expect, it } from "vitest";
 import { expectEventSequence } from "./event-assertions.ts";
 

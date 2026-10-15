@@ -12,7 +12,7 @@
  * the eye learns it in two cycles and stops seeing it. `nextTrick` picks a different one each
  * time, weighted so the quiet gestures are common and the daft one is rare.
  *
- * The trick is a `data-` attribute on a wrapper rather than a prop on the mark: `NapMark` is a
+ * The trick is a `data-` attribute on a wrapper rather than a prop on the mark: `VibeVrMark` is a
  * tab icon and a header logo as well as this, and it stays a drawing with no idea it is being
  * used as a loading state. The stylesheet does the rest, which is also what keeps reduced
  * motion working through the cascade rather than through a second copy of the rules here.
@@ -22,10 +22,10 @@
  */
 
 import { useEffect, useState } from "react";
-import { NapMark } from "./nap-mark.tsx";
-import { nextTrick, REST_MS, type Trick } from "./nap-tricks.ts";
+import { VibeVrMark } from "./vibe-vr-mark.tsx";
+import { nextTrick, REST_MS, type Trick } from "./vibe-vr-tricks.ts";
 
-export function NapLoader({ className = "size-12" }: { className?: string }) {
+export function VibeVrLoader({ className = "size-12" }: { className?: string }) {
   const [trick, setTrick] = useState<Trick | undefined>(undefined);
 
   useEffect(() => {
@@ -63,11 +63,11 @@ export function NapLoader({ className = "size-12" }: { className?: string }) {
     // loop the eye can learn.
     <span
       aria-hidden="true"
-      className={`nap-loader ${className}`}
+      className={`vibe-vr-loader ${className}`}
       {...(trick === undefined ? {} : { "data-trick": trick.name })}
     >
-      <span className="nap-loader-sway">
-        <NapMark className="size-full" />
+      <span className="vibe-vr-loader-sway">
+        <VibeVrMark className="size-full" />
       </span>
     </span>
   );

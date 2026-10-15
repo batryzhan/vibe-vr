@@ -13,7 +13,7 @@
  * between ticks.
  */
 
-import type { IdleProject, ProjectSandboxStore } from "@nap/shared/ports/project-sandbox-store";
+import type { IdleProject, ProjectSandboxStore } from "@vibe-vr/shared/ports/project-sandbox-store";
 import { eq, isNotNull, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { events, projects, sessions } from "./schema.ts";

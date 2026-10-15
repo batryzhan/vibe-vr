@@ -33,7 +33,7 @@ export type FailedAttempt = {
  *
  * Handed in like `history` is, and for the same reason: the component that owns the token
  * budget must not also own a fold over the event log. The caller has the log; this is what it
- * adds up to (`@nap/shared/job-state`, docs/adr/0006).
+ * adds up to (`@vibe-vr/shared/job-state`, docs/adr/0006).
  */
 export type JobContext = {
   /** What was asked, as the prompt that opened the job put it. */

@@ -95,6 +95,20 @@ async function expireLease(id: string): Promise<void> {
 }
 
 describe("enqueue", () => {
+  it("preserves the reference image when a different process claims the request", async () => {
+    const seed = await seedSession();
+    const referenceImage = "data:image/png;base64,aGVsbG8=";
+    await enqueueRequest(queue, {
+      ...seed,
+      referenceImage,
+      kind: "turn",
+      message: "Build the reference",
+      model: "qwen3-8",
+      billsToUser: false,
+    });
+    const leased = await new PostgresTurnQueue(db).claim("vision-worker");
+    expect(leased?.referenceImage).toBe(referenceImage);
+  });
   it("writes a queued request under the id it was given", async () => {
     const seed = await seedSession();
     const { id } = await enqueueTurn(seed);

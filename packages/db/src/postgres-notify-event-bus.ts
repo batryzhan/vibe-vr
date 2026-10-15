@@ -31,9 +31,9 @@
  * that only one replica ever exercises.
  */
 
-import { getLogger } from "@nap/shared/logging";
-import type { EventBus, EventHandler, Unsubscribe } from "@nap/shared/ports/event-bus";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { getLogger } from "@vibe-vr/shared/logging";
+import type { EventBus, EventHandler, Unsubscribe } from "@vibe-vr/shared/ports/event-bus";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import {
   decodeHeartbeat,
   decodeNotification,

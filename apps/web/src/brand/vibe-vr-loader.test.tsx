@@ -1,7 +1,7 @@
 import { act, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { NapLoader } from "./nap-loader.tsx";
-import { REST_MS, TRICKS } from "./nap-tricks.ts";
+import { VibeVrLoader } from "./vibe-vr-loader.tsx";
+import { REST_MS, TRICKS } from "./vibe-vr-tricks.ts";
 
 /**
  * The loader's own job is timing: choose something, hold it for its length, stand still a beat,
@@ -30,14 +30,14 @@ afterEach(() => {
 describe("the ghost while a project comes up", () => {
   it("stands still for a beat before doing anything", () => {
     // A ghost already mid-hop as the pane appears reads as the page having jumped.
-    const { container } = render(<NapLoader />);
+    const { container } = render(<VibeVrLoader />);
 
-    expect(container.querySelector(".nap-loader")?.getAttribute("data-trick")).toBeNull();
+    expect(container.querySelector(".vibe-vr-loader")?.getAttribute("data-trick")).toBeNull();
   });
 
   it("performs, then rests, then performs again", () => {
-    const { container } = render(<NapLoader />);
-    const loader = () => container.querySelector(".nap-loader")?.getAttribute("data-trick");
+    const { container } = render(<VibeVrLoader />);
+    const loader = () => container.querySelector(".vibe-vr-loader")?.getAttribute("data-trick");
 
     act(() => void vi.advanceTimersByTime(REST_MS + 1));
     const first = loader();
@@ -54,12 +54,12 @@ describe("the ghost while a project comes up", () => {
 
   it("does something different each time", () => {
     // Otherwise it is a spinner with extra frames: the eye learns one gesture in two cycles.
-    const { container } = render(<NapLoader />);
+    const { container } = render(<VibeVrLoader />);
     const seen: (string | null | undefined)[] = [];
 
     for (let round = 0; round < 6; round += 1) {
       act(() => void vi.advanceTimersByTime(REST_MS + 1));
-      const showing = container.querySelector(".nap-loader")?.getAttribute("data-trick");
+      const showing = container.querySelector(".vibe-vr-loader")?.getAttribute("data-trick");
       seen.push(showing);
       act(() => void vi.advanceTimersByTime(lengthOf(showing) + 1));
     }
@@ -72,7 +72,7 @@ describe("the ghost while a project comes up", () => {
   it("stops when the pane goes away", () => {
     // A timer that outlives its component sets state on nothing, forever — a leak, and a React
     // warning that turns up in a completely unrelated test.
-    const { unmount } = render(<NapLoader />);
+    const { unmount } = render(<VibeVrLoader />);
 
     unmount();
 
@@ -82,8 +82,8 @@ describe("the ghost while a project comes up", () => {
   it("says nothing to a screen reader", () => {
     // The pane's "Starting the dev server…" line is the announcement. A description of a
     // hopping ghost on top of it is noise.
-    const { container } = render(<NapLoader />);
+    const { container } = render(<VibeVrLoader />);
 
-    expect(container.querySelector(".nap-loader")).toHaveAttribute("aria-hidden", "true");
+    expect(container.querySelector(".vibe-vr-loader")).toHaveAttribute("aria-hidden", "true");
   });
 });

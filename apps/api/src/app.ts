@@ -6,11 +6,11 @@
  * and so boot wiring stays confined to `index.ts`.
  */
 
-import { getLogger, type Logger, withLogContext } from "@nap/shared/logging";
-import type { EventBus } from "@nap/shared/ports/event-bus";
-import type { EventStore } from "@nap/shared/ports/event-store";
-import type { SessionStore } from "@nap/shared/ports/session-store";
-import { VERSION } from "@nap/shared/version";
+import { getLogger, type Logger, withLogContext } from "@vibe-vr/shared/logging";
+import type { EventBus } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore } from "@vibe-vr/shared/ports/event-store";
+import type { SessionStore } from "@vibe-vr/shared/ports/session-store";
+import { VERSION } from "@vibe-vr/shared/version";
 import { type Context, Hono } from "hono";
 import { cors } from "hono/cors";
 import type { WSEvents } from "hono/ws";

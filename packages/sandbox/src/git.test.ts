@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { shellQuote } from "@nap/shared/shell";
+import { shellQuote } from "@vibe-vr/shared/shell";
 import { describe, expect, it } from "vitest";
 import { bundle, commitAll, currentSha, restoreBundle } from "./git.ts";
 import { TEMPLATE_WORKDIR } from "./template.ts";

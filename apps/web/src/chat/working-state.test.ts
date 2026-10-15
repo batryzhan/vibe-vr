@@ -1,5 +1,5 @@
-import type { NapEvent, NapEventType } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEvent, NapEventType } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { describe, expect, it } from "vitest";
 import { buildTranscript } from "./transcript.ts";
 import { stepTarget, turnStartedAt, workingLabel } from "./working-state.ts";

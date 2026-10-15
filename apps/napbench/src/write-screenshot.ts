@@ -1,6 +1,6 @@
 /**
  * Putting a run's screenshots on disk — the filesystem half of `ScreenshotStore`, and therefore
- * the half that lives in the app rather than in `@nap/bench`. See `docs/adr/0001`.
+ * the half that lives in the app rather than in `@vibe-vr/bench`. See `docs/adr/0001`.
  *
  * Each image gets a sidecar of its own rather than one manifest per run, and that is deliberate:
  * a manifest is a second place a run's screenshots are listed, and the report already is the
@@ -20,7 +20,7 @@ import {
   type ScreenshotStore,
   screenshotFilename,
   screenshotMetadataFilename,
-} from "@nap/bench/screenshot";
+} from "@vibe-vr/bench/screenshot";
 
 /**
  * A store that writes into one directory.

@@ -12,15 +12,15 @@
  * Every user gets a unique email and every assertion is scoped to it.
  */
 
-import { createDatabase } from "@nap/db/client";
-import { accounts, authSessions, users } from "@nap/db/schema";
+import { createDatabase } from "@vibe-vr/db/client";
+import { accounts, authSessions, users } from "@vibe-vr/db/schema";
 // Type-only, and deliberately empty: it brings in the module augmentation that types
 // `inject("postgresUrl")`. That declaration lives beside the `globalSetup` that provides the
 // value, and this app's tsconfig covers only its own `src`, so without this the call is
 // `inject(never)`. A value import would pull the testcontainers module in at load time.
-import type {} from "@nap/db/testing/global-setup";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
+import type {} from "@vibe-vr/db/testing/global-setup";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
 import { and, eq } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll, describe, expect, inject, it } from "vitest";
 import { createApp } from "../app.ts";

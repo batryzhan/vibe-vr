@@ -1,4 +1,4 @@
-import type { FailedAttempt } from "@nap/shared/ports/context-engine";
+import type { FailedAttempt } from "@vibe-vr/shared/ports/context-engine";
 import { describe, expect, it } from "vitest";
 import { renderJobBrief } from "./job-brief.ts";
 import { estimateTokens } from "./tokens.ts";

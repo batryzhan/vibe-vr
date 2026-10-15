@@ -1,5 +1,5 @@
-import { ModelListSchema } from "@nap/shared/models-protocol";
-import type { StoredKeyRecord } from "@nap/shared/ports/user-key-store";
+import { ModelListSchema } from "@vibe-vr/shared/models-protocol";
+import type { StoredKeyRecord } from "@vibe-vr/shared/ports/user-key-store";
 import { Hono } from "hono";
 import { describe, expect, it } from "vitest";
 import type { AuthVariables } from "../auth/require-user.ts";
@@ -10,7 +10,12 @@ import { modelLabel, registerModelRoutes } from "./routes.ts";
  * whole allowlist, and therefore the one most of these assertions are about. The key-less case
  * has its own tests below.
  */
-function app(allowed: string[], fallback: string, key: StoredKeyRecord | null = OPENROUTER_KEY) {
+function app(
+  allowed: string[],
+  fallback: string,
+  key: StoredKeyRecord | null = OPENROUTER_KEY,
+  serverFundedModels = false,
+) {
   const instance = new Hono<{ Variables: AuthVariables }>();
   // Every guarded route runs behind `requireUser`, which is what would normally set this.
   instance.use("*", async (c, next) => {
@@ -22,6 +27,7 @@ function app(allowed: string[], fallback: string, key: StoredKeyRecord | null = 
     allowed,
     fallback,
     freeModel: "openai/gpt-5.6-luna",
+    serverFundedModels,
     keys: async () => key,
   });
   return instance;
@@ -71,6 +77,20 @@ describe("GET /models", () => {
 
     expect(ModelListSchema.parse(await result.json()).fallback).toBe("b/two");
   });
+
+  it("marks every configured Dahl model selectable without a personal key", async () => {
+    const dahlModels = [
+      "zai-org/GLM-5.3-Flash",
+      "deepseek-ai/DeepSeek-V4-Flash-0731",
+      "MiniMaxAI/MiniMax-M2.7",
+    ];
+    const result = await app(dahlModels, dahlModels[0] ?? "", null, true).request("/models");
+    const body = ModelListSchema.parse(await result.json());
+
+    expect(body.models.every((model) => model.available)).toBe(true);
+    expect(body.models.map((model) => model.free)).toEqual([false, false, false]);
+    expect(body.fallback).toBe("openai/gpt-5.6-luna");
+  });
 });
 
 describe("GET /models, for somebody with no key of their own", () => {
@@ -99,6 +119,20 @@ describe("GET /models, for somebody with no key of their own", () => {
     // The tick in the picker has to be on the model a message would really run on, and for
     // somebody with no key that is the deployment's chosen freeModel.
     expect((await listFor(null)).fallback).toBe("openai/gpt-5.6-luna");
+  });
+
+  it("marks all Dahl models selectable without a personal key", async () => {
+    const dahlModels = [
+      "zai-org/GLM-5.3-Flash",
+      "deepseek-ai/DeepSeek-V4-Flash-0731",
+      "MiniMaxAI/MiniMax-M2.7",
+    ];
+    const response = await app(dahlModels, dahlModels[0] ?? "", null, true).request("/models");
+    const body = ModelListSchema.parse(await response.json());
+
+    expect(body.models.every((model) => model.available)).toBe(true);
+    expect(body.models.map((model) => model.free)).toEqual([false, false, false]);
+    expect(body.fallback).toBe("openai/gpt-5.6-luna");
   });
 
   it("says no key is configured", async () => {

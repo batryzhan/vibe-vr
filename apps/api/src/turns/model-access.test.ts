@@ -1,5 +1,6 @@
-import type { ModelCredentials } from "@nap/shared/ports/llm-provider";
+import type { ModelCredentials } from "@vibe-vr/shared/ports/llm-provider";
 import { describe, expect, it } from "vitest";
+import type { Env } from "../env.ts";
 import {
   availableModels,
   createOpenRouterCaller,
@@ -9,7 +10,6 @@ import {
   resolveTurnAccess,
   type TurnAccessRequest,
 } from "./model-access.ts";
-import type { Env } from "../env.ts";
 
 /** The shape of a real allowlist: cheap paid, expensive paid, and free. */
 const ALLOWED = [
@@ -69,6 +69,15 @@ describe("with no key of their own", () => {
     });
   });
 
+  it("allows every configured model when the deployment has a shared provider key", () => {
+    for (const model of ALLOWED) {
+      expect(resolveTurnAccess(ask({ requested: model, serverFundedModels: true }))).toEqual({
+        ok: true,
+        model,
+      });
+    }
+  });
+
   it("refuses a paid model that is not the deployment's chosen free model", () => {
     // The rule this whole module exists for. Each of these is on the allowlist, so nothing
     // else in the request pipeline would stop it.
@@ -118,7 +127,7 @@ describe("with an OpenRouter key", () => {
 
 describe("with an Anthropic key", () => {
   it("runs a Claude model when nothing is named, not the OpenRouter-shaped default", () => {
-    // `NAP_MODEL` is namespaced for OpenRouter and unreachable at Anthropic's own API, so
+    // `VIBE_VR_MODEL` is namespaced for OpenRouter and unreachable at Anthropic's own API, so
     // falling through to it would make "just send a message" fail for every Anthropic key.
     expect(resolveTurnAccess(ask({ key: ANTHROPIC }))).toEqual({
       ok: true,
@@ -163,6 +172,10 @@ describe("availableModels", () => {
 
   it("offers everything to an OpenRouter key", () => {
     expect(availableModels(ALLOWED, OPENROUTER)).toEqual([...ALLOWED]);
+  });
+
+  it("offers every configured model to keyless callers when the deployment funds them", () => {
+    expect(availableModels(ALLOWED, null, FREE_MODEL, true)).toEqual([...ALLOWED]);
   });
 
   it("offers the Claude models to an Anthropic key", () => {
@@ -357,5 +370,3 @@ describe("createOpenRouterCaller", () => {
     }
   });
 });
-
-

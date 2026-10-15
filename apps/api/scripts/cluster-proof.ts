@@ -17,24 +17,24 @@
  * and serves only in the `api` role.
  */
 
-import { createDatabase, createListenerConnection } from "@nap/db/client";
-import { PostgresEventStore } from "@nap/db/postgres-event-store";
-import { PostgresNotifyEventBus } from "@nap/db/postgres-notify-event-bus";
-import { PostgresNotifyTransport } from "@nap/db/postgres-notify-transport";
-import { PostgresProjectSandboxStore } from "@nap/db/postgres-project-sandbox-store";
-import { PostgresProjectStore } from "@nap/db/postgres-project-store";
-import { PostgresSandboxCapacity } from "@nap/db/postgres-sandbox-capacity";
-import { PostgresSessionStore } from "@nap/db/postgres-session-store";
-import { PostgresSnapshotStore } from "@nap/db/postgres-snapshot-store";
-import { PostgresTurnQueue } from "@nap/db/postgres-turn-queue";
-import { PostgresTurnRateLimiter } from "@nap/db/postgres-turn-rate-limiter";
-import { PostgresUserKeyStore } from "@nap/db/postgres-user-key-store";
-import { createProjectSession } from "@nap/db/session-bootstrap";
-import { seededRandom } from "@nap/loadgen/calibration";
-import { loopingLLMProvider } from "@nap/loadgen/looping-llm-provider";
-import { sharedSandboxManager } from "@nap/loadgen/shared-sandbox-manager";
-import { slowLLMProvider, slowSandboxManager } from "@nap/loadgen/slow-ports";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { createDatabase, createListenerConnection } from "@vibe-vr/db/client";
+import { PostgresEventStore } from "@vibe-vr/db/postgres-event-store";
+import { PostgresNotifyEventBus } from "@vibe-vr/db/postgres-notify-event-bus";
+import { PostgresNotifyTransport } from "@vibe-vr/db/postgres-notify-transport";
+import { PostgresProjectSandboxStore } from "@vibe-vr/db/postgres-project-sandbox-store";
+import { PostgresProjectStore } from "@vibe-vr/db/postgres-project-store";
+import { PostgresSandboxCapacity } from "@vibe-vr/db/postgres-sandbox-capacity";
+import { PostgresSessionStore } from "@vibe-vr/db/postgres-session-store";
+import { PostgresSnapshotStore } from "@vibe-vr/db/postgres-snapshot-store";
+import { PostgresTurnQueue } from "@vibe-vr/db/postgres-turn-queue";
+import { PostgresTurnRateLimiter } from "@vibe-vr/db/postgres-turn-rate-limiter";
+import { PostgresUserKeyStore } from "@vibe-vr/db/postgres-user-key-store";
+import { createProjectSession } from "@vibe-vr/db/session-bootstrap";
+import { seededRandom } from "@vibe-vr/loadgen/calibration";
+import { loopingLLMProvider } from "@vibe-vr/loadgen/looping-llm-provider";
+import { sharedSandboxManager } from "@vibe-vr/loadgen/shared-sandbox-manager";
+import { slowLLMProvider, slowSandboxManager } from "@vibe-vr/loadgen/slow-ports";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { upgradeWebSocket, websocket } from "hono/bun";
 import { encryptionKeyFrom } from "../src/account/secret-box.ts";
 import { createAuth } from "../src/auth/auth.ts";
@@ -65,7 +65,7 @@ function required(key: string): string {
   return value;
 }
 
-/** A `NAP_*` number from the pod's environment, or the proof's own default. */
+/** A `VIBE_VR_*` number from the pod's environment, or the proof's own default. */
 function tunable(key: string, fallback: number): number {
   const raw = process.env[key];
   if (raw === undefined || raw === "") return fallback;
@@ -81,7 +81,7 @@ function tunable(key: string, fallback: number): number {
  * Ceilings wide enough that the proof measures the deployment rather than its own configuration —
  * and sweeps slow enough that nothing is taken away mid-run.
  *
- * Production's numbers are deliberately not used: at `NAP_MAX_SANDBOXES_TOTAL=10` a proof that
+ * Production's numbers are deliberately not used: at `VIBE_VR_MAX_SANDBOXES_TOTAL=10` a proof that
  * happened to run eleven turns would be reporting a quota refusal, which is a different assertion
  * with its own test.
  *
@@ -92,24 +92,24 @@ function tunable(key: string, fallback: number): number {
  * for two runs to differ for a reason nobody wrote down.
  */
 const CONFIG: NapConfig = {
-  NAP_WEB_ORIGIN: "http://localhost:3000",
-  NAP_MODEL: "proof/fake",
-  NAP_FREE_MODEL: "proof/fake",
-  NAP_ALLOWED_MODELS: ["proof/fake"],
-  NAP_MAX_STEPS: 8,
-  NAP_CONTEXT_BUDGET_TOKENS: 80_000,
-  NAP_MAX_SANDBOXES_PER_USER: tunable("NAP_MAX_SANDBOXES_PER_USER", 10),
-  NAP_FREE_MAX_SANDBOXES_PER_USER: tunable("NAP_FREE_MAX_SANDBOXES_PER_USER", 10),
-  NAP_MAX_SANDBOXES_TOTAL: tunable("NAP_MAX_SANDBOXES_TOTAL", 50),
-  NAP_SANDBOX_TTL_MINUTES: 30,
-  NAP_REAP_IDLE_MINUTES: 29,
-  NAP_REAP_INTERVAL_SECONDS: 60,
+  VIBE_VR_WEB_ORIGIN: "http://localhost:3000",
+  VIBE_VR_MODEL: "proof/fake",
+  VIBE_VR_FREE_MODEL: "proof/fake",
+  VIBE_VR_ALLOWED_MODELS: ["proof/fake"],
+  VIBE_VR_MAX_STEPS: 8,
+  VIBE_VR_CONTEXT_BUDGET_TOKENS: 80_000,
+  VIBE_VR_MAX_SANDBOXES_PER_USER: tunable("VIBE_VR_MAX_SANDBOXES_PER_USER", 10),
+  VIBE_VR_FREE_MAX_SANDBOXES_PER_USER: tunable("VIBE_VR_FREE_MAX_SANDBOXES_PER_USER", 10),
+  VIBE_VR_MAX_SANDBOXES_TOTAL: tunable("VIBE_VR_MAX_SANDBOXES_TOTAL", 50),
+  VIBE_VR_SANDBOX_TTL_MINUTES: 30,
+  VIBE_VR_REAP_IDLE_MINUTES: 29,
+  VIBE_VR_REAP_INTERVAL_SECONDS: 60,
   // The one sweep that matters here, and it is left fast: a rolling restart of the workers is
   // exactly when a turn's worker disappears, and the janitor is what tells the socket about it.
-  NAP_JANITOR_INTERVAL_SECONDS: 15,
-  NAP_WORKER_CONCURRENCY: tunable("NAP_WORKER_CONCURRENCY", 5),
-  NAP_DRAIN_TIMEOUT_SECONDS: tunable("NAP_DRAIN_TIMEOUT_SECONDS", 30),
-  NAP_CAPTURE_CONCURRENCY: 1,
+  VIBE_VR_JANITOR_INTERVAL_SECONDS: 15,
+  VIBE_VR_WORKER_CONCURRENCY: tunable("VIBE_VR_WORKER_CONCURRENCY", 5),
+  VIBE_VR_DRAIN_TIMEOUT_SECONDS: tunable("VIBE_VR_DRAIN_TIMEOUT_SECONDS", 30),
+  VIBE_VR_CAPTURE_CONCURRENCY: 1,
 };
 
 const which = role();
@@ -129,7 +129,7 @@ const bus = new PostgresNotifyEventBus({
   reader: events,
   transport: new PostgresNotifyTransport({
     notifier: client,
-    listener: createListenerConnection(process.env.NAP_LISTEN_DATABASE_URL ?? databaseUrl),
+    listener: createListenerConnection(process.env.VIBE_VR_LISTEN_DATABASE_URL ?? databaseUrl),
   }),
 });
 await bus.start();
@@ -150,7 +150,7 @@ const model = loopingLLMProvider(scriptedTurn());
 await createSharedSandboxTable(db);
 // Slow *outside* shared: the cold start belongs to `create`, so a reattach does not pay one.
 const sandbox = sharedSandboxManager(fakeSandbox(), new PostgresSharedSandboxStore(db));
-const heartbeatFile = process.env.NAP_WORKER_HEARTBEAT_FILE;
+const heartbeatFile = process.env.VIBE_VR_WORKER_HEARTBEAT_FILE;
 
 /**
  * Whether the fakes answer instantly or at the speeds a funded run recorded.
@@ -159,14 +159,14 @@ const heartbeatFile = process.env.NAP_WORKER_HEARTBEAT_FILE;
  * find out wastes a minute per check. It is wrong for a load run, and by more than a factor —
  * instant fakes finish each turn before the next user has connected, so nothing is ever
  * concurrent and a ramp to a hundred measures a system that never had two turns at once. Same
- * argument as `loadgen-composition.ts`, and the same `@nap/loadgen` calibration behind it, so
+ * argument as `loadgen-composition.ts`, and the same `@vibe-vr/loadgen` calibration behind it, so
  * that a cluster run and the single-process baseline are comparable.
  */
-const calibrated = process.env.NAP_PROOF_CALIBRATED_LATENCY === "true";
+const calibrated = process.env.VIBE_VR_PROOF_CALIBRATED_LATENCY === "true";
 // One seeded stream, so two runs of this pod draw the same turn durations. Per pod rather than
 // per deployment: nothing can share a stream across processes, and what matters is that a
 // rerun of the same shape sees the same dice.
-const random = seededRandom(tunable("NAP_PROOF_SEED", 1));
+const random = seededRandom(tunable("VIBE_VR_PROOF_SEED", 1));
 
 const { app, worker, reaper, janitor } = composeNap({
   config: CONFIG,
@@ -176,8 +176,8 @@ const { app, worker, reaper, janitor } = composeNap({
   projects: new PostgresProjectStore(db),
   projectSandboxes: new PostgresProjectSandboxStore(db),
   capacity: new PostgresSandboxCapacity(db, {
-    perUser: CONFIG.NAP_MAX_SANDBOXES_PER_USER,
-    total: CONFIG.NAP_MAX_SANDBOXES_TOTAL,
+    perUser: CONFIG.VIBE_VR_MAX_SANDBOXES_PER_USER,
+    total: CONFIG.VIBE_VR_MAX_SANDBOXES_TOTAL,
   }),
   rateLimits: {
     rate: new PostgresTurnRateLimiter(db, { limit: 1_000, windowMs: 3_600_000, tier: "paid" }),
@@ -199,8 +199,8 @@ const { app, worker, reaper, janitor } = composeNap({
      * long as the process does and nothing else can be reached with them.
      */
     secret: process.env.BETTER_AUTH_SECRET ?? "cluster-proof-outside-a-cluster",
-    baseUrl: process.env.NAP_API_URL ?? "http://localhost:3001",
-    webOrigin: CONFIG.NAP_WEB_ORIGIN,
+    baseUrl: process.env.VIBE_VR_API_URL ?? "http://localhost:3001",
+    webOrigin: CONFIG.VIBE_VR_WEB_ORIGIN,
     // The door the proof's client goes through: it has no account and needs none.
     allowAnonymous: true,
     // Wide, because every simulated user arrives from one address — the k6 process behind the

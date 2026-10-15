@@ -6,9 +6,9 @@
  * camera framing, selection) in jsdom with a plain canvas element.
  */
 
-import { buildScene } from "@nap/procedural/build";
-import { ALBEDO_COLOR_SPACE, DATA_COLOR_SPACE } from "@nap/procedural/three-adapter";
-import { towerSpec } from "@nap/scene-spec/tower";
+import { buildScene } from "@vibe-vr/procedural/build";
+import { ALBEDO_COLOR_SPACE, DATA_COLOR_SPACE } from "@vibe-vr/procedural/three-adapter";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 import { applySelection, createViewportScene, disposeViewportScene } from "./viewport-scene.ts";

@@ -30,7 +30,7 @@
  * That is the right direction for a limit whose job is to cap a bill.
  */
 
-import type { ProjectStore } from "@nap/shared/ports/project-store";
+import type { ProjectStore } from "@vibe-vr/shared/ports/project-store";
 
 export type SandboxLimits = {
   perUser: number;

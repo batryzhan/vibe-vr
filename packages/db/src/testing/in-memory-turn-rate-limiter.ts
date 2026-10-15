@@ -13,7 +13,7 @@
  * what happens 59 and 61 minutes later, which is a thing to compute.
  */
 
-import type { RateDecision, TurnRateLimiter } from "@nap/shared/ports/turn-rate-limit";
+import type { RateDecision, TurnRateLimiter } from "@vibe-vr/shared/ports/turn-rate-limit";
 
 export type InMemoryRateLimit = {
   /** Turns allowed inside one window. */

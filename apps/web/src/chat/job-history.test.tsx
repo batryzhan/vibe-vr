@@ -9,8 +9,8 @@
  * and `jobHistory` actually produce rather than against a shape they might not.
  */
 
-import { foldJobs } from "@nap/shared/job-state";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { foldJobs } from "@vibe-vr/shared/job-state";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { check, JOB_ID as JOB, jobLog, OTHER_JOB_ID as OTHER_JOB } from "../testing/job-events.ts";

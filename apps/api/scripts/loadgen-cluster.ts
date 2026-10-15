@@ -19,7 +19,7 @@
  *   - and the API is *not booted here*: it is already running, as a deployment, and this
  *     process reaches it only over the ingress and over a port-forward to its database.
  *
- * It costs nothing: the pods run `cluster-proof.ts` with `NAP_PROOF_CALIBRATED_LATENCY=true`, so
+ * It costs nothing: the pods run `cluster-proof.ts` with `VIBE_VR_PROOF_CALIBRATED_LATENCY=true`, so
  * the model and the sandbox are fakes at recorded speeds, and nothing leaves this machine.
  */
 
@@ -31,16 +31,16 @@ import {
   type ClusterSample,
   compareStages,
   rollupClusterSamples,
-} from "@nap/loadgen/cluster-samples";
-import { firstDegradation } from "@nap/loadgen/degradation";
-import { parseK6Summary, rollupOf, type StageRollup, stageRollups } from "@nap/loadgen/k6-summary";
+} from "@vibe-vr/loadgen/cluster-samples";
+import { firstDegradation } from "@vibe-vr/loadgen/degradation";
+import { parseK6Summary, rollupOf, type StageRollup, stageRollups } from "@vibe-vr/loadgen/k6-summary";
 import {
   RAMP_DEGRADATION,
   RAMP_SUBMIT_THRESHOLDS,
   RAMP_THRESHOLDS,
-} from "@nap/loadgen/ramp-thresholds";
-import { evaluateThresholds } from "@nap/loadgen/report";
-import type { SampleWindow } from "@nap/loadgen/server-samples";
+} from "@vibe-vr/loadgen/ramp-thresholds";
+import { evaluateThresholds } from "@vibe-vr/loadgen/report";
+import type { SampleWindow } from "@vibe-vr/loadgen/server-samples";
 import postgres from "postgres";
 import { z } from "zod";
 
@@ -365,9 +365,9 @@ async function main(): Promise<void> {
   const k6 = Bun.spawn(["k6", "run", join(import.meta.dir, "..", "k6", "ramp.js")], {
     env: {
       ...process.env,
-      NAP_LOADGEN_BASE: BASE,
-      NAP_LOADGEN_PROFILE: PROFILE,
-      NAP_LOADGEN_SUMMARY: summaryPath,
+      VIBE_VR_LOADGEN_BASE: BASE,
+      VIBE_VR_LOADGEN_PROFILE: PROFILE,
+      VIBE_VR_LOADGEN_SUMMARY: summaryPath,
     },
     stdout: "inherit",
     stderr: "inherit",

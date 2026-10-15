@@ -1,4 +1,4 @@
-import { InMemoryUserKeyStore } from "@nap/db/testing/in-memory-user-key-store";
+import { InMemoryUserKeyStore } from "@vibe-vr/db/testing/in-memory-user-key-store";
 import { Hono } from "hono";
 import { describe, expect, it, vi } from "vitest";
 import type { AuthVariables } from "../auth/require-user.ts";

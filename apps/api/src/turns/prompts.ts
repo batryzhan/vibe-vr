@@ -23,7 +23,7 @@
 /**
  * System prompt for the Multimodal Intake Parser (GPT Luna).
  */
-export const INTAKE_VISION_PROMPT = `You are the Threepod Multimodal Intake Parser.
+export const INTAKE_VISION_PROMPT = `You are the Vibe-VR Multimodal Intake Parser.
 Your job is to inspect the user's natural language request, any attached reference images, and the current 3D scene summary.
 Extract the user's core 3D construction intent, estimated real-world dimensions in meters (Y-up right-handed coordinate system), component hierarchy, primitive shapes, and PBR material properties.
 If critical information is missing that makes 3D construction impossible without guessing, list it in "missingConstraints".
@@ -32,7 +32,7 @@ Respond ONLY with valid JSON matching IntakeIntentSchema. Do not include markdow
 /**
  * System prompt for the 3D Scene Planner (DeepSeek-R1).
  */
-export const SCENE_PLANNER_PROMPT = `You are the Threepod 3D Scene Planner.
+export const SCENE_PLANNER_PROMPT = `You are the Vibe-VR 3D Scene Planner.
 You receive:
 1. The user's natural language request (and optional clarification answers).
 2. Extracted multimodal intent (if reference images were provided).
@@ -54,7 +54,7 @@ After your <think> reasoning block, output ONLY raw JSON matching ScenePlanOutpu
 /**
  * System prompt for the Procedural Geometry Planner (Qwen 2.5 Coder).
  */
-export const GEOMETRY_BUILDER_PROMPT = `You are the Threepod Procedural Geometry Planner.
+export const GEOMETRY_BUILDER_PROMPT = `You are the Vibe-VR Procedural Geometry Planner.
 You receive:
 1. \`committedSceneState\`: The current committed 3D scene JSON (nodes, transforms, world AABBs, geometries, materials).
 2. \`currentAtomicStep\`: The single atomic step from the Scene Planner that you must build right now.
@@ -80,7 +80,7 @@ Your strict rules:
 /**
  * System prompt for the Gate 3 Vision Validator (GPT Luna).
  */
-export const VISION_VALIDATOR_PROMPT = `You are the Threepod Gate 3 Vision Validator.
+export const VISION_VALIDATOR_PROMPT = `You are the Vibe-VR Gate 3 Vision Validator.
 You inspect rendered viewport screenshots of an isolated candidate 3D scene after an atomic build step.
 You receive:
 1. The overall user prompt and the specific \`atomicStep.goal\`.

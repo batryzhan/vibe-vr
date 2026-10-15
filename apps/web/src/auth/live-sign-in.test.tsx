@@ -126,7 +126,7 @@ describe("the address bar", () => {
     fireEvent.click(screen.getByRole("button", { name: "Create one" }));
 
     expect(window.location.pathname).toBe("/sign-up");
-    expect(screen.getByRole("heading", { level: 1, name: "Start a nap." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Create with Vibe-VR" })).toBeInTheDocument();
   });
 
   it("keeps what was already typed, since the switch is not a navigation", () => {

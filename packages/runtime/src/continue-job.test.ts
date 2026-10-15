@@ -7,9 +7,9 @@
  * answerable by reading a table of inputs rather than by tracing an orchestrator.
  */
 
-import type { JobOutcome, NapEvent, VerifiedCheck } from "@nap/shared/events";
-import { foldJobs, MAX_REPAIR_ATTEMPTS } from "@nap/shared/job-state";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { JobOutcome, NapEvent, VerifiedCheck } from "@vibe-vr/shared/events";
+import { foldJobs, MAX_REPAIR_ATTEMPTS } from "@vibe-vr/shared/job-state";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { describe, expect, it } from "vitest";
 import { continuationFor } from "./continue-job.ts";
 

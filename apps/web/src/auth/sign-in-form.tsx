@@ -23,7 +23,7 @@
 
 import type { ReactElement } from "react";
 import { useState } from "react";
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 import { GithubIcon, GoogleIcon, type IconProps, SpinnerIcon } from "../ui/icons.tsx";
 import { DoodleWall } from "./doodle-wall.tsx";
 
@@ -92,9 +92,9 @@ const COPY: Record<SignInMode, { lead: string; emphasis: string; sub: string }> 
     sub: "Your apps are where you left them.",
   },
   "sign-up": {
-    lead: "Start a",
-    emphasis: "nap.",
-    sub: "Describe an app; we'll build it while you're gone.",
+    lead: "Create with",
+    emphasis: "Vibe-VR",
+    sub: "Describe a 3D object or scene, then shape the result in your workbench.",
   },
 };
 
@@ -169,11 +169,11 @@ export function SignInForm({
       */}
       <a
         href="/"
-        aria-label="nap, back to the front page"
+        aria-label="Vibe-VR, back to the front page"
         className="absolute top-4 left-6 z-10 flex items-center gap-0.5 font-semibold text-[var(--s-text-primary)] text-sm tracking-tight focus-visible:outline focus-visible:outline-1 focus-visible:outline-[var(--s-text-primary)]"
       >
-        <NapMark className="size-10" />
-        nap
+        <VibeVrMark className="size-10" />
+        Vibe-VR
       </a>
 
       <main className="relative z-10 flex w-full max-w-sm flex-col">

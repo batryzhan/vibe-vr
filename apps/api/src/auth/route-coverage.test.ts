@@ -12,7 +12,7 @@
  * design replaced.
  */
 
-import { FAKE_OWNER } from "@nap/db/testing/in-memory-project-store";
+import { FAKE_OWNER } from "@vibe-vr/db/testing/in-memory-project-store";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../app.ts";
 import { createLogger } from "../logger.ts";

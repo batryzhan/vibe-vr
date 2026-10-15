@@ -1,0 +1,1 @@
+ALTER TABLE "turn_requests" ADD COLUMN "reference_image" text;

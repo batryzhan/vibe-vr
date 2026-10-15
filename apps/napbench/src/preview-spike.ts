@@ -15,7 +15,7 @@
  * report an infrastructure fault every time an agent wrote a bug.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 
 export const PREVIEW_SPIKE_DEFAULTS = {
   /** Generous: the point is to measure a cold start, not to impose one. */

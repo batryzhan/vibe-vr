@@ -14,7 +14,7 @@
  */
 
 import { join } from "node:path";
-import { loadEnvFile } from "@nap/shared/env-file";
+import { loadEnvFile } from "@vibe-vr/shared/env-file";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";

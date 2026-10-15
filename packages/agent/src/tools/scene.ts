@@ -16,10 +16,11 @@
  * verification runs at the boundary on every read, not just on write.
  */
 
-import type { SceneHead } from "@nap/scene-spec/fold";
-import { validateProposal } from "@nap/scene-spec/proposal";
-import { readSceneHead } from "@nap/scene-spec/scene-events";
-import type { SceneSpec } from "@nap/scene-spec/schema";
+import type { SceneHead } from "@vibe-vr/scene-spec/fold";
+import { validateProposal } from "@vibe-vr/scene-spec/proposal";
+import { readSceneHead } from "@vibe-vr/scene-spec/scene-events";
+import type { SceneSpec } from "@vibe-vr/scene-spec/schema";
+import { buildSpatialIndex, formatBounds, sceneBounds } from "@vibe-vr/scene-spec/spatial";
 
 /** Re-exported so agent-side import sites keep one address for scene reads. */
 export { readSceneHead };
@@ -31,22 +32,37 @@ export { readSceneHead };
  * output cap as the backstop for scenes that outgrow a turn.
  */
 export function summarizeScene(head: SceneHead): string {
+  const spatialById = new Map(buildSpatialIndex(head.spec).map((node) => [node.id, node]));
+  const bounds = sceneBounds(head.spec);
   const lines = head.spec.nodes.map((node) => {
+    const spatial = spatialById.get(node.id);
+    const parent =
+      spatial?.parentId === null || spatial?.parentId === undefined
+        ? ""
+        : ` parent=${spatial.parentId}`;
+    const position = spatial?.position === undefined ? "" : ` @ [${spatial.position.join(", ")}]`;
+    const rotation = ` rotation=[${node.transform.rotationEuler.join(", ")}]`;
+    const nodeBounds = ` bounds=${formatBounds(spatial?.bounds ?? null)}`;
+    const tags =
+      node.tags === undefined || node.tags.length === 0 ? "" : ` tags=[${node.tags.join(", ")}]`;
+    const metadata =
+      node.metadata === undefined ? "" : ` metadata=${JSON.stringify(node.metadata)}`;
     if (node.kind === "group") {
-      return `- ${node.id}: group "${node.name}" children=[${node.children.join(", ")}]`;
+      return `- ${node.id}: group "${node.name}" children=[${node.children.join(", ")}]${parent}${position}${rotation}${tags}${metadata}`;
     }
     return (
       `- ${node.id}: ${node.op} "${node.name}" ` +
-      `params=${JSON.stringify(node.params)} material=${node.materialId} ` +
-      `@ [${node.transform.position.join(", ")}]`
+      `params=${JSON.stringify(node.params)} material=${node.materialId}` +
+      `${parent}${position}${rotation}${nodeBounds}${tags}${metadata}`
     );
   });
   // The short hash is for humans scanning a transcript; the full revision
   // hash is what a patch must cite as baseHash, so it travels in the output
   // too — a model shown only the prefix cannot form a valid proposal.
   return [
-    `Scene ${head.hash.slice(0, 12)} (${head.spec.nodes.length} nodes):`,
+    `Scene ${head.hash.slice(0, 12)} (${head.spec.nodes.length} nodes; id=${head.spec.id}):`,
     `revision ${head.hash}`,
+    `coordinates: right-handed, Y-up, metres; world bounds=${formatBounds(bounds)}`,
     ...lines,
   ].join("\n");
 }

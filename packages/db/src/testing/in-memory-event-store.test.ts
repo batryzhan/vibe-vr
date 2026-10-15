@@ -1,4 +1,4 @@
-import type { PendingEvent } from "@nap/shared/ports/event-store";
+import type { PendingEvent } from "@vibe-vr/shared/ports/event-store";
 import { describe, expect, it } from "vitest";
 import { InMemoryEventStore } from "./in-memory-event-store.ts";
 

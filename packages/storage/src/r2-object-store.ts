@@ -5,7 +5,7 @@
  * fixed to `auto` — R2 has no regions, and the signature requires one anyway. Nothing about the
  * bucket is special: the port's whole surface is put, get and delete by key.
  *
- * **The SDK is injected as a narrow three-method client**, the same shape `E2BSandboxManager`
+ * **The SDK is injected as a narrow three-method client**, the same shape `DockerSandboxManager`
  * uses. What is worth testing here is the error mapping, and the mapping is the part a network
  * cannot be asked about on demand — a stub that throws exactly the failure under discussion
  * makes each case a two-line test instead of an unreproducible one.
@@ -22,8 +22,8 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import type { ObjectStore, ObjectStoreError } from "@nap/shared/ports/object-store";
-import type { Result, VoidResult } from "@nap/shared/result";
+import type { ObjectStore, ObjectStoreError } from "@vibe-vr/shared/ports/object-store";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 
 /** Exactly what this adapter asks of an object store, and nothing the SDK adds around it. */
 export type R2Client = {

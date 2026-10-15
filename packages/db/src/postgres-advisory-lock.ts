@@ -21,7 +21,7 @@
  * than assumed.
  */
 
-import type { SweepLock } from "@nap/shared/ports/sweep-lock";
+import type { SweepLock } from "@vibe-vr/shared/ports/sweep-lock";
 import type { Sql } from "postgres";
 
 /**

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { NapEventSchema } from "@nap/shared/events";
+import { NapEventSchema } from "@vibe-vr/shared/events";
 import { and, eq } from "drizzle-orm";
 import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";

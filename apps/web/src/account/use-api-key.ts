@@ -11,7 +11,7 @@
  * theirs, so every branch is drivable in a test without a network.
  */
 
-import { KeyStatusSchema } from "@nap/shared/models-protocol";
+import { KeyStatusSchema } from "@vibe-vr/shared/models-protocol";
 import { useCallback, useEffect, useState } from "react";
 import { credentialedFetch } from "../api/credentialed-fetch.ts";
 import type { FetchJson } from "../files/use-project-files.ts";

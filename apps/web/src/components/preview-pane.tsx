@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NapLoader } from "../brand/nap-loader.tsx";
-import { NapMark } from "../brand/nap-mark.tsx";
-import { pickDifferent } from "../brand/nap-tricks.ts";
+import { VibeVrLoader } from "../brand/vibe-vr-loader.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
+import { pickDifferent } from "../brand/vibe-vr-tricks.ts";
 import { turnFailureCopy } from "../errors/failure-copy.ts";
 import type { ProjectPhase } from "../projects/project-phase.ts";
 import { AlertIcon } from "../ui/icons.tsx";
@@ -164,12 +164,12 @@ function StartingUp() {
         The ghost rather than a spinner, and big enough to be a character rather than an icon:
         a 20px spinner in a pane this size stops reading as progress about two seconds in.
       */}
-      <NapLoader className="size-14 text-ink-2" />
+      <VibeVrLoader className="size-14 text-ink-2" />
 
       <div className="flex flex-col items-center gap-1">
         {/* The same shimmer the transcript's working indicator uses, so waiting looks like one
             thing wherever it happens. */}
-        <p aria-hidden="true" className="nap-shimmer text-[13px]">
+        <p aria-hidden="true" className="vibe-vr-shimmer text-[13px]">
           {word}…
         </p>
         <p className="font-mono text-[11px] text-muted tabular-nums">
@@ -220,11 +220,8 @@ function PutAway({
 }) {
   return (
     <>
-      {/*
-        The sleeping mark, which is the one place in the app where the brand's own metaphor is
-        literally the state being described: the project is having a nap.
-      */}
-      <NapMark className="size-8 text-muted" />
+      {/* The Vibe-VR cube mark stays consistent while the project is put away. */}
+      <VibeVrMark className="size-8 text-muted" />
 
       <p className="font-display font-semibold text-[15px] text-ink">This project is put away.</p>
       <p className="text-[12.5px] text-muted leading-relaxed">

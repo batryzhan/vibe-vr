@@ -8,7 +8,7 @@
  *
  * The press is a ring that expands and fades, drawn *behind* the arrow so the arrow never
  * disappears inside its own feedback. It is a class rather than an inline animation so reduced
- * motion can stop it through the cascade, the way `.nap-spin` is handled.
+ * motion can stop it through the cascade, the way `.vibe-vr-spin` is handled.
  *
  * It is not a real cursor and must never behave like one: no pointer events, no hover states, and
  * it sits under `aria-hidden` with the rest of the stage.
@@ -29,14 +29,14 @@ export function DemoCursor({
     <div
       ref={ref}
       data-press="false"
-      className="nap-demo-cursor pointer-events-none absolute top-0 left-0"
+      className="vibe-vr-demo-cursor pointer-events-none absolute top-0 left-0"
       style={{
         transform: `translate(${frame.cursor.x}px, ${frame.cursor.y}px)`,
         opacity: frame.cursor.alpha,
       }}
     >
       {/* The ring is centred on the arrow's tip, which is where a click actually lands. */}
-      <span className="nap-demo-press absolute size-6 rounded-full border border-[var(--s-text-primary)]" />
+      <span className="vibe-vr-demo-press absolute size-6 rounded-full border border-[var(--s-text-primary)]" />
 
       <svg
         viewBox="0 0 16 20"

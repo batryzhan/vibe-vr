@@ -13,7 +13,7 @@
  * at once, which is how a cluster starts.
  */
 
-import type { SharedSandboxRecord, SharedSandboxStore } from "@nap/loadgen/shared-sandbox-manager";
+import type { SharedSandboxRecord, SharedSandboxStore } from "@vibe-vr/loadgen/shared-sandbox-manager";
 import { sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { z } from "zod";

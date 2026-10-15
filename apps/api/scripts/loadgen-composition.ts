@@ -13,29 +13,29 @@
  * concurrency is a quota question, not an architecture one, and faking it is what keeps a
  * hundred-user run repeatable.
  *
- * The fakes are slowed to the speeds a funded run really recorded (`@nap/loadgen/calibration`);
+ * The fakes are slowed to the speeds a funded run really recorded (`@vibe-vr/loadgen/calibration`);
  * instant fakes would finish each turn before the next user connected and nothing would ever be
  * concurrent, which is the one thing this exists to produce.
  */
 
-import { createDatabase } from "@nap/db/client";
-import { InProcessEventBus } from "@nap/db/in-process-event-bus";
-import { PostgresEventStore } from "@nap/db/postgres-event-store";
-import { PostgresProjectSandboxStore } from "@nap/db/postgres-project-sandbox-store";
-import { PostgresProjectStore } from "@nap/db/postgres-project-store";
-import { PostgresSandboxCapacity } from "@nap/db/postgres-sandbox-capacity";
-import { PostgresSessionStore } from "@nap/db/postgres-session-store";
-import { PostgresSnapshotStore } from "@nap/db/postgres-snapshot-store";
-import { PostgresTurnQueue } from "@nap/db/postgres-turn-queue";
-import { PostgresTurnRateLimiter } from "@nap/db/postgres-turn-rate-limiter";
-import { PostgresUserKeyStore } from "@nap/db/postgres-user-key-store";
-import { createProjectSession } from "@nap/db/session-bootstrap";
-import { startDockerPostgres } from "@nap/db/testing/docker-postgres";
-import { seededRandom } from "@nap/loadgen/calibration";
-import { loopingLLMProvider, type ProviderTotals } from "@nap/loadgen/looping-llm-provider";
-import { sharedSandboxManager } from "@nap/loadgen/shared-sandbox-manager";
-import { slowLLMProvider, slowSandboxManager } from "@nap/loadgen/slow-ports";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { createDatabase } from "@vibe-vr/db/client";
+import { InProcessEventBus } from "@vibe-vr/db/in-process-event-bus";
+import { PostgresEventStore } from "@vibe-vr/db/postgres-event-store";
+import { PostgresProjectSandboxStore } from "@vibe-vr/db/postgres-project-sandbox-store";
+import { PostgresProjectStore } from "@vibe-vr/db/postgres-project-store";
+import { PostgresSandboxCapacity } from "@vibe-vr/db/postgres-sandbox-capacity";
+import { PostgresSessionStore } from "@vibe-vr/db/postgres-session-store";
+import { PostgresSnapshotStore } from "@vibe-vr/db/postgres-snapshot-store";
+import { PostgresTurnQueue } from "@vibe-vr/db/postgres-turn-queue";
+import { PostgresTurnRateLimiter } from "@vibe-vr/db/postgres-turn-rate-limiter";
+import { PostgresUserKeyStore } from "@vibe-vr/db/postgres-user-key-store";
+import { createProjectSession } from "@vibe-vr/db/session-bootstrap";
+import { startDockerPostgres } from "@vibe-vr/db/testing/docker-postgres";
+import { seededRandom } from "@vibe-vr/loadgen/calibration";
+import { loopingLLMProvider, type ProviderTotals } from "@vibe-vr/loadgen/looping-llm-provider";
+import { sharedSandboxManager } from "@vibe-vr/loadgen/shared-sandbox-manager";
+import { slowLLMProvider, slowSandboxManager } from "@vibe-vr/loadgen/slow-ports";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { upgradeWebSocket, websocket } from "hono/bun";
 import { encryptionKeyFrom } from "../src/account/secret-box.ts";
@@ -49,38 +49,38 @@ import { createSharedSandboxTable, PostgresSharedSandboxStore } from "./loadgen-
  * Ceilings wide enough that the run measures the system rather than its own configuration.
  *
  * Production's numbers are deliberately not used and deliberately not changed: a harness that ran
- * at `NAP_MAX_SANDBOXES_TOTAL=10` would spend a hundred-user run reporting quota refusals, which
+ * at `VIBE_VR_MAX_SANDBOXES_TOTAL=10` would spend a hundred-user run reporting quota refusals, which
  * is a separate assertion (§16) with its own composition. The turn allowance is sized the same
  * way and is no longer here — it is a limiter rather than a number now, built in `bootLoadgenApi`
  * against the same Postgres.
  */
 export function loadgenConfig(users: number): NapConfig {
   return {
-    NAP_WEB_ORIGIN: "http://localhost:3000",
-    NAP_MODEL: "loadgen/fake",
-    NAP_FREE_MODEL: "loadgen/fake",
-    NAP_ALLOWED_MODELS: ["loadgen/fake"],
-    NAP_MAX_STEPS: 8,
-    NAP_CONTEXT_BUDGET_TOKENS: 80_000,
-    NAP_MAX_SANDBOXES_PER_USER: 2,
-    NAP_FREE_MAX_SANDBOXES_PER_USER: 2,
-    NAP_MAX_SANDBOXES_TOTAL: users * 2,
-    NAP_SANDBOX_TTL_MINUTES: 30,
+    VIBE_VR_WEB_ORIGIN: "http://localhost:3000",
+    VIBE_VR_MODEL: "loadgen/fake",
+    VIBE_VR_FREE_MODEL: "loadgen/fake",
+    VIBE_VR_ALLOWED_MODELS: ["loadgen/fake"],
+    VIBE_VR_MAX_STEPS: 8,
+    VIBE_VR_CONTEXT_BUDGET_TOKENS: 80_000,
+    VIBE_VR_MAX_SANDBOXES_PER_USER: 2,
+    VIBE_VR_FREE_MAX_SANDBOXES_PER_USER: 2,
+    VIBE_VR_MAX_SANDBOXES_TOTAL: users * 2,
+    VIBE_VR_SANDBOX_TTL_MINUTES: 30,
     // Far longer than any run, so the reaper never takes a sandbox away mid-journey.
-    NAP_REAP_IDLE_MINUTES: 29,
-    NAP_REAP_INTERVAL_SECONDS: 600,
+    VIBE_VR_REAP_IDLE_MINUTES: 29,
+    VIBE_VR_REAP_INTERVAL_SECONDS: 600,
     // Nothing here kills a worker, so the janitor has nothing to find; long enough that a ramp
     // never pays for the query.
-    NAP_JANITOR_INTERVAL_SECONDS: 600,
+    VIBE_VR_JANITOR_INTERVAL_SECONDS: 600,
     // Sized like the ceilings above rather than like production's: a worker that could only run
     // ten turns at once would make every ramp above ten a measurement of this number.
-    NAP_WORKER_CONCURRENCY: users * 2,
+    VIBE_VR_WORKER_CONCURRENCY: users * 2,
     // A run ends by killing the harness, so nothing here ever drains; short enough that a
     // teardown which does reach it does not hold the process open.
-    NAP_DRAIN_TIMEOUT_SECONDS: 5,
+    VIBE_VR_DRAIN_TIMEOUT_SECONDS: 5,
     // Nothing in a run photographs anything — the composition holds no browser — so this is the
     // bound on a semaphore in front of nothing.
-    NAP_CAPTURE_CONCURRENCY: 1,
+    VIBE_VR_CAPTURE_CONCURRENCY: 1,
   };
 }
 
@@ -153,8 +153,8 @@ export async function bootLoadgenApi(options: BootOptions): Promise<BootedLoadge
     // The real one, against the ramp's own Postgres: admission under load is exactly what the
     // ramp is measuring, so a fake here would measure the wrong system.
     capacity: new PostgresSandboxCapacity(db, {
-      perUser: config.NAP_MAX_SANDBOXES_PER_USER,
-      total: config.NAP_MAX_SANDBOXES_TOTAL,
+      perUser: config.VIBE_VR_MAX_SANDBOXES_PER_USER,
+      total: config.VIBE_VR_MAX_SANDBOXES_TOTAL,
     }),
     // The real limiter too, and against the same Postgres: it is on the admission hot path of
     // every turn the ramp sends, so a fake would be measuring a system nobody deploys. The

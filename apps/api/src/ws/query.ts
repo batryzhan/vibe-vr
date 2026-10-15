@@ -7,7 +7,7 @@
  * upgrade, while a plain HTTP response can still explain why.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 
 export type StreamQuery = {

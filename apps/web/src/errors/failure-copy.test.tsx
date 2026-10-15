@@ -8,7 +8,7 @@
  * come back here.
  */
 
-import { TurnFailureReasonSchema } from "@nap/shared/events";
+import { TurnFailureReasonSchema } from "@vibe-vr/shared/events";
 import { describe, expect, it } from "vitest";
 import { requestFailureCopy, turnFailureCopy } from "./failure-copy.ts";
 

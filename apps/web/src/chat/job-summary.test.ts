@@ -10,8 +10,8 @@
  * that says something else.
  */
 
-import { foldJobs } from "@nap/shared/job-state";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { foldJobs } from "@vibe-vr/shared/job-state";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { check, JOB_ID as JOB, jobLog, OTHER_JOB_ID as OTHER_JOB } from "../testing/job-events.ts";
 import { jobSummary } from "./job-summary.ts";

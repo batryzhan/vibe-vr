@@ -1,4 +1,4 @@
-import type { FileContent } from "@nap/shared/files-protocol";
+import type { FileContent } from "@vibe-vr/shared/files-protocol";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { FileViewer } from "./file-viewer.tsx";

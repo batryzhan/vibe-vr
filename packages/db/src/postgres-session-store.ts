@@ -11,7 +11,7 @@
  * interface here would mean every caller holding a fake had to implement all of it.
  */
 
-import type { SessionRecord, SessionStore } from "@nap/shared/ports/session-store";
+import type { SessionRecord, SessionStore } from "@vibe-vr/shared/ports/session-store";
 import { eq } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { projects, sessions } from "./schema.ts";

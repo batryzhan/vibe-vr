@@ -1,5 +1,5 @@
 {
-  "name": "@nap/sandbox",
+  "name": "@vibe-vr/sandbox",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,11 +7,9 @@
     "./*": "./src/*.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
-    "template:build": "bun run scripts/build-template.ts"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nap/shared": "workspace:*",
-    "e2b": "2.38.0"
+    "@vibe-vr/shared": "workspace:*"
   }
 }

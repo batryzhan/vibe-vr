@@ -1,4 +1,4 @@
-import type { LogContext, Logger } from "@nap/shared/logging";
+import type { LogContext, Logger } from "@vibe-vr/shared/logging";
 import { describe, expect, it } from "vitest";
 import { announce } from "./boot-line.ts";
 import type { Env } from "./env.ts";
@@ -38,10 +38,10 @@ function recorder(): Logger & { lines: { fields: LogContext & object; message: s
 
 const ENV = {
   NODE_ENV: "production",
-  NAP_PLATFORM: "openrouter",
-  NAP_EVENT_BUS: "postgres",
-  NAP_MODEL: "openai/gpt-5.6-luna",
-  NAP_EFFORT: "medium",
+  VIBE_VR_PLATFORM: "openrouter",
+  VIBE_VR_EVENT_BUS: "postgres",
+  VIBE_VR_MODEL: "openai/gpt-5.6-luna",
+  VIBE_VR_EFFORT: "medium",
 } as Env;
 
 describe("the boot line", () => {

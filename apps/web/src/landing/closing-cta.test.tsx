@@ -36,7 +36,7 @@ describe("the footer", () => {
     expect(screen.getAllByRole("contentinfo")).toHaveLength(1);
   });
 
-  it("says what Threepod is now, not what the old page pitched", () => {
+  it("says what Vibe-VR is now, not what the old page pitched", () => {
     render(<SiteFooter />);
 
     expect(screen.getByText(/describe 3d scenes/i)).toBeInTheDocument();

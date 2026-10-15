@@ -88,7 +88,7 @@ describe("the rules, on input that breaks them", () => {
   it("catches a drain the worker's own timeout would outlast", () => {
     const violations = findDeploymentViolations(projectOf(healthyWorker({ drainingSeconds: 30 })));
     expect(violations.map((v) => v.detail)).toContainEqual(
-      expect.stringContaining("does not exceed NAP_DRAIN_TIMEOUT_SECONDS"),
+      expect.stringContaining("does not exceed VIBE_VR_DRAIN_TIMEOUT_SECONDS"),
     );
   });
 

@@ -11,7 +11,7 @@
  * layer speaks strings.
  */
 
-import type { NewSnapshot, SnapshotRecord, SnapshotStore } from "@nap/shared/ports/snapshot-store";
+import type { NewSnapshot, SnapshotRecord, SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
 import { desc, eq } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { snapshots } from "./schema.ts";

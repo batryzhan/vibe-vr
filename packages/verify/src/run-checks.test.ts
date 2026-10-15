@@ -4,7 +4,7 @@
  * reaches the right answer by executing every check has still burned a minute of a repair loop.
  */
 
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
 import { describe, expect, it } from "vitest";
 import type { DiscoveredCheck } from "./discover-checks.ts";
 import { runChecks } from "./run-checks.ts";

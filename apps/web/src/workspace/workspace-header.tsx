@@ -18,7 +18,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 import { PhaseDot } from "../chat/job-marks.tsx";
 import type { JobSummary } from "../chat/job-summary.ts";
 import { EditableTitle } from "../ui/editable-title.tsx";
@@ -79,8 +79,8 @@ export function WorkspaceHeader({
           href="/dashboard"
           className="flex shrink-0 items-center gap-1 font-semibold text-ink text-sm tracking-tight hover:text-accent focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
         >
-          <NapMark className="size-6" />
-          nap
+          <VibeVrMark className="size-6" />
+          Vibe-VR
         </a>
 
         <span aria-hidden="true" className="text-muted">

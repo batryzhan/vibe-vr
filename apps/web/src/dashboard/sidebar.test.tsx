@@ -1,4 +1,4 @@
-import type { ProjectSummaryPayload } from "@nap/shared/projects-protocol";
+import type { ProjectSummaryPayload } from "@vibe-vr/shared/projects-protocol";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Sidebar } from "./sidebar.tsx";
@@ -94,7 +94,7 @@ describe("the dashboard sidebar", () => {
     expect(item).toBeDisabled();
     // Reached by class, as the spinner is `aria-hidden` and has no role to query. `aria-busy`
     // above is the half a screen reader gets; this is the half everyone else gets.
-    expect(item.querySelector(".nap-spin")).not.toBeNull();
+    expect(item.querySelector(".vibe-vr-spin")).not.toBeNull();
   });
 
   it("says nothing about being busy when it is not", () => {

@@ -1,5 +1,5 @@
 {
-  "name": "@nap/runtime",
+  "name": "@vibe-vr/runtime",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,16 +10,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nap/sandbox": "workspace:*",
-    "@nap/shared": "workspace:*",
-    "@nap/storage": "workspace:*",
-    "@nap/verify": "workspace:*"
+    "@vibe-vr/sandbox": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
+    "@vibe-vr/storage": "workspace:*",
+    "@vibe-vr/verify": "workspace:*"
   },
   "devDependencies": {
-    "@nap/agent": "workspace:*",
-    "@nap/capture": "workspace:*",
-    "@nap/context": "workspace:*",
-    "@nap/db": "workspace:*",
-    "@nap/scene-spec": "workspace:*"
+    "@vibe-vr/agent": "workspace:*",
+    "@vibe-vr/capture": "workspace:*",
+    "@vibe-vr/context": "workspace:*",
+    "@vibe-vr/db": "workspace:*",
+    "@vibe-vr/scene-spec": "workspace:*"
   }
 }

@@ -1,4 +1,4 @@
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 import { describe, expect, it } from "vitest";
 import { categoryOf, parseBenchTask } from "../task.ts";
 import { TRACER_TASK } from "./tracer.ts";

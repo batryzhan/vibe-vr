@@ -24,10 +24,11 @@
  * character arrives in and nothing is ever seen at the wrong size.
  */
 
-import type { ModelChoice } from "@nap/shared/models-protocol";
+import type { ModelChoice } from "@vibe-vr/shared/models-protocol";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { applyPick, menuRows, parseToken } from "./composer-menu.ts";
 import { ModelPicker } from "./model-picker.tsx";
+import { prepareReferenceImage } from "./reference-image.ts";
 
 /** Room to write without swallowing the transcript. Past this the field scrolls instead of growing. */
 const MAX_HEIGHT = 132;
@@ -46,7 +47,7 @@ export function ChatInput({
 }: {
   running: boolean;
   error: string | undefined;
-  onSubmit: (message: string) => void;
+  onSubmit: (message: string, referenceImage?: string) => void;
   onCancel: () => void;
   /**
    * What this deployment will run a turn on. Empty hides the control entirely — a deployment
@@ -65,6 +66,11 @@ export function ChatInput({
   files?: readonly string[];
 }) {
   const [text, setText] = useState("");
+  const [image, setImage] = useState<{ data: string; name: string }>();
+  const [imageError, setImageError] = useState<string>();
+  const [preparingImage, setPreparingImage] = useState(false);
+  const imageInput = useRef<HTMLInputElement>(null);
+  const inFlightImage = useRef<typeof image>(undefined);
   const [expanded, setExpanded] = useState(false);
   /** Escape closes the menu without clearing the text, so it stays shut until the token changes. */
   const [dismissed, setDismissed] = useState("");
@@ -79,6 +85,8 @@ export function ChatInput({
   useEffect(() => {
     if (error === undefined || inFlight.current === "") return;
     setText(inFlight.current);
+    setImage(inFlightImage.current);
+    inFlightImage.current = undefined;
     inFlight.current = "";
   }, [error]);
 
@@ -130,12 +138,16 @@ export function ChatInput({
   };
 
   const send = () => {
-    const message = text.trim();
-    if (message === "" || running) return;
+    const message =
+      text.trim() || (image ? "Create an editable 3D model of the object in this image." : "");
+    if (message === "" || running || preparingImage) return;
 
     inFlight.current = message;
+    inFlightImage.current = image;
     setText("");
-    onSubmit(message);
+    setImage(undefined);
+    if (image) onSubmit(message, image.data);
+    else onSubmit(message);
   };
 
   // Hidden when there is no choice to make: a deployment with one allowed model has none, and
@@ -144,10 +156,15 @@ export function ChatInput({
     models.length > 1 ? (models.find((choice) => choice.id === model) ?? models[0]) : undefined;
   const sendColumn = picker === undefined ? "col-start-2" : "col-start-3";
 
-  const empty = text.trim() === "";
+  const empty = (text.trim() === "" && !image) || preparingImage;
 
   return (
     <div className="shrink-0 p-3">
+      {imageError && (
+        <p role="alert" className="pb-2 text-danger text-xs">
+          {imageError}
+        </p>
+      )}
       {error !== undefined && (
         // `alert` so it is announced: the message the user just sent has vanished from the
         // screen, and nothing else on the page explains why.
@@ -163,7 +180,7 @@ export function ChatInput({
         <div className="relative">
           <ul
             aria-label={token?.kind === "file" ? "Files" : "Commands"}
-            className="nap-pop absolute inset-x-0 bottom-1 z-10 overflow-hidden rounded-[10px] bg-field p-1 shadow-raised"
+            className="vibe-vr-pop absolute inset-x-0 bottom-1 z-10 overflow-hidden rounded-[10px] bg-field p-1 shadow-raised"
             style={{ transformOrigin: "bottom center" }}
           >
             {rows.map((row, position) => (
@@ -194,6 +211,26 @@ export function ChatInput({
       )}
 
       <div className="relative isolate flex flex-col gap-1.5 overflow-hidden rounded-[14px] border border-edge bg-panel p-1.5 shadow-card transition-colors duration-150 focus-within:border-line-strong">
+        {image && (
+          <div className="flex items-center gap-3 rounded-lg bg-field p-2">
+            {/* biome-ignore lint/performance/noImgElement: uploaded data URL is already resized locally. */}
+            <img
+              src={image.data}
+              alt="3D reference"
+              className="size-16 rounded-md object-contain"
+            />
+            <span className="min-w-0 flex-1 truncate text-xs text-muted">{image.name}</span>
+            <button
+              type="button"
+              aria-label="Remove reference image"
+              disabled={running}
+              onClick={() => setImage(undefined)}
+              className="px-2 text-muted hover:text-ink"
+            >
+              ×
+            </button>
+          </div>
+        )}
         {/*
           Never painted and never read aloud — it exists only to be measured. The field itself
           cannot answer "would this wrap?" without being resized first, which is a frame of
@@ -258,7 +295,13 @@ export function ChatInput({
               event.preventDefault();
               send();
             }}
-            placeholder={running ? "Working…" : "Describe the app you want"}
+            placeholder={
+              running
+                ? "Working…"
+                : image
+                  ? "Describe changes, or send to build from this image"
+                  : "Describe the app you want"
+            }
             className={`min-h-7 w-full min-w-0 resize-none bg-transparent px-1 py-[5px] text-[13px] text-ink leading-[18px] outline-none [overflow-wrap:anywhere] placeholder:text-muted disabled:text-muted ${
               expanded ? "col-span-full col-start-1 row-start-1" : "col-start-1 row-start-1"
             }`}
@@ -323,6 +366,39 @@ export function ChatInput({
               </svg>
             </button>
           )}
+        </div>
+        <div className="flex items-center gap-2 border-t border-edge px-1 pt-1.5">
+          <input
+            ref={imageInput}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            aria-label="Reference image"
+            className="hidden"
+            disabled={running || preparingImage}
+            onChange={async (event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (!file) return;
+              setImageError(undefined);
+              setPreparingImage(true);
+              try {
+                setImage({ data: await prepareReferenceImage(file), name: file.name });
+              } catch (failure) {
+                setImageError(failure instanceof Error ? failure.message : "Could not read image.");
+              } finally {
+                setPreparingImage(false);
+              }
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => imageInput.current?.click()}
+            disabled={running || preparingImage}
+            className="rounded-chip px-2 py-1 text-xs text-muted hover:bg-hover hover:text-ink disabled:opacity-50"
+          >
+            {preparingImage ? "Preparing image…" : "+ Image to 3D"}
+          </button>
+          <span className="text-[10px] text-muted">PNG · JPEG · WebP</span>
         </div>
       </div>
     </div>

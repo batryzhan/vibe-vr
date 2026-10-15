@@ -1,17 +1,14 @@
 /**
- * Identity of the custom E2B template every Nap project starts from.
+ * Identity and paths of the Docker image every local project starts from.
  *
  * The template exists so that project creation does not have to run an install. Its
  * `node_modules` is baked into the image, which turns "user describes an app" →
  * "preview appears" from tens of seconds into a sandbox start. Building it is a manual
- * step (`bun run template:build` in this package), never something a test triggers.
+ * Docker image build (`Dockerfile` in this package), performed once on first use.
  *
  * These constants are the contract between the build script, the code that creates
  * sandboxes, and the tests that check them — so none of the three can drift.
  */
-
-/** Passed as the template argument when creating a sandbox that should hold a project. */
-export const NAP_TEMPLATE = "nap-vite-react";
 
 /**
  * Where the starter app lives, and the working directory commands run in.

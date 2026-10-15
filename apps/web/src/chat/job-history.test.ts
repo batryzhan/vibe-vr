@@ -9,8 +9,8 @@
  * hand-written state is free to disagree with it.
  */
 
-import { foldJobs } from "@nap/shared/job-state";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { foldJobs } from "@vibe-vr/shared/job-state";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { auditSession } from "../testing/audit-session.ts";
 import { check, JOB_ID as JOB, jobLog, OTHER_JOB_ID as OTHER_JOB } from "../testing/job-events.ts";

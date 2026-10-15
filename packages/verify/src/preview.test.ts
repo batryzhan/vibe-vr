@@ -6,7 +6,7 @@
  * that cannot be observed in production without an outage is trivial to construct here.
  */
 
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
 import { describe, expect, it } from "vitest";
 import { CURL_COULD_NOT_CONNECT, diagnosePreview, portListeningProbe } from "./preview.ts";
 

@@ -12,9 +12,9 @@
  * client to send, and the route answers it with a 400 rather than an exception.
  */
 
-import { TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { ProjectPathSchema } from "@nap/shared/files-protocol";
-import type { Result } from "@nap/shared/result";
+import { TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { ProjectPathSchema } from "@vibe-vr/shared/files-protocol";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 
 export type ResolvedPath = {

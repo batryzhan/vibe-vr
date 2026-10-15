@@ -23,7 +23,7 @@ import {
   type ProjectSummaryPayload,
   ProjectSummarySchema,
   projectState,
-} from "@nap/shared/projects-protocol";
+} from "@vibe-vr/shared/projects-protocol";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { credentialedFetch } from "../api/credentialed-fetch.ts";
 import type { FetchJson } from "../files/use-project-files.ts";

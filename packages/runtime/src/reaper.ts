@@ -27,15 +27,15 @@
  * heal in minutes rather than never. See `reconcileCapacity` for the three boundaries.
  */
 
-import type { CapacityReconciler } from "@nap/shared/ports/capacity-reconciler";
-import type { EventBus } from "@nap/shared/ports/event-bus";
-import type { EventStore } from "@nap/shared/ports/event-store";
-import type { ObjectStore } from "@nap/shared/ports/object-store";
-import type { IdleProject, ProjectSandboxStore } from "@nap/shared/ports/project-sandbox-store";
-import type { SandboxCapacity } from "@nap/shared/ports/sandbox-capacity";
-import type { SandboxInventory } from "@nap/shared/ports/sandbox-inventory";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
+import type { CapacityReconciler } from "@vibe-vr/shared/ports/capacity-reconciler";
+import type { EventBus } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore } from "@vibe-vr/shared/ports/event-store";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
+import type { IdleProject, ProjectSandboxStore } from "@vibe-vr/shared/ports/project-sandbox-store";
+import type { SandboxCapacity } from "@vibe-vr/shared/ports/sandbox-capacity";
+import type { SandboxInventory } from "@vibe-vr/shared/ports/sandbox-inventory";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
 import { putProjectAway } from "./close-project.ts";
 import { type ReconcileResult, reconcileCapacity } from "./reconcile-capacity.ts";
 

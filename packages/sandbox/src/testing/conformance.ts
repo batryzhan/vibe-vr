@@ -2,9 +2,9 @@
  * The contract every `SandboxManager` must satisfy, as an executable suite.
  *
  * There are two implementations of the interface — an in-memory fake used by every
- * downstream package's tests, and the real E2B adapter — and the fake is only useful
+ * downstream package's tests, and the real Docker adapter — and the fake is only useful
  * if it behaves like the real one. So the behaviour lives here once and both run it:
- * the fake from a unit test, E2B from an integration test. A divergence shows up as a
+ * the fake from a unit test, Docker from an integration test. A divergence shows up as a
  * failing conformance case rather than as a mystery in whatever code trusted the fake.
  *
  * This file is deliberately not named `*.test.ts`. It defines tests but does not
@@ -14,7 +14,7 @@
  * you write, and what shell they run — so a caller supplies those as a harness.
  */
 
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 import { describe, expect, it } from "vitest";
 
 export type SandboxManagerHarness = {
@@ -169,7 +169,7 @@ export function describeSandboxManagerConformance(harness: SandboxManagerHarness
         // writing one line may deliver it as one callback or several, and stdout and
         // stderr travel independently — so their *relative* arrival order is not
         // something an implementation can promise, and asserting it produced a test
-        // that failed roughly one run in three against real E2B. Order within a single
+        // that failed roughly one run in three against the real provider. Order within a single
         // stream is guaranteed, and that is what is checked here.
         const joined = (stream: string) =>
           chunks

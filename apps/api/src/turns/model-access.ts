@@ -2,14 +2,14 @@
  * Which model a turn may run on, and whose account pays for it.
  *
  * **This is the only thing standing between a stranger with an account and this deployment's
- * bill.** `NAP_ALLOWED_MODELS` says which models exist; this says which of them *this caller*
+ * bill.** `VIBE_VR_ALLOWED_MODELS` says which models exist; this says which of them *this caller*
  * may reach, and the difference is money. Before it existed, every signed-in person could name
  * `anthropic/claude-opus-5` and the deployment paid for it.
  *
- * The rule in one sentence: **the deployment's own key buys nothing but the freeModel and
- * any :free-suffixed models.** The freeModel is the deployment's explicit demo offering —
- * it may be a paid model the deployment covers intentionally. Anything else needs a key
- * belonging to whoever is asking.
+ * Normally the deployment key buys the explicit freeModel and any `:free` models. A
+ * server-funded provider can widen that set to its configured allowlist; this is how Dahl
+ * offers its included models without asking each person for another key. Personal-key
+ * deployments keep the narrower rule.
  *
  * A pure function taking everything it needs, so the whole policy is a table in a test rather
  * than a set of branches spread across a route handler. That matters here more than usual —
@@ -18,10 +18,10 @@
  *
  * It returns the *resolved* model rather than validating one in place. A caller that has to
  * remember to apply a default afterwards is a caller that will one day forget, and forgetting
- * means falling through to `NAP_MODEL`, which is a paid model.
+ * means falling through to `VIBE_VR_MODEL`, which is a paid model.
  */
 
-import type { ModelCredentials } from "@nap/shared/ports/llm-provider";
+import type { ModelCredentials } from "@vibe-vr/shared/ports/llm-provider";
 import type { Env } from "../env.ts";
 
 // ── Multi-model pipeline routing ─────────────────────────────────────────────
@@ -159,6 +159,8 @@ export type TurnAccessRequest = {
   freeModel: string;
   /** What somebody with a key runs on when they name nothing. */
   defaultModel: string;
+  /** The deployment has a server-side provider key that funds every model in `allowed`. */
+  serverFundedModels?: boolean;
 };
 
 /**
@@ -200,7 +202,9 @@ export function availableModels(
   allowed: readonly string[],
   key: CallerKey,
   freeModel?: string,
+  serverFundedModels = false,
 ): string[] {
+  if (key === null && serverFundedModels) return [...allowed];
   if (key === null) return allowed.filter((model) => model === freeModel || isFree(model));
   return allowed.filter((model) => reachableWith(model, key.platform));
 }
@@ -221,6 +225,9 @@ export function resolveTurnAccess(request: TurnAccessRequest): TurnAccess {
   }
 
   if (key === null) {
+    if (request.serverFundedModels) {
+      return { ok: true, model: requested ?? request.freeModel };
+    }
     // No key: only the deployment's chosen free model, on the deployment's account.
     // `freeModel` is the deployment's explicit choice and is always reachable, regardless of
     // whether it carries the `:free` suffix — the suffix is OpenRouter's convention, but the
@@ -254,7 +261,7 @@ export function resolveTurnAccess(request: TurnAccessRequest): TurnAccess {
 /**
  * What to run when somebody with a key names no model.
  *
- * `defaultModel` is `NAP_MODEL`, which is namespaced for OpenRouter — so it is the wrong
+ * `defaultModel` is `VIBE_VR_MODEL`, which is namespaced for OpenRouter — so it is the wrong
  * answer for an Anthropic key, which cannot reach it. Falling back to the first Claude model
  * in the allowlist keeps "just send a message" working for both kinds of key, which is the
  * only thing this needs to do.
@@ -311,4 +318,3 @@ export function createOpenRouterCaller(options: {
     return content;
   };
 }
-

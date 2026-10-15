@@ -3,7 +3,7 @@
  *
  * `composeNap` assembles everything above the infrastructure from parts somebody else chose; this
  * is where those parts are made. It reads and validates the environment, builds the real clients —
- * E2B, R2, OpenRouter, Postgres, a browser — hands them over, and returns the pieces along with
+ * Docker, storage, model providers, Postgres, a browser — hands them over, and returns the pieces along with
  * the shutdown sequence that puts them down again.
  *
  * **One function for all three processes, deliberately.** `docs/scaling-design.md` §4 and §13 split
@@ -22,36 +22,38 @@
  * what makes it importable, and therefore typechecked, by things that are not a running process.
  */
 
-import { createBedrockClient, toBedrockModel } from "@nap/agent/bedrock";
-import { ClaudeProvider } from "@nap/agent/claude-provider";
-import { createOpenRouterClient, toOpenRouterModel } from "@nap/agent/openrouter";
-import { ChromePageCapture } from "@nap/capture/chrome-page-capture";
+import { AlemProvider } from "@vibe-vr/agent/alem-provider";
+import { createBedrockClient, toBedrockModel } from "@vibe-vr/agent/bedrock";
+import { ClaudeProvider } from "@vibe-vr/agent/claude-provider";
+import { DahlProvider } from "@vibe-vr/agent/dahl-provider";
+import { createOpenRouterClient, toOpenRouterModel } from "@vibe-vr/agent/openrouter";
+import { ChromePageCapture } from "@vibe-vr/capture/chrome-page-capture";
 import {
   createDatabase,
   createListenerConnection,
   createLockConnection,
   pingDatabase,
-} from "@nap/db/client";
-import { InProcessEventBus } from "@nap/db/in-process-event-bus";
-import { PostgresAdvisoryLock } from "@nap/db/postgres-advisory-lock";
-import { PostgresCapacityReconciler } from "@nap/db/postgres-capacity-reconciler";
-import { PostgresEventStore } from "@nap/db/postgres-event-store";
-import { PostgresNotifyEventBus } from "@nap/db/postgres-notify-event-bus";
-import { PostgresNotifyTransport } from "@nap/db/postgres-notify-transport";
-import { PostgresProjectSandboxStore } from "@nap/db/postgres-project-sandbox-store";
-import { PostgresProjectStore } from "@nap/db/postgres-project-store";
-import { PostgresSandboxCapacity } from "@nap/db/postgres-sandbox-capacity";
-import { PostgresSessionStore } from "@nap/db/postgres-session-store";
-import { PostgresSnapshotStore } from "@nap/db/postgres-snapshot-store";
-import { PostgresTurnQueue } from "@nap/db/postgres-turn-queue";
-import { PostgresTurnRateLimiter } from "@nap/db/postgres-turn-rate-limiter";
-import { PostgresUserKeyStore } from "@nap/db/postgres-user-key-store";
-import { createProjectSession } from "@nap/db/session-bootstrap";
-import { E2BSandboxManager } from "@nap/sandbox/e2b-sandbox-manager";
-import { NAP_TEMPLATE } from "@nap/sandbox/template";
-import { type Logger, setRootLogger } from "@nap/shared/logging";
-import { FileObjectStore } from "@nap/storage/file-object-store";
-import { createR2Client, R2ObjectStore } from "@nap/storage/r2-object-store";
+} from "@vibe-vr/db/client";
+import { InProcessEventBus } from "@vibe-vr/db/in-process-event-bus";
+import { PostgresAdvisoryLock } from "@vibe-vr/db/postgres-advisory-lock";
+import { PostgresCapacityReconciler } from "@vibe-vr/db/postgres-capacity-reconciler";
+import { PostgresEventStore } from "@vibe-vr/db/postgres-event-store";
+import { PostgresNotifyEventBus } from "@vibe-vr/db/postgres-notify-event-bus";
+import { PostgresNotifyTransport } from "@vibe-vr/db/postgres-notify-transport";
+import { PostgresProjectSandboxStore } from "@vibe-vr/db/postgres-project-sandbox-store";
+import { PostgresProjectStore } from "@vibe-vr/db/postgres-project-store";
+import { PostgresSandboxCapacity } from "@vibe-vr/db/postgres-sandbox-capacity";
+import { PostgresSessionStore } from "@vibe-vr/db/postgres-session-store";
+import { PostgresSnapshotStore } from "@vibe-vr/db/postgres-snapshot-store";
+import { PostgresTurnQueue } from "@vibe-vr/db/postgres-turn-queue";
+import { PostgresTurnRateLimiter } from "@vibe-vr/db/postgres-turn-rate-limiter";
+import { PostgresUserKeyStore } from "@vibe-vr/db/postgres-user-key-store";
+import { createProjectSession } from "@vibe-vr/db/session-bootstrap";
+import { DockerSandboxManager } from "@vibe-vr/sandbox/docker-sandbox-manager";
+import { type Logger, setRootLogger } from "@vibe-vr/shared/logging";
+import type { LLMProvider } from "@vibe-vr/shared/ports/llm-provider";
+import { FileObjectStore } from "@vibe-vr/storage/file-object-store";
+import { createR2Client, R2ObjectStore } from "@vibe-vr/storage/r2-object-store";
 import { upgradeWebSocket } from "hono/bun";
 import { createKeyVerifier } from "./account/routes.ts";
 import { encryptionKeyFrom } from "./account/secret-box.ts";
@@ -96,7 +98,7 @@ function loadEnv(): Env {
   }
 }
 
-/** Fixed by the names of the two settings that fill it: `NAP_…_TURNS_PER_HOUR`. */
+/** Fixed by the names of the two settings that fill it: `VIBE_VR_…_TURNS_PER_HOUR`. */
 const TURN_RATE_WINDOW_MS = 60 * 60 * 1000;
 
 /**
@@ -118,21 +120,21 @@ const TURN_RATE_WINDOW_MS = 60 * 60 * 1000;
  * perfectly ordinary thing to want — it is what somebody working on the front end runs, and with
  * nothing publishing anywhere there is nothing to stream regardless.
  */
-function refuseSilentFanout(role: NapRole, eventBus: Env["NAP_EVENT_BUS"]): void {
+function refuseSilentFanout(role: NapRole, eventBus: Env["VIBE_VR_EVENT_BUS"]): void {
   if ((role !== "worker" && role !== "reaper") || eventBus === "postgres") return;
 
   console.error(
-    `NAP_EVENT_BUS=${eventBus} cannot serve a ${role} process.\n` +
+    `VIBE_VR_EVENT_BUS=${eventBus} cannot serve a ${role} process.\n` +
       "  The sockets watching a session are on the API, so a bus inside this process reaches none\n" +
       "  of them: everything would run correctly and no browser would see anything happen.\n" +
-      "  Set NAP_EVENT_BUS=postgres. See docs/DEPLOY.md.",
+      "  Set VIBE_VR_EVENT_BUS=postgres. See docs/DEPLOY.md.",
   );
   process.exit(1);
 }
 
 export async function bootNap(role: NapRole): Promise<NapProcess> {
   const env = loadEnv();
-  refuseSilentFanout(role, env.NAP_EVENT_BUS);
+  refuseSilentFanout(role, env.VIBE_VR_EVENT_BUS);
 
   const logger = createLogger({ level: env.LOG_LEVEL });
   // So that anything logging outside a request — the reaper's sweep, a component reporting from
@@ -162,12 +164,12 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
    * that streams nothing.
    */
   const notifyBus =
-    env.NAP_EVENT_BUS === "postgres"
+    env.VIBE_VR_EVENT_BUS === "postgres"
       ? new PostgresNotifyEventBus({
           reader: events,
           transport: new PostgresNotifyTransport({
             notifier: client,
-            listener: createListenerConnection(env.NAP_LISTEN_DATABASE_URL ?? env.DATABASE_URL),
+            listener: createListenerConnection(env.VIBE_VR_LISTEN_DATABASE_URL ?? env.DATABASE_URL),
           }),
         })
       : null;
@@ -176,13 +178,7 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
 
   if (notifyBus !== null) await notifyBus.start();
 
-  const sandbox = new E2BSandboxManager({
-    template: NAP_TEMPLATE,
-    // E2B's own default is five minutes from creation, whatever is happening inside. Every
-    // turn pushes this back; the reaper is what ends a sandbox nobody is using, and it takes a
-    // snapshot first.
-    timeoutMs: env.NAP_SANDBOX_TTL_MINUTES * 60 * 1000,
-  });
+  const sandbox = new DockerSandboxManager();
 
   // A project's bytes while nothing is running, and the rows that say where they are.
   //
@@ -205,7 +201,8 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
     }
     return new R2ObjectStore(createR2Client({ accountId, bucket, accessKeyId, secretAccessKey }));
   }
-  const objects = env.NAP_OBJECT_STORE === "local" ? new FileObjectStore(env.NAP_OBJECT_STORE_DIR) : r2Store();
+  const objects =
+    env.VIBE_VR_OBJECT_STORE === "local" ? new FileObjectStore(env.VIBE_VR_OBJECT_STORE_DIR) : r2Store();
 
   /**
    * The browser that photographs projects for the dashboard's cards, if this machine has one.
@@ -221,38 +218,75 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
    * many of them may be open at once is the composition's, not this file's.
    */
   const capture =
-    env.NAP_CHROME_PATH === undefined
+    env.VIBE_VR_CHROME_PATH === undefined
       ? undefined
-      : new ChromePageCapture({ executablePath: env.NAP_CHROME_PATH });
+      : new ChromePageCapture({ executablePath: env.VIBE_VR_CHROME_PATH });
 
   /**
    * The same Messages API either way — only the client and the shape of the model id differ, and
    * nothing above `LLMProvider` can tell which one answered. The env check has already refused
    * to boot without whichever credentials the chosen route needs.
    */
-  function buildProvider(): ClaudeProvider {
-    // Capped at 16k: OpenRouter admits a request against the whole max_tokens ceiling,
-    // so the 64k default reserves more than a low-balance key can afford and every turn
-    // fails before it starts. The harness proves 8k is plenty for real turns.
-    if (env.NAP_PLATFORM === "openrouter") {
-      return new ClaudeProvider({
-        model: toOpenRouterModel(env.NAP_MODEL),
-        effort: env.NAP_EFFORT,
-        maxTokens: 16_000,
-        client: createOpenRouterClient(),
+  function buildProvider(): LLMProvider {
+    if (env.VIBE_VR_PLATFORM === "alem") {
+      return new AlemProvider({
+        ...(env.ALEM_API_KEY === undefined ? {} : { apiKey: env.ALEM_API_KEY }),
+        baseUrl: env.ALEM_BASE_URL,
+        model: env.ALEM_MODEL,
       });
     }
 
-    if (env.NAP_PLATFORM === "bedrock") {
+    if (env.VIBE_VR_PLATFORM === "dahl") {
+      return new DahlProvider({
+        ...(env.DAHL_API_KEY === undefined ? {} : { apiKey: env.DAHL_API_KEY }),
+        baseUrl: env.DAHL_BASE_URL,
+        primaryModel: env.DAHL_PRIMARY_MODEL,
+        spatialModel: env.DAHL_SPATIAL_MODEL,
+        compositionModel: env.DAHL_COMPOSITION_MODEL,
+        requestTimeoutMs: env.DAHL_REQUEST_TIMEOUT_MS,
+        maxAttempts: env.DAHL_MAX_ATTEMPTS,
+        maxConcurrency: env.DAHL_MAX_CONCURRENCY,
+        maxParallelAgents: env.DAHL_MAX_PARALLEL_AGENTS,
+        maxOrchestrationRounds: env.DAHL_MAX_ORCHESTRATION_ROUNDS,
+        maxCompletionTokens: env.DAHL_MAX_COMPLETION_TOKENS,
+      });
+    }
+
+    // Capped at 16k: OpenRouter admits a request against the whole max_tokens ceiling,
+    // so the 64k default reserves more than a low-balance key can afford and every turn
+    // fails before it starts. The harness proves 8k is plenty for real turns.
+    if (env.VIBE_VR_PLATFORM === "openrouter") {
       return new ClaudeProvider({
-        model: toBedrockModel(env.NAP_MODEL),
-        effort: env.NAP_EFFORT,
+        model: toOpenRouterModel(env.VIBE_VR_MODEL),
+        effort: env.VIBE_VR_EFFORT,
+        maxTokens: 16_000,
+        // Local development can start before a default model key is added. A user's own
+        // encrypted key still selects a real per-turn client inside ClaudeProvider.
+        client:
+          env.OPENROUTER_API_KEY === undefined
+            ? {
+                messages: {
+                  stream: () => {
+                    throw new Error(
+                      "No default model key is configured. Add an OpenRouter key in account settings or set OPENROUTER_API_KEY in apps/api/.env.",
+                    );
+                  },
+                },
+              }
+            : createOpenRouterClient(),
+      });
+    }
+
+    if (env.VIBE_VR_PLATFORM === "bedrock") {
+      return new ClaudeProvider({
+        model: toBedrockModel(env.VIBE_VR_MODEL),
+        effort: env.VIBE_VR_EFFORT,
         maxTokens: 16_000,
         client: createBedrockClient(),
       });
     }
 
-    return new ClaudeProvider({ model: env.NAP_MODEL, effort: env.NAP_EFFORT, maxTokens: 16_000 });
+    return new ClaudeProvider({ model: env.VIBE_VR_MODEL, effort: env.VIBE_VR_EFFORT, maxTokens: 16_000 });
   }
 
   /**
@@ -267,15 +301,15 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
    */
   const lockConnection =
     role === "reaper"
-      ? createLockConnection(env.NAP_LISTEN_DATABASE_URL ?? env.DATABASE_URL)
+      ? createLockConnection(env.VIBE_VR_LISTEN_DATABASE_URL ?? env.DATABASE_URL)
       : undefined;
   const sweepLock =
     lockConnection === undefined ? undefined : new PostgresAdvisoryLock(lockConnection);
 
   const auth = createAuth(db, {
     secret: env.BETTER_AUTH_SECRET,
-    baseUrl: env.NAP_API_URL,
-    webOrigin: env.NAP_WEB_ORIGIN,
+    baseUrl: env.VIBE_VR_API_URL,
+    webOrigin: env.VIBE_VR_WEB_ORIGIN,
     // Both or neither — the env check has already refused to boot on one of the two.
     ...(env.GITHUB_CLIENT_ID === undefined || env.GITHUB_CLIENT_SECRET === undefined
       ? {}
@@ -293,7 +327,7 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
             clientSecret: env.GOOGLE_CLIENT_SECRET,
           },
         }),
-    allowAnonymous: env.NAP_ALLOW_DEMO,
+    allowAnonymous: env.VIBE_VR_ALLOW_DEMO,
   });
 
   const composed = composeNap({
@@ -303,15 +337,15 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
     sessions: new PostgresSessionStore(db),
     projects: new PostgresProjectStore(db),
     projectSandboxes: new PostgresProjectSandboxStore(db),
-    // The ceiling that bounds this deployment's E2B bill, held in rows rather than in this
+    // The ceiling that bounds this deployment's local container capacity, held in rows rather than in this
     // process: the count and the creation it guards happen in one transaction, so a burst of
     // turns across every replica cannot all find themselves under the cap at once.
     capacity: new PostgresSandboxCapacity(db, {
-      perUser: env.NAP_MAX_SANDBOXES_PER_USER,
-      total: env.NAP_MAX_SANDBOXES_TOTAL,
+      perUser: env.VIBE_VR_MAX_SANDBOXES_PER_USER,
+      total: env.VIBE_VR_MAX_SANDBOXES_TOTAL,
     }),
     // What makes that ceiling self-healing rather than a number that only ever shrinks. The
-    // inventory is the E2B manager itself: `list` is on `SandboxInventory` rather than on
+    // inventory is the Docker manager itself: `list` is on `SandboxInventory` rather than on
     // `SandboxManager`, for the reason `ping` is — it is a question about the deployment rather
     // than about one project's workspace.
     reconcile: { reconciler: new PostgresCapacityReconciler(db), inventory: sandbox },
@@ -323,12 +357,12 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
     // sharing a window would let somebody's paid turns eat their free allowance.
     rateLimits: {
       rate: new PostgresTurnRateLimiter(db, {
-        limit: env.NAP_TURNS_PER_HOUR,
+        limit: env.VIBE_VR_TURNS_PER_HOUR,
         windowMs: TURN_RATE_WINDOW_MS,
         tier: "paid",
       }),
       freeRate: new PostgresTurnRateLimiter(db, {
-        limit: env.NAP_FREE_TURNS_PER_HOUR,
+        limit: env.VIBE_VR_FREE_TURNS_PER_HOUR,
         windowMs: TURN_RATE_WINDOW_MS,
         tier: "free",
       }),
@@ -353,16 +387,16 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
     authenticate: auth.getUser,
     // The secret that seals the keys people brought with them, and the vendor call that refuses a
     // typo before it is stored.
-    encryptionKey: encryptionKeyFrom(env.NAP_KEY_ENCRYPTION_SECRET),
+    encryptionKey: encryptionKeyFrom(env.VIBE_VR_KEY_ENCRYPTION_SECRET),
     verifyKey: createKeyVerifier(),
     createProject: (options) => createProjectSession(db, options),
     upgradeWebSocket,
     // The file a worker pod's liveness probe reads. Built here rather than in the composition
     // because writing to a filesystem is a thing a *process* does, and skipped entirely when
     // nothing set the variable — `bun run dev:worker` has nobody watching it.
-    ...(env.NAP_WORKER_HEARTBEAT_FILE === undefined
+    ...(env.VIBE_VR_WORKER_HEARTBEAT_FILE === undefined
       ? {}
-      : { onClaimTick: createHeartbeatWriter(env.NAP_WORKER_HEARTBEAT_FILE) }),
+      : { onClaimTick: createHeartbeatWriter(env.VIBE_VR_WORKER_HEARTBEAT_FILE) }),
     // The two things a turn cannot happen without: the database holds every project and every
     // event, and the sandbox is where the user's app actually runs. An API that answers while
     // either is unreachable will accept a message and then fail the turn, which is exactly the
@@ -380,7 +414,7 @@ export async function bootNap(role: NapRole): Promise<NapProcess> {
     // on it would empty the load balancer instead of shifting work to a pod that can serve.
     //
     // A much shorter cache than `/health`'s, because the two are polled for different reasons.
-    // That 5s exists to stop a public endpoint billing an E2B call per request; here the only
+    // That 5s exists to stop a public endpoint calling Docker per request; here the only
     // check is a local `select 1`, and the cost of staleness is real — a probe on a 5s period
     // would spend an extra failed interval both leaving the rotation and rejoining it.
     //

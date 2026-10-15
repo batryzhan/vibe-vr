@@ -6,7 +6,7 @@
 #   infra/k8s/load/run.sh --profile=realism  # a hundred connected, twenty-five active
 #   infra/k8s/load/run.sh --down             # delete the cluster
 #
-# Free: the pods run `apps/api/scripts/cluster-proof.ts` with `NAP_PROOF_CALIBRATED_LATENCY=true`,
+# Free: the pods run `apps/api/scripts/cluster-proof.ts` with `VIBE_VR_PROOF_CALIBRATED_LATENCY=true`,
 # so the model and the sandbox are the same fakes the single-process baseline ran against, slowed
 # to the same recorded speeds. Nothing reaches a vendor. Slow: it builds the image, pulls four
 # others, and the headline profile is twenty minutes of load.
@@ -89,7 +89,7 @@ step "deploy"
 # Fresh per run, and gitignored — the same reason as `proof/run.sh`, which says it in full.
 {
   printf 'BETTER_AUTH_SECRET=%s\n' "$(openssl rand -base64 24)"
-  printf 'NAP_KEY_ENCRYPTION_SECRET=%s\n' "$(openssl rand -base64 32)"
+  printf 'VIBE_VR_KEY_ENCRYPTION_SECRET=%s\n' "$(openssl rand -base64 32)"
 } >"$ROOT/infra/k8s/load/generated.env"
 kubectl apply -k "$ROOT/infra/k8s/load"
 kubectl -n "$NAMESPACE" rollout status deployment/nap-postgres --timeout=300s

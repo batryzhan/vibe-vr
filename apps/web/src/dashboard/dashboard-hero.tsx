@@ -26,12 +26,12 @@
  * request that turns a sentence into a project.
  */
 
-import type { ModelChoice } from "@nap/shared/models-protocol";
+import type { ModelChoice } from "@vibe-vr/shared/models-protocol";
 import { useEffect, useRef, useState } from "react";
 import { ModelPicker } from "../chat/model-picker.tsx";
 import { LitBox } from "../glow/lit-box.tsx";
 import { EXAMPLE_PROMPTS } from "./example-prompts.ts";
-import { NapStickers } from "./nap-stickers.tsx";
+import { VibeVrStickers } from "./vibe-vr-stickers.tsx";
 import { appendDictation, useDictation } from "./use-dictation.ts";
 
 /** The composer's face when the light is out — it is a control and has to look like one. */
@@ -109,7 +109,7 @@ export function DashboardHero({
       ref={band}
       className="relative flex min-h-[88dvh] flex-col justify-center border-edge border-b px-6 py-16"
     >
-      <NapStickers />
+      <VibeVrStickers />
 
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col items-center">
         <h1 className="mb-8 text-center font-display font-semibold text-3xl text-ink tracking-tight sm:text-4xl">
@@ -154,7 +154,7 @@ export function DashboardHero({
                       {[0, 1, 2].map((bar) => (
                         <span
                           key={bar}
-                          className="nap-eq-bar h-3 w-[2px] rounded-full bg-current"
+                          className="vibe-vr-eq-bar h-3 w-[2px] rounded-full bg-current"
                           style={{ animationDelay: `${bar * 110}ms` }}
                         />
                       ))}

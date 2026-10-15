@@ -17,7 +17,7 @@ import { Architecture } from "./architecture.tsx";
 import { Decisions } from "./decisions.tsx";
 import { DurableJobs } from "./durable-jobs.tsx";
 import { EventModel } from "./event-model.tsx";
-import { HowNapWorks } from "./how-nap-works.tsx";
+import { HowVibeVrWorks } from "./how-vibe-vr-works.tsx";
 import { NapBench } from "./napbench.tsx";
 import { Sandbox } from "./sandbox.tsx";
 import { Scale } from "./scale.tsx";
@@ -31,7 +31,7 @@ export type DocSectionSpec = {
 };
 
 export const SECTIONS: readonly DocSectionSpec[] = [
-  { id: "how-nap-works", title: "How Nap Works", Body: HowNapWorks },
+  { id: "how-vibe-vr-works", title: "How Vibe-VR Works", Body: HowVibeVrWorks },
   { id: "architecture", title: "Architecture", Body: Architecture },
   { id: "event-model", title: "Runtime & the Event Model", Body: EventModel },
   { id: "durable-jobs", title: "Durable Jobs", Body: DurableJobs },

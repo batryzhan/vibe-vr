@@ -7,7 +7,7 @@
  * `postgres-notify-event-bus.db.test.ts`.
  */
 
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { afterEach, describe, expect, it } from "vitest";
 import { PostgresNotifyEventBus } from "./postgres-notify-event-bus.ts";
 import { InMemoryEventStore } from "./testing/in-memory-event-store.ts";

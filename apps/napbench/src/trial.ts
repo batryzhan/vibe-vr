@@ -15,9 +15,9 @@
  */
 
 import { join } from "node:path";
-import type { BenchReport } from "@nap/bench/report";
-import { rewardFor } from "@nap/bench/reward";
-import type { Result } from "@nap/shared/result";
+import type { BenchReport } from "@vibe-vr/bench/report";
+import { rewardFor } from "@vibe-vr/bench/reward";
+import type { Result } from "@vibe-vr/shared/result";
 
 /** The report a trial always leaves behind, measured or not. */
 export const TRIAL_REPORT_FILE = "report.json";

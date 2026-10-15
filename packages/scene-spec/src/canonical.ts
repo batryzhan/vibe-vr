@@ -17,7 +17,7 @@
  * Determinism contract: equal canonical strings for equal IEEE-754 double sequences
  * in any engine implementing standard JSON number formatting. Cross-engine float
  * *computation* differences (e.g. different triangulation math) are out of scope —
- * the engine pins its own golden outputs instead (see @nap/procedural tests).
+ * the engine pins its own golden outputs instead (see @vibe-vr/procedural tests).
  */
 
 export type CanonicalErrorCode = "non_finite_number" | "undefined_value" | "unsupported_value";

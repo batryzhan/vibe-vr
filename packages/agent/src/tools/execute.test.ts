@@ -1,11 +1,11 @@
 import { execFileSync } from "node:child_process";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { MAX_SCENE_EVENT_BYTES } from "@nap/scene-spec/limits";
-import { hashSceneSpec } from "@nap/scene-spec/revisions";
-import { towerSpec } from "@nap/scene-spec/tower";
-import { NapEventSchema, type NapEventType } from "@nap/shared/events";
-import type { PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
-import type { LLMToolCall } from "@nap/shared/ports/llm-provider";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { MAX_SCENE_EVENT_BYTES } from "@vibe-vr/scene-spec/limits";
+import { hashSceneSpec } from "@vibe-vr/scene-spec/revisions";
+import { towerSpec } from "@vibe-vr/scene-spec/tower";
+import { NapEventSchema, type NapEventType } from "@vibe-vr/shared/events";
+import type { PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import type { LLMToolCall } from "@vibe-vr/shared/ports/llm-provider";
 import { beforeEach, describe, expect, it } from "vitest";
 import { PROJECT_ROOT } from "./definitions.ts";
 import { executeTool, MAX_TOOL_OUTPUT, type ToolContext } from "./execute.ts";
@@ -741,6 +741,42 @@ describe("executeTool — scene tools", () => {
     expect(recorder.types).toEqual(["tool.call", "scene.updated", "tool.result"]);
     const [updated] = recorder.payloadsOf("scene.updated");
     expect(updated).toMatchObject({ parentHash: null, specHash: GENESIS_HASH });
+  });
+
+  it("parses a stringified genesis spec before the regular schema and scene validation", async () => {
+    const result = await executeTool(
+      call("propose_scene_patch", {
+        spec: JSON.stringify(towerSpec()),
+        rationale: "Create a tower from the generated scene specification.",
+      }),
+      sceneContext([]),
+    );
+
+    expect(result.ok).toBe(true);
+    expect(recorder.types).toEqual(["tool.call", "scene.updated", "tool.result"]);
+    expect(recorder.events[0]).toMatchObject({
+      type: "tool.call",
+      payload: { input: { spec: towerSpec() } },
+    });
+  });
+
+  it("parses stringified patch operations as JSON data before scene validation", async () => {
+    const ops = [{ op: "set_param", nodeId: "base", key: "width", value: 2.4 }];
+    const result = await executeTool(
+      call("propose_scene_patch", {
+        baseHash: GENESIS_HASH,
+        ops: JSON.stringify(ops),
+        rationale: "Widen the tower base.",
+      }),
+      sceneContext(),
+    );
+
+    expect(result.ok).toBe(true);
+    expect(recorder.events[0]).toMatchObject({
+      type: "tool.call",
+      payload: { input: { baseHash: GENESIS_HASH, ops } },
+    });
+    expect(recorder.types).toContain("scene.updated");
   });
 
   it("propose_scene_patch rejects creation when a scene already exists", async () => {

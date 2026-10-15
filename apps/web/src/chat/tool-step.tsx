@@ -15,7 +15,7 @@
  * who can see them, and nothing at all for people who cannot.
  */
 
-import type { ToolName } from "@nap/shared/events";
+import type { ToolName } from "@vibe-vr/shared/events";
 import {
   EyeIcon,
   type IconProps,

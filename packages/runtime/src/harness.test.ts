@@ -1,4 +1,4 @@
-import type { NapEvent } from "@nap/shared/events";
+import type { NapEvent } from "@vibe-vr/shared/events";
 import { describe, expect, it } from "vitest";
 import { formatEvent, HARNESS_DEFAULTS, oneLine, parseHarnessArgs } from "./harness.ts";
 

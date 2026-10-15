@@ -25,7 +25,7 @@ import type {
   LLMTurnOptions,
   LLMTurnResult,
   TokenUsage,
-} from "@nap/shared/ports/llm-provider";
+} from "@vibe-vr/shared/ports/llm-provider";
 
 /**
  * One scripted response. Every field is optional and zero-valued, so a test writes only

@@ -1,5 +1,5 @@
 {
-  "name": "@nap/bench",
+  "name": "@vibe-vr/bench",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,12 +10,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nap/shared": "workspace:*",
-    "@nap/verify": "workspace:*",
+    "@vibe-vr/shared": "workspace:*",
+    "@vibe-vr/verify": "workspace:*",
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@nap/db": "workspace:*",
-    "@nap/sandbox": "workspace:*"
+    "@vibe-vr/db": "workspace:*",
+    "@vibe-vr/sandbox": "workspace:*"
   }
 }

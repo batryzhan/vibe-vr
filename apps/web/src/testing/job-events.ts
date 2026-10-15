@@ -12,8 +12,8 @@
  * by coincidence stop agreeing the day the shape gains a field.
  */
 
-import type { NapEvent, NapEventType, VerifiedCheck } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEvent, NapEventType, VerifiedCheck } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { ev } from "./events.ts";
 
 export const JOB_ID = "5f6a7b8c-9d0e-4f10-a213-456789abcdef";

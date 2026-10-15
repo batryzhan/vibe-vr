@@ -14,7 +14,7 @@
  * behind a click each shows nothing on the turn the user most wants to look.
  */
 
-import type { FileListing } from "@nap/shared/files-protocol";
+import type { FileListing } from "@vibe-vr/shared/files-protocol";
 import { useEffect, useMemo, useState } from "react";
 import { ancestorsOf, buildTree, filterTree, type TreeNode } from "../files/tree.ts";
 import type { LoadStatus } from "../files/use-project-files.ts";
@@ -111,7 +111,7 @@ export function FileTreePane({
           )}
         </div>
 
-        <div className="nap-scroll relative min-h-0 flex-1 overflow-auto py-1.5">
+        <div className="vibe-vr-scroll relative min-h-0 flex-1 overflow-auto py-1.5">
           {listing === undefined || listing.files.length === 0 ? (
             <Empty listing={listing} status={status} putAway={putAway} />
           ) : tree.length === 0 ? (

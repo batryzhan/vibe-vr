@@ -17,15 +17,15 @@
  * showing an older one would be describing a project that has moved on.
  */
 
-import type { VerifiedCheck } from "@nap/shared/events";
+import type { VerifiedCheck } from "@vibe-vr/shared/events";
 import {
   foldJobs,
   isJobOpen,
   type JobPhase,
   MAX_REPAIR_ATTEMPTS,
   type SessionJobs,
-} from "@nap/shared/job-state";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+} from "@vibe-vr/shared/job-state";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 export type JobSummary = {
   phase: JobPhase;

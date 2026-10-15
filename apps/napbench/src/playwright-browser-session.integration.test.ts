@@ -1,7 +1,7 @@
 /**
  * The Playwright adapter, observed working — every action, every query, against a real Chrome.
  *
- * **Needs: a Chrome or Chromium binary named by `NAP_CHROME_PATH`.** No network, no credentials,
+ * **Needs: a Chrome or Chromium binary named by `VIBE_VR_CHROME_PATH`.** No network, no credentials,
  * no sandbox, no money. It serves its own application on a loopback port, the way the capture
  * package's browser test does. Without the variable the whole file skips.
  *
@@ -21,13 +21,13 @@
  */
 
 import { createServer, type Server } from "node:http";
-import { runBrowserCheck } from "@nap/bench/browser-executor";
-import type { BrowserSession } from "@nap/bench/browser-session";
-import { VIEWPORT_SIZES } from "@nap/bench/viewport";
+import { runBrowserCheck } from "@vibe-vr/bench/browser-executor";
+import type { BrowserSession } from "@vibe-vr/bench/browser-session";
+import { VIEWPORT_SIZES } from "@vibe-vr/bench/viewport";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { launchPlaywrightBrowser, type PlaywrightBrowser } from "./playwright-browser-session.ts";
 
-const CHROME = process.env.NAP_CHROME_PATH;
+const CHROME = process.env.VIBE_VR_CHROME_PATH;
 
 /**
  * A to-do list that saves to `localStorage`, has a filter in the query string, and renders

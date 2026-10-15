@@ -16,7 +16,7 @@
  * **The grace window is a fence, not a timeout.** Renewal is conditional, so a worker that lost
  * its lease has aborted by expiry plus one renewal interval; reclaiming only at expiry plus the
  * grace is the sole reason two writers on one session are unreachable. The margin lives in
- * `@nap/shared/lease-windows` and the queue applies it — nothing here may shorten it.
+ * `@vibe-vr/shared/lease-windows` and the queue applies it — nothing here may shorten it.
  *
  * **Orphaning and announcing are two steps, because they are two systems.** One is a row in
  * Postgres and the other is an append plus a fanout, and no transaction spans them. So the row is
@@ -29,10 +29,10 @@
  * beside does not: every request it did not get to is another pane waiting on an event.
  */
 
-import { getLogger } from "@nap/shared/logging";
-import type { EventBus } from "@nap/shared/ports/event-bus";
-import type { EventStore } from "@nap/shared/ports/event-store";
-import type { OrphanedTurnRequest, TurnQueue } from "@nap/shared/ports/turn-queue";
+import { getLogger } from "@vibe-vr/shared/logging";
+import type { EventBus } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore } from "@vibe-vr/shared/ports/event-store";
+import type { OrphanedTurnRequest, TurnQueue } from "@vibe-vr/shared/ports/turn-queue";
 import { EventSink } from "./event-sink.ts";
 
 /**

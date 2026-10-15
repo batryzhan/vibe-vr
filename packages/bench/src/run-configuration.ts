@@ -23,7 +23,7 @@
  * collapse one level up: two runs that look comparable and are not.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import { describeParseFailure } from "./parse-failure.ts";
 

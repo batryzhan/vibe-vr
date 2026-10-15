@@ -8,7 +8,7 @@
  * **A script nobody declared is absent, not failed.** That gap is the reason this function
  * exists at all: a fresh project with no `test` script has not failed its tests, and charging
  * the missing script as a failure opens a repair loop that no amount of repairing can close.
- * `CheckOutcome` in `@nap/shared` carries the same three answers onward into the event log.
+ * `CheckOutcome` in `@vibe-vr/shared` carries the same three answers onward into the event log.
  *
  * **Discovery produces a command, not a script name.** The Vite template's `"test": "vitest"`
  * runs in watch mode and never exits, so a verifier handed the name alone would hang a turn
@@ -20,7 +20,7 @@
  * every case below be a literal.
  */
 
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 import { z } from "zod";
 
 /**

@@ -11,8 +11,8 @@
  * session.
  */
 
-import type { NapEvent, NapEventType } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEvent, NapEventType } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 
 export const SESSION_ID = "0b7f8f1e-3c2a-4d5b-9e6f-1a2b3c4d5e6f";
 export const OTHER_SESSION_ID = "1c8f9f2e-4d3b-4e6c-8f7a-2b3c4d5e6f70";

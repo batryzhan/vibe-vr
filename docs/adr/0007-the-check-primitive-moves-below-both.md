@@ -23,7 +23,7 @@ keeping the tail rather than the head. It exists because a funded run once repor
 `exit 1` and nothing else, with the reason — twenty-three characters, on the quiet stream — thrown
 away.
 
-Neither module touches Playwright. Both are written against `@nap/shared/ports/sandbox-manager`.
+Neither module touches Playwright. Both are written against `@vibe-vr/shared/ports/sandbox-manager`.
 Both are pure in the sense ADR-0001 meant.
 
 But `packages/bench` sits *beside* `shared`, not above `runtime`, and `test/architecture.ts`
@@ -40,13 +40,13 @@ glossary exists to prevent.
 
 ## Decision
 
-**Extract `packages/verify` (`@nap/verify`), beside `shared`, and have both depend on it.**
+**Extract `packages/verify` (`@vibe-vr/verify`), beside `shared`, and have both depend on it.**
 
 `bench → verify → shared`; `runtime → verify`. `preview.ts`, `command-output.ts` and the structured
 check-result type move down, with their tests. This is a move, not a rewrite: the reasoning encoded
 in those two files travels with them, which was the point.
 
-**The name collision resolves by unification rather than by rename.** `@nap/verify` owns **Check** —
+**The name collision resolves by unification rather than by rename.** `@vibe-vr/verify` owns **Check** —
 one command, run in a sandbox, that passed, failed, or was absent. NapBench's Check becomes that
 plus a weight, a category and a required flag, which is what it always was; the scoring metadata was
 never part of the primitive. `CONTEXT.md`'s main glossary gains **Check**, and the NapBench entry is
@@ -73,15 +73,15 @@ would put every fresh project into a repair loop it cannot exit.
 anticipation of one.
 
 **The passed/failed/absent enum went one layer further down than this.** `CheckOutcomeSchema`
-lives in `@nap/shared`, not in `@nap/verify`, and for a mechanical reason rather than a change of
+lives in `@vibe-vr/shared`, not in `@vibe-vr/verify`, and for a mechanical reason rather than a change of
 mind: `verification.completed` carries those outcomes into the event log, the event contract is
 defined exactly once in `packages/shared/src/events.ts`, and nothing below `shared` may be imported
 from there. The alternative was a second enum with the same three strings in it, which is the thing
-this ADR is against. *Running* a check is still `@nap/verify`'s and unaffected; only the word for
+this ADR is against. *Running* a check is still `@vibe-vr/verify`'s and unaffected; only the word for
 what running one produced is everybody's.
 
 **The forbidden edge is checked in test files too.** `test/architecture.ts` otherwise exempts tests
 from the layer table — ADR-0001 has sibling packages arriving as devDependencies for their fakes,
-and a test-only edge is not the layering that table is about. `@nap/bench` is the one exception:
+and a test-only edge is not the layering that table is about. `@vibe-vr/bench` is the one exception:
 a test importing it still has to typecheck, so scoring would still be something a shipped package
 builds against, which is the whole objection above.

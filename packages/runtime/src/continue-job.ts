@@ -32,9 +32,9 @@
  * is what keeps this pure while still letting it answer about the sandbox.
  */
 
-import type { JobOutcome } from "@nap/shared/events";
-import { openJob, type SessionJobs } from "@nap/shared/job-state";
-import type { FailedAttempt } from "@nap/shared/ports/context-engine";
+import type { JobOutcome } from "@vibe-vr/shared/events";
+import { openJob, type SessionJobs } from "@vibe-vr/shared/job-state";
+import type { FailedAttempt } from "@vibe-vr/shared/ports/context-engine";
 import type { CheckFailure } from "./verify-turn.ts";
 
 /**

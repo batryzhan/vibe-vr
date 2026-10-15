@@ -1,15 +1,15 @@
 /**
  * What the runtime asks of a committed turn, and what it does with the answer.
  *
- * The pieces underneath are `@nap/verify`'s and tested there — discovery from a manifest, the
+ * The pieces underneath are `@vibe-vr/verify`'s and tested there — discovery from a manifest, the
  * cheapest-first order, the short circuit. What is tested here is the composition: that the
  * manifest is read from the project rather than assumed, that a manifest nobody could read
  * runs nothing at all, and that a result becomes an event payload without losing the one thing
  * a repair turn needs from it.
  */
 
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 import { beforeEach, describe, expect, it } from "vitest";
 import { failureOf, toVerifiedChecks, verifyTurn } from "./verify-turn.ts";
 

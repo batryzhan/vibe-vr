@@ -35,32 +35,32 @@
  * checkpoint, which is a state the user can usually close with one sentence.
  */
 
-import { commitAll, currentSha } from "@nap/sandbox/git";
-import { TEMPLATE_DEV_PORT } from "@nap/sandbox/template";
-import type { JobOutcome, NapEvent, NapEventOf, PromptSource } from "@nap/shared/events";
-import { foldJobs, MAX_REPAIR_ATTEMPTS, openJob } from "@nap/shared/job-state";
-import { addLogContext, getLogger, withLogContext } from "@nap/shared/logging";
-import type { AgentService } from "@nap/shared/ports/agent-service";
-import type { ContextEngine, FailedAttempt, JobContext } from "@nap/shared/ports/context-engine";
-import type { EventBus } from "@nap/shared/ports/event-bus";
-import type { EventStore, PendingEvent, StoredEvent } from "@nap/shared/ports/event-store";
-import type { ModelCredentials } from "@nap/shared/ports/llm-provider";
-import type { MemoryProvider } from "@nap/shared/ports/memory-provider";
-import type { ObjectStore } from "@nap/shared/ports/object-store";
-import type { PageCapture } from "@nap/shared/ports/page-capture";
+import { commitAll, currentSha } from "@vibe-vr/sandbox/git";
+import { TEMPLATE_DEV_PORT } from "@vibe-vr/sandbox/template";
+import type { JobOutcome, NapEvent, NapEventOf, PromptSource } from "@vibe-vr/shared/events";
+import { foldJobs, MAX_REPAIR_ATTEMPTS, openJob } from "@vibe-vr/shared/job-state";
+import { addLogContext, getLogger, withLogContext } from "@vibe-vr/shared/logging";
+import type { AgentService } from "@vibe-vr/shared/ports/agent-service";
+import type { ContextEngine, FailedAttempt, JobContext } from "@vibe-vr/shared/ports/context-engine";
+import type { EventBus } from "@vibe-vr/shared/ports/event-bus";
+import type { EventStore, PendingEvent, StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import type { ModelCredentials } from "@vibe-vr/shared/ports/llm-provider";
+import type { MemoryProvider } from "@vibe-vr/shared/ports/memory-provider";
+import type { ObjectStore } from "@vibe-vr/shared/ports/object-store";
+import type { PageCapture } from "@vibe-vr/shared/ports/page-capture";
 import type {
   ContinueOptions,
   ResumeOutcome,
   Runtime,
   TurnOutcome,
   TurnRequest,
-} from "@nap/shared/ports/runtime";
-import type { SandboxCapacity } from "@nap/shared/ports/sandbox-capacity";
-import type { SandboxError, SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { SessionRecord, SessionStore } from "@nap/shared/ports/session-store";
-import type { SnapshotStore } from "@nap/shared/ports/snapshot-store";
-import type { Result } from "@nap/shared/result";
-import type { VerificationResult } from "@nap/verify/run-checks";
+} from "@vibe-vr/shared/ports/runtime";
+import type { SandboxCapacity } from "@vibe-vr/shared/ports/sandbox-capacity";
+import type { SandboxError, SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { SessionRecord, SessionStore } from "@vibe-vr/shared/ports/session-store";
+import type { SnapshotStore } from "@vibe-vr/shared/ports/snapshot-store";
+import type { Result } from "@vibe-vr/shared/result";
+import type { VerificationResult } from "@vibe-vr/verify/run-checks";
 import {
   type AcquiredSandbox,
   acquireSandbox,
@@ -98,6 +98,7 @@ type TurnScope = {
  * whoever opened the project is the signal, the model and whose account pays, and nothing else.
  */
 type TurnSettings = {
+  referenceImage?: string | undefined;
   sessionId: string;
   signal?: AbortSignal | undefined;
   model?: string | undefined;
@@ -576,7 +577,10 @@ export class SingleAgentRuntime implements Runtime {
       // then cannot be had: the message is the record of what was asked, and a refusal that erased
       // it would leave a failure with no question above it. No job is opened and nothing is
       // committed on that path, exactly as before.
-      emit("user.message", { text: request.message });
+      emit("user.message", {
+        text: request.message,
+        ...(request.referenceImage === undefined ? {} : { referenceImage: request.referenceImage }),
+      });
       await sink.drain();
 
       const sandboxId = await this.#acquire(session);
@@ -602,11 +606,13 @@ export class SingleAgentRuntime implements Runtime {
       // Before the preview, which is about to show whatever state the notice is explaining.
       for (const notice of sandboxId.value.notices) emit("system.notice", notice);
 
-      // Only for a sandbox this turn created. A resumed one is already serving and announced
-      // itself on the turn that made it — the client replays that. Re-announcing would reload
-      // the app underneath someone in the middle of using it, on every turn.
-      if (sandboxId.value.created) await this.#announcePreview(sandboxId.value.id, emit);
-
+      // Only for a sandbox this turn created. One already serving was announced in the log from
+      // the turn that made it — re-announcing remounts the frame under somebody using it.
+      // Wait for a new preview and the agent at the same time, so a slow Vite startup no longer
+      // holds generation back or leaves the chat saying "Starting up".
+      const previewReady = sandboxId.value.created
+        ? this.#announcePreview(sandboxId.value.id, emit)
+        : undefined;
       run = {
         settings: request,
         session,
@@ -630,6 +636,9 @@ export class SingleAgentRuntime implements Runtime {
         history,
         job: { objective, attempts: [] },
       });
+
+      await previewReady;
+      await sink.drain();
 
       return await this.#driveJob(run, { outcome, failed: null, announce: true, fresh: true });
     } catch (error) {
@@ -823,6 +832,7 @@ export class SingleAgentRuntime implements Runtime {
       turnId,
       sandboxId,
       context,
+      ...(settings.referenceImage === undefined ? {} : { referenceImage: settings.referenceImage }),
       sandbox: this.#options.sandbox,
       onEvent: sink.emit,
       // The store this runtime already reads history from, scoped per call to the
@@ -993,7 +1003,7 @@ export class SingleAgentRuntime implements Runtime {
   /**
    * The checks, with a thrown error treated the same as a sandbox that would not answer.
    *
-   * Nothing below is supposed to throw — `@nap/verify` returns its failures — but the turn is
+   * Nothing below is supposed to throw — `@vibe-vr/verify` returns its failures — but the turn is
    * already complete and committed by the time any of it runs, and turning a finished turn into
    * a failed one because a probe blew up would report the wrong thing to the person waiting.
    */

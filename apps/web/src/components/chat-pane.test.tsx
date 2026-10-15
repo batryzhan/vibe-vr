@@ -1,5 +1,5 @@
-import type { NapEvent } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEvent } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ChatPane } from "./chat-pane.tsx";

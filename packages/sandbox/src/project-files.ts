@@ -22,8 +22,8 @@
  * both, and nothing says they must stay in step.
  */
 
-import type { SandboxError, SandboxManager } from "@nap/shared/ports/sandbox-manager";
-import type { Result } from "@nap/shared/result";
+import type { SandboxError, SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
+import type { Result } from "@vibe-vr/shared/result";
 import { TEMPLATE_WORKDIR } from "./template.ts";
 
 /** Vendored dependencies, build products and version-control internals — never the project. */

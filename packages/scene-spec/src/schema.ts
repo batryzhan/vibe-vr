@@ -15,7 +15,7 @@
  *   existence, acyclicity and depth.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import {
   finiteNumber,
@@ -114,6 +114,13 @@ const NodeBaseSchema = z.strictObject({
   id: NodeIdSchema,
   name: z.string().min(1).max(80),
   transform: TransformSchema,
+  /** Searchable scene meaning; kept optional so existing saved scenes stay valid. */
+  tags: z.array(z.string().trim().min(1).max(48)).max(16).optional(),
+  /** Small descriptive metadata only; scene geometry never comes from metadata. */
+  metadata: z
+    .record(z.string().max(64), z.string().max(256))
+    .refine((value) => Object.keys(value).length <= 16, "metadata may contain at most 16 entries")
+    .optional(),
 });
 
 /**
@@ -165,7 +172,7 @@ export type SceneMaterial = z.infer<typeof MaterialSchema>;
 
 export const SceneSpecSchema = z.strictObject({
   version: z.literal(SCENE_SPEC_VERSION),
-  id: z.uuid(),
+  id: z.uuid().describe("A valid UUID for this scene"),
   seed: z.int(),
   units: z.literal("m"),
   axes: z.literal("y-up"),

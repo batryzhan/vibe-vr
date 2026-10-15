@@ -1,4 +1,4 @@
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { describe, expect, it } from "vitest";
 import { InMemoryEventBus } from "./in-memory-event-bus.ts";
 

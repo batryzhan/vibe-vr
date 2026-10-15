@@ -1,5 +1,5 @@
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import type { LLMProvider, LLMRequest, LLMTurnResult } from "@nap/shared/ports/llm-provider";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import type { LLMProvider, LLMRequest, LLMTurnResult } from "@vibe-vr/shared/ports/llm-provider";
 import { describe, expect, it } from "vitest";
 import { CALIBRATION } from "./calibration.ts";
 import { slowLLMProvider, slowSandboxManager } from "./slow-ports.ts";

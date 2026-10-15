@@ -6,8 +6,8 @@
  * the pieces compose — which is the whole claim the ticket makes, and the claim a set of green
  * unit tests can most easily fail to support.
  *
- * It lives in the app rather than in `@nap/bench` because composing a Runtime is precisely
- * what the app is for: the pure core may not depend on `@nap/runtime`, per docs/adr/0001.
+ * It lives in the app rather than in `@vibe-vr/bench` because composing a Runtime is precisely
+ * what the app is for: the pure core may not depend on `@vibe-vr/runtime`, per docs/adr/0001.
  *
  * Costs nothing and touches no network: the model is scripted, the sandbox is in memory, the
  * event store is in memory, and the only real resource is a temporary directory.
@@ -16,26 +16,26 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { NapAgentService } from "@nap/agent/agent-service";
-import { ScriptedLLMProvider } from "@nap/agent/testing/scripted-llm-provider";
-import { DEFAULT_CATEGORY_WEIGHTS } from "@nap/bench/category";
-import { parseBenchReport } from "@nap/bench/report";
-import { runBenchTask } from "@nap/bench/runner";
-import { parseScreenshotMetadata } from "@nap/bench/screenshot";
-import { defineTask } from "@nap/bench/task";
-import { TRACER_TASK } from "@nap/bench/tasks/tracer";
-import { ScriptedBrowserSession } from "@nap/bench/testing/scripted-browser-session";
-import { parseBenchTrajectory } from "@nap/bench/trajectory";
-import { manualVisualEvaluation, VISUAL_NOT_RUN } from "@nap/bench/visual";
-import { NapContextEngine } from "@nap/context/context-engine";
-import { NoopMemoryProvider } from "@nap/context/noop-memory-provider";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { SingleAgentRuntime } from "@nap/runtime/single-agent-runtime";
-import { TEMPLATE_DEV_PORT } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
+import { NapAgentService } from "@vibe-vr/agent/agent-service";
+import { ScriptedLLMProvider } from "@vibe-vr/agent/testing/scripted-llm-provider";
+import { DEFAULT_CATEGORY_WEIGHTS } from "@vibe-vr/bench/category";
+import { parseBenchReport } from "@vibe-vr/bench/report";
+import { runBenchTask } from "@vibe-vr/bench/runner";
+import { parseScreenshotMetadata } from "@vibe-vr/bench/screenshot";
+import { defineTask } from "@vibe-vr/bench/task";
+import { TRACER_TASK } from "@vibe-vr/bench/tasks/tracer";
+import { ScriptedBrowserSession } from "@vibe-vr/bench/testing/scripted-browser-session";
+import { parseBenchTrajectory } from "@vibe-vr/bench/trajectory";
+import { manualVisualEvaluation, VISUAL_NOT_RUN } from "@vibe-vr/bench/visual";
+import { NapContextEngine } from "@vibe-vr/context/context-engine";
+import { NoopMemoryProvider } from "@vibe-vr/context/noop-memory-provider";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { SingleAgentRuntime } from "@vibe-vr/runtime/single-agent-runtime";
+import { TEMPLATE_DEV_PORT } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { writeBenchReport, writeBenchTrajectory } from "./write-report.ts";
 import { fileScreenshotStore } from "./write-screenshot.ts";

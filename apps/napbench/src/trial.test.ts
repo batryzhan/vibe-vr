@@ -1,4 +1,4 @@
-import { benchReport } from "@nap/bench/testing/bench-report";
+import { benchReport } from "@vibe-vr/bench/testing/bench-report";
 import { describe, expect, it } from "vitest";
 import {
   napbenchArgv,

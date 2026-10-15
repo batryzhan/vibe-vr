@@ -7,7 +7,7 @@
  * `foldJobs` decides, and a hand-written state is free to disagree with it.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { check, JOB_ID as JOB, jobLog, OTHER_JOB_ID as OTHER_JOB } from "../testing/job-events.ts";
 import { unseenSummary } from "./unseen-summary.ts";

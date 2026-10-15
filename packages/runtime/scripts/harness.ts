@@ -18,23 +18,23 @@
  */
 
 import { join } from "node:path";
-import { NapAgentService } from "@nap/agent/agent-service";
-import { createBedrockClient, toBedrockModel } from "@nap/agent/bedrock";
-import { ClaudeProvider } from "@nap/agent/claude-provider";
-import { createOpenRouterClient, toOpenRouterModel } from "@nap/agent/openrouter";
-import { ScriptedLLMProvider } from "@nap/agent/testing/scripted-llm-provider";
-import { NapContextEngine } from "@nap/context/context-engine";
-import { NoopMemoryProvider } from "@nap/context/noop-memory-provider";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { E2BSandboxManager } from "@nap/sandbox/e2b-sandbox-manager";
-import { NAP_TEMPLATE, TEMPLATE_DEV_PORT, TEMPLATE_WORKDIR } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { loadEnvFile } from "@nap/shared/env-file";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
-import type { LLMProvider } from "@nap/shared/ports/llm-provider";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import { NapAgentService } from "@vibe-vr/agent/agent-service";
+import { createBedrockClient, toBedrockModel } from "@vibe-vr/agent/bedrock";
+import { ClaudeProvider } from "@vibe-vr/agent/claude-provider";
+import { createOpenRouterClient, toOpenRouterModel } from "@vibe-vr/agent/openrouter";
+import { ScriptedLLMProvider } from "@vibe-vr/agent/testing/scripted-llm-provider";
+import { NapContextEngine } from "@vibe-vr/context/context-engine";
+import { NoopMemoryProvider } from "@vibe-vr/context/noop-memory-provider";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { DockerSandboxManager } from "@vibe-vr/sandbox/docker-sandbox-manager";
+import { TEMPLATE_DEV_PORT, TEMPLATE_WORKDIR } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { loadEnvFile } from "@vibe-vr/shared/env-file";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
+import type { LLMProvider } from "@vibe-vr/shared/ports/llm-provider";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 import { formatEvent, HARNESS_DEFAULTS, HARNESS_USAGE, parseHarnessArgs } from "../src/harness.ts";
 import { SingleAgentRuntime } from "../src/single-agent-runtime.ts";
 
@@ -120,10 +120,10 @@ if (options.real) {
   // missing one, and a stack trace is a worse answer than a sentence naming the variable.
   const required =
     options.platform === "openrouter"
-      ? ["E2B_API_KEY", "OPENROUTER_API_KEY"]
+      ? ["OPENROUTER_API_KEY"]
       : options.platform === "bedrock"
-        ? ["E2B_API_KEY", "AWS_BEARER_TOKEN_BEDROCK", "AWS_REGION"]
-        : ["E2B_API_KEY", "ANTHROPIC_API_KEY"];
+        ? ["AWS_BEARER_TOKEN_BEDROCK", "AWS_REGION"]
+        : ["ANTHROPIC_API_KEY"];
 
   for (const key of required) {
     if (process.env[key]) continue;
@@ -141,9 +141,9 @@ if (options.real) {
   console.log(
     `REAL RUN — ${model} via ${options.platform} at ${options.effort} effort, ` +
       `${options.maxSteps} steps max, ${options.budgetTokens} context tokens, ` +
-      "on a real E2B sandbox. This costs money.\n",
+      "in an isolated local Docker sandbox. Model usage is billed by your selected provider.\n",
   );
-  sandbox = new E2BSandboxManager({ template: NAP_TEMPLATE });
+  sandbox = new DockerSandboxManager();
   provider = new ClaudeProvider({
     model,
     effort: options.effort,

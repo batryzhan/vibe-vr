@@ -14,7 +14,7 @@
  * count is pinned by test.
  */
 
-import type { SceneMaterial, SceneNode, SceneSpec } from "@nap/scene-spec/schema";
+import type { SceneMaterial, SceneNode, SceneSpec } from "@vibe-vr/scene-spec/schema";
 import type { Bounds } from "./build.ts";
 import {
   type AssembledObject,

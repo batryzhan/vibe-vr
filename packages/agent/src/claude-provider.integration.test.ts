@@ -12,7 +12,7 @@
  * buys a flaky test in exchange for nothing.
  */
 
-import type { LLMRequest, LLMTurnResult } from "@nap/shared/ports/llm-provider";
+import type { LLMRequest, LLMTurnResult } from "@vibe-vr/shared/ports/llm-provider";
 import { expect, it } from "vitest";
 import { createBedrockClient, toBedrockModel } from "./bedrock.ts";
 import {

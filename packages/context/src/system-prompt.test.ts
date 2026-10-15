@@ -1,5 +1,5 @@
-import type { ContextRequest } from "@nap/shared/ports/context-engine";
-import type { FileNode } from "@nap/shared/ports/sandbox-manager";
+import type { ContextRequest } from "@vibe-vr/shared/ports/context-engine";
+import type { FileNode } from "@vibe-vr/shared/ports/sandbox-manager";
 import { describe, expect, it } from "vitest";
 import { NapContextEngine } from "./context-engine.ts";
 import { NoopMemoryProvider } from "./noop-memory-provider.ts";

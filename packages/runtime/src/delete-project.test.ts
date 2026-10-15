@@ -1,7 +1,7 @@
-import { FAKE_OWNER, InMemoryProjectStore } from "@nap/db/testing/in-memory-project-store";
-import { InMemorySnapshotStore } from "@nap/db/testing/in-memory-snapshot-store";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { FAKE_OWNER, InMemoryProjectStore } from "@vibe-vr/db/testing/in-memory-project-store";
+import { InMemorySnapshotStore } from "@vibe-vr/db/testing/in-memory-snapshot-store";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import { beforeEach, describe, expect, it } from "vitest";
 import { deleteProject } from "./delete-project.ts";
 

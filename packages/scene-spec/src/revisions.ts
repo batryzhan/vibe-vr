@@ -13,7 +13,7 @@
  * will store, so nothing about this contract needs to change when it does.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { canonicalize } from "./canonical.ts";
 import { sha256Hex, utf8Bytes } from "./hash.ts";
 import { type SceneSpec, validateSceneSpec } from "./schema.ts";

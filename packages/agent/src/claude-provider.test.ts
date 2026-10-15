@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { APIConnectionError, APIError, BadRequestError, RateLimitError } from "@anthropic-ai/sdk";
-import type { LLMRequest } from "@nap/shared/ports/llm-provider";
+import type { LLMRequest } from "@vibe-vr/shared/ports/llm-provider";
 import { describe, expect, it, vi } from "vitest";
 import {
   type AnthropicClient,

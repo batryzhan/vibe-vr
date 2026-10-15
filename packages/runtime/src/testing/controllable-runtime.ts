@@ -9,7 +9,7 @@
  * is awaiting it, so an unhandled rejection takes the process down rather than the request.
  */
 
-import type { ResumeOutcome, Runtime, TurnOutcome, TurnRequest } from "@nap/shared/ports/runtime";
+import type { ResumeOutcome, Runtime, TurnOutcome, TurnRequest } from "@vibe-vr/shared/ports/runtime";
 
 export class ControllableRuntime implements Runtime {
   /** Every turn asked for, in order, so a test can read what the route passed down. */

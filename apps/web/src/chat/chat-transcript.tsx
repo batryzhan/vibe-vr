@@ -19,7 +19,7 @@
  */
 
 import { Fragment } from "react";
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 import { turnFailureCopy } from "../errors/failure-copy.ts";
 import { AlertIcon, CopyIcon } from "../ui/icons.tsx";
 import { OutputBlock } from "./output-block.tsx";
@@ -53,7 +53,7 @@ export function ChatTranscript({
   /** Put on the marker, so the scroller can open at it. See `use-stick-to-bottom.ts`. */
   seamRef?: React.RefObject<HTMLElement | null> | undefined;
   /** Re-sends a failed turn's message. Absent means no retry is offered, not a broken button. */
-  onRetry?: ((message: string) => void) | undefined;
+  onRetry?: ((message: string, referenceImage?: string) => void) | undefined;
 }) {
   // The only item that can still be added to is the last one — everything above it has been
   // overtaken by something newer. That alone is the whole rule, and it needs no check for
@@ -116,7 +116,7 @@ function Item({
   /** Whether this item can still be added to. Only ever true of the last one, mid-turn. */
   live: boolean;
   opensBlock: boolean;
-  onRetry?: ((message: string) => void) | undefined;
+  onRetry?: ((message: string, referenceImage?: string) => void) | undefined;
 }) {
   switch (item.kind) {
     case "message":
@@ -139,6 +139,14 @@ function Item({
               shape, which is nothing at all to someone listening to the page.
             */}
             <span className="sr-only">You: </span>
+            {item.referenceImage && (
+              // biome-ignore lint/performance/noImgElement: inline reference was resized before upload.
+              <img
+                src={item.referenceImage}
+                alt="3D reference"
+                className="mb-2 max-h-48 max-w-full rounded-lg object-contain"
+              />
+            )}
             {item.text}
           </p>
         </div>
@@ -149,8 +157,8 @@ function Item({
               aria-hidden="true"
               className="flex items-center gap-1.5 font-display font-semibold text-[12px] text-muted"
             >
-              <NapMark className="size-4" />
-              nap
+              <VibeVrMark className="size-4" />
+              Vibe-VR
             </span>
           )}
           <p className="whitespace-pre-wrap text-[13.5px] text-ink-2 leading-[1.65]">
@@ -394,7 +402,7 @@ function TurnFailure({
   onRetry,
 }: {
   item: Extract<DisplayItem, { kind: "turn-end" }> & { outcome: "failed" };
-  onRetry?: ((message: string) => void) | undefined;
+  onRetry?: ((message: string, referenceImage?: string) => void) | undefined;
 }) {
   const copy = turnFailureCopy(item.reason, item.message);
   const message = item.retryMessage;
@@ -411,7 +419,9 @@ function TurnFailure({
       {canRetry && (
         <button
           type="button"
-          onClick={() => onRetry(message)}
+          onClick={() =>
+            item.retryReferenceImage ? onRetry(message, item.retryReferenceImage) : onRetry(message)
+          }
           className="mt-1.5 self-start rounded-chip border border-edge px-2 py-1 text-[11px] text-ink-2 transition-colors hover:bg-hover hover:text-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
         >
           Try again

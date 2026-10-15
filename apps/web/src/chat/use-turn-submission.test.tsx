@@ -1,5 +1,5 @@
-import type { NapEvent, NapEventType } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import type { NapEvent, NapEventType } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { useTurnSubmission } from "./use-turn-submission.ts";
@@ -53,6 +53,19 @@ function submission(fetchJson = poster().fetchJson) {
 }
 
 describe("the optimistic message", () => {
+  it("posts the reference image with the message and selected model", async () => {
+    const posterState = poster();
+    const { result } = submission(posterState.fetchJson);
+    const referenceImage = "data:image/png;base64,aGVsbG8=";
+    await act(async () => {
+      await result.current.submit("Build this", "qwen3-8", referenceImage);
+    });
+    expect(posterState.bodies[0]).toEqual({
+      message: "Build this",
+      model: "qwen3-8",
+      referenceImage,
+    });
+  });
   it("appears immediately, before the server has heard of it", async () => {
     const { result } = submission();
 

@@ -24,7 +24,7 @@
  * take a user id so the filter is in the query rather than in a handler that might forget it.
  */
 
-import { addLogContext } from "@nap/shared/logging";
+import { addLogContext } from "@vibe-vr/shared/logging";
 import type { MiddlewareHandler } from "hono";
 import type { Authenticate } from "./auth.ts";
 

@@ -1,12 +1,39 @@
-# Threepod
+# Vibe-VR
 
 **Create 3D worlds by describing what you imagine.**
 
-Threepod is an AI-native 3D creation workspace for building and refining scenes through natural language. Describe a scene, review the generated result, and request changes conversationally. Threepod combines AI-assisted scene planning with validated scene operations, deterministic procedural geometry, and revision history designed to make edits reproducible and recoverable.
+## Run locally
 
-> A model response is a proposal, not proof of success. Threepod validates scene changes and records revisions so the resulting state can be inspected and reconstructed.
+Vibe-VR uses Docker containers on your own machine for project previews. It does not require E2B or a sandbox account. Docker Desktop and Bun 1.3.13 are required.
 
-## What Threepod does
+The local Postgres container uses port 5433 so it can coexist with another Postgres already listening on 5432. Start it and apply the migrations:
+
+```powershell
+docker compose -f infra/docker-compose.yml up -d
+bun run db:migrate
+```
+
+Copy `apps/api/.env.example` to `apps/api/.env`, then set `ALEM_API_KEY` and replace the two local secret placeholders. Generate each local secret with `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"`. The Alem key stays in the API process and is never sent to the browser.
+
+Run these commands in three terminals from the repository root:
+
+```powershell
+bun run dev
+bun run dev:worker
+bun run dev:reaper
+```
+
+Open [http://localhost:3000](http://localhost:3000). The first project creates a local Docker image with the starter app and its dependencies; previews are bound to `127.0.0.1`.
+
+In a project's chat, **+ Image to 3D** attaches a PNG, JPEG or WebP reference. Send it on its own or describe changes. The image is resized locally, saved with the turn, and sent to Alem's `qwen3-8` multimodal endpoint to build an editable approximation using supported procedural geometry. This is reference-based scene construction; hidden surfaces are inferred. Run `bun run db:migrate` when updating an existing checkout so queued image references can be stored.
+
+`docker compose down` stops Postgres and preserves its data. Project sandboxes are reaped with their projects; the Docker image remains available for the next run.
+
+Vibe-VR is an AI-native 3D creation workspace for building and refining scenes through natural language. Describe a scene, review the generated result, and request changes conversationally. Vibe-VR combines AI-assisted scene planning with validated scene operations, deterministic procedural geometry, and revision history designed to make edits reproducible and recoverable.
+
+> A model response is a proposal, not proof of success. Vibe-VR validates scene changes and records revisions so the resulting state can be inspected and reconstructed.
+
+## What Vibe-VR does
 
 - **Creates scenes from natural language.** Describe a scene and let the agent propose a structured scene creation operation.
 - **Edits scenes conversationally.** Ask for targeted changes, such as widening a base or adjusting an object's dimensions.
@@ -91,7 +118,7 @@ The next recommended milestone is **integrated reliability verification**.
 6. After the scripted path is stable, evaluate real-model performance with an explicitly approved, limited inference budget.
 7. Expand procedural modeling capabilities based on measured evaluation failures rather than speculation.
 
-No software process can guarantee zero failures. Threepod follows a stability-first approach: small changes, reproducible checks, explicit failure reporting, and review before scope expansion.
+No software process can guarantee zero failures. Vibe-VR follows a stability-first approach: small changes, reproducible checks, explicit failure reporting, and review before scope expansion.
 
 ## Contributing and verification
 
@@ -106,4 +133,4 @@ Use the repository's current instructions for setup and development commands. Be
 
 ## Project direction
 
-Threepod's goal is to make natural-language 3D creation useful and trustworthy: users should be able to create a scene, request precise edits, inspect what changed, and recover a known revision. The immediate priority is to verify the complete scripted lifecycle, measure real-model behavior, and then expand procedural modeling in response to evidence.
+Vibe-VR's goal is to make natural-language 3D creation useful and trustworthy: users should be able to create a scene, request precise edits, inspect what changed, and recover a known revision. The immediate priority is to verify the complete scripted lifecycle, measure real-model behavior, and then expand procedural modeling in response to evidence.

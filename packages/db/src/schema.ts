@@ -21,8 +21,8 @@
  * rather than being buried in `payload` where nothing could query it.
  */
 
-import type { NapEvent, NapEventType } from "@nap/shared/events";
-import { TURN_REQUEST_KINDS, TURN_REQUEST_STATES } from "@nap/shared/ports/turn-queue";
+import type { NapEvent, NapEventType } from "@vibe-vr/shared/events";
+import { TURN_REQUEST_KINDS, TURN_REQUEST_STATES } from "@vibe-vr/shared/ports/turn-queue";
 import { sql } from "drizzle-orm";
 import {
   boolean,
@@ -171,7 +171,7 @@ export const verifications = pgTable("verifications", {
  * **Never plaintext.** The bytes here are AES-256-GCM ciphertext sealed by
  * `apps/api/src/account/secret-box.ts`; this table has no way to read them and neither does a
  * query log, a backup, or anyone who gets a copy of the database without also having
- * `NAP_KEY_ENCRYPTION_SECRET`. `hint` is the only part meant to be shown — a masked tail, so
+ * `VIBE_VR_KEY_ENCRYPTION_SECRET`. `hint` is the only part meant to be shown — a masked tail, so
  * somebody can tell which of their keys this is without being shown the key.
  *
  * `user_id` is the primary key rather than a column beside one: a person has at most one key,
@@ -381,6 +381,7 @@ export const turnRequests = pgTable(
     state: turnRequestState("state").notNull().default("queued"),
     /** The prompt. Null for `resume`, which asks for no new work. */
     message: text("message"),
+    referenceImage: text("reference_image"),
     /** Resolved at admission: which models somebody may name is a fact about who is asking. */
     model: text("model").notNull(),
     /**

@@ -53,11 +53,19 @@ export type LLMToolDefinition = {
 };
 
 export type LLMRequest = {
+  referenceImage?: string | undefined;
   systemPrompt: string;
   messages: LLMMessage[];
   /** Declared every call: a model that was not told about a tool never asks for one. */
   tools: LLMToolDefinition[];
   signal?: AbortSignal;
+  /**
+   * A compact, server-built scene summary for specialist reasoning. It is never
+   * returned to the browser or written to the event log.
+   */
+  sceneContext?: string | undefined;
+  /** Real orchestration progress, emitted through the normal session event stream. */
+  onActivity?: ((message: string) => void) | undefined;
   /**
    * Summarized reasoning, delivered as the model produces it rather than when the call ends.
    *

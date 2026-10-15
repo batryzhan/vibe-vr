@@ -4,7 +4,7 @@
  * The hero's visual: a sample chair on a quiet studio floor.
  *
  * A CC-BY 4.0 sample model (see `public/models/sheen-chair.LICENSE.txt`), not
- * something Threepod generated — the caption says exactly that. It stands in
+ * something Vibe-VR generated — the caption says exactly that. It stands in
  * for the editable 3D objects the product works on: real PBR materials with
  * sheen, studio lighting, a soft contact shadow, and a faint technical grid
  * that echoes the page behind it. No browser chrome, no counters, no diagnostic

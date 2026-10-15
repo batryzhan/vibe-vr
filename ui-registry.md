@@ -108,7 +108,7 @@ not required. See P3 for the one open item (selection blue).
 
 ## Imprint log
 
-- Threepod viewport (`apps/web/src/viewport/`): `rounded-chip` controls, `border-edge`
+- Vibe-VR viewport (`apps/web/src/viewport/`): `rounded-chip` controls, `border-edge`
   panels, `bg-panel/field/hover` surfaces, `text-ink/ink-2/muted/danger` only,
   standard focus pattern, section-header + mono-caption patterns above.
   Introduced zero new radius/color variants. 3D-world colors logged under E3/P3.

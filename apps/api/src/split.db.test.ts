@@ -1,23 +1,23 @@
-import { ScriptedLLMProvider } from "@nap/agent/testing/scripted-llm-provider";
-import { createDatabase } from "@nap/db/client";
-import { PostgresAdvisoryLock } from "@nap/db/postgres-advisory-lock";
-import { PostgresEventStore } from "@nap/db/postgres-event-store";
-import { PostgresProjectSandboxStore } from "@nap/db/postgres-project-sandbox-store";
-import { PostgresProjectStore } from "@nap/db/postgres-project-store";
-import { PostgresSandboxCapacity } from "@nap/db/postgres-sandbox-capacity";
-import { PostgresSessionStore } from "@nap/db/postgres-session-store";
-import { PostgresSnapshotStore } from "@nap/db/postgres-snapshot-store";
-import { PostgresTurnQueue } from "@nap/db/postgres-turn-queue";
-import { PostgresTurnRateLimiter } from "@nap/db/postgres-turn-rate-limiter";
-import { PostgresUserKeyStore } from "@nap/db/postgres-user-key-store";
-import { users } from "@nap/db/schema";
-import { createProjectSession } from "@nap/db/session-bootstrap";
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { TEMPLATE_DEV_PORT } from "@nap/sandbox/template";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
-import type { TurnRateLimiter } from "@nap/shared/ports/turn-rate-limit";
-import { InMemoryObjectStore } from "@nap/storage/testing/in-memory-object-store";
+import { ScriptedLLMProvider } from "@vibe-vr/agent/testing/scripted-llm-provider";
+import { createDatabase } from "@vibe-vr/db/client";
+import { PostgresAdvisoryLock } from "@vibe-vr/db/postgres-advisory-lock";
+import { PostgresEventStore } from "@vibe-vr/db/postgres-event-store";
+import { PostgresProjectSandboxStore } from "@vibe-vr/db/postgres-project-sandbox-store";
+import { PostgresProjectStore } from "@vibe-vr/db/postgres-project-store";
+import { PostgresSandboxCapacity } from "@vibe-vr/db/postgres-sandbox-capacity";
+import { PostgresSessionStore } from "@vibe-vr/db/postgres-session-store";
+import { PostgresSnapshotStore } from "@vibe-vr/db/postgres-snapshot-store";
+import { PostgresTurnQueue } from "@vibe-vr/db/postgres-turn-queue";
+import { PostgresTurnRateLimiter } from "@vibe-vr/db/postgres-turn-rate-limiter";
+import { PostgresUserKeyStore } from "@vibe-vr/db/postgres-user-key-store";
+import { users } from "@vibe-vr/db/schema";
+import { createProjectSession } from "@vibe-vr/db/session-bootstrap";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { TEMPLATE_DEV_PORT } from "@vibe-vr/sandbox/template";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
+import type { TurnRateLimiter } from "@vibe-vr/shared/ports/turn-rate-limit";
+import { InMemoryObjectStore } from "@vibe-vr/storage/testing/in-memory-object-store";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type { WSEvents } from "hono/ws";
 import postgres from "postgres";
@@ -83,24 +83,24 @@ afterAll(async () => {
 });
 
 const CONFIG: NapDeps["config"] = {
-  NAP_WEB_ORIGIN: "http://localhost:3000",
-  NAP_MODEL: "openai/gpt-5.6-luna",
-  NAP_FREE_MODEL: "openai/gpt-5.6-luna",
-  NAP_ALLOWED_MODELS: ["openai/gpt-5.6-luna"],
-  NAP_MAX_STEPS: 4,
-  NAP_CONTEXT_BUDGET_TOKENS: 10_000,
-  NAP_MAX_SANDBOXES_PER_USER: 4,
-  NAP_FREE_MAX_SANDBOXES_PER_USER: 4,
-  NAP_MAX_SANDBOXES_TOTAL: 40,
-  NAP_SANDBOX_TTL_MINUTES: 30,
+  VIBE_VR_WEB_ORIGIN: "http://localhost:3000",
+  VIBE_VR_MODEL: "openai/gpt-5.6-luna",
+  VIBE_VR_FREE_MODEL: "openai/gpt-5.6-luna",
+  VIBE_VR_ALLOWED_MODELS: ["openai/gpt-5.6-luna"],
+  VIBE_VR_MAX_STEPS: 4,
+  VIBE_VR_CONTEXT_BUDGET_TOKENS: 10_000,
+  VIBE_VR_MAX_SANDBOXES_PER_USER: 4,
+  VIBE_VR_FREE_MAX_SANDBOXES_PER_USER: 4,
+  VIBE_VR_MAX_SANDBOXES_TOTAL: 40,
+  VIBE_VR_SANDBOX_TTL_MINUTES: 30,
   // Long enough that neither sweep runs during the test: this is about the queue, and a reaper
   // taking the sandbox away mid-turn would be a different test failing.
-  NAP_REAP_IDLE_MINUTES: 60,
-  NAP_REAP_INTERVAL_SECONDS: 3600,
-  NAP_JANITOR_INTERVAL_SECONDS: 3600,
-  NAP_WORKER_CONCURRENCY: 2,
-  NAP_DRAIN_TIMEOUT_SECONDS: 5,
-  NAP_CAPTURE_CONCURRENCY: 1,
+  VIBE_VR_REAP_IDLE_MINUTES: 60,
+  VIBE_VR_REAP_INTERVAL_SECONDS: 3600,
+  VIBE_VR_JANITOR_INTERVAL_SECONDS: 3600,
+  VIBE_VR_WORKER_CONCURRENCY: 2,
+  VIBE_VR_DRAIN_TIMEOUT_SECONDS: 5,
+  VIBE_VR_CAPTURE_CONCURRENCY: 1,
 };
 
 /** 32 bytes of base64, which is all `encryptionKeyFrom` asks of it. */
@@ -217,7 +217,7 @@ describe("an API pod and a worker pod over one database", () => {
       userId,
       kind: "turn",
       message: "add a dark mode toggle",
-      model: CONFIG.NAP_MODEL,
+      model: CONFIG.VIBE_VR_MODEL,
       billsToUser: false,
     });
     await elsewhere.claim("a-worker-on-another-pod");
@@ -249,7 +249,7 @@ describe("an API pod and a worker pod over one database", () => {
       },
     });
 
-    const config = { ...CONFIG, NAP_REAP_INTERVAL_SECONDS: 0.05, NAP_REAP_IDLE_MINUTES: 100_000 };
+    const config = { ...CONFIG, VIBE_VR_REAP_INTERVAL_SECONDS: 0.05, VIBE_VR_REAP_IDLE_MINUTES: 100_000 };
     for (const which of [0, 1]) {
       const connection = postgres(inject("postgresUrl"), { max: 1 });
       lockConnections.push(connection);

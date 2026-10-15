@@ -65,6 +65,7 @@ export type EnqueueTurnRequest = {
   kind: TurnRequestKind;
   /** The prompt. Null for `resume`, which asks for no new work. */
   message: string | null;
+  referenceImage?: string | undefined;
   /** Resolved at admission, because which models somebody may name is the route's fact. */
   model: string;
   /**

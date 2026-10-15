@@ -24,7 +24,7 @@
  * should fail to compile.
  */
 
-import type { Result, VoidResult } from "@nap/shared/result";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 import type { Selector } from "./selector.ts";
 import type { ViewportSize } from "./viewport.ts";
 

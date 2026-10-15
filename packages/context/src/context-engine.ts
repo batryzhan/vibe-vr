@@ -24,15 +24,15 @@
  * times against a ceiling this class does not own. See `DEFAULT_VERBATIM_TURNS` and ADR-0011.
  */
 
-import type { NapEvent } from "@nap/shared/events";
+import type { NapEvent } from "@vibe-vr/shared/events";
 import type {
   BuiltContext,
   ContextEngine,
   ContextRequest,
   FailedAttempt,
-} from "@nap/shared/ports/context-engine";
-import type { LLMContentBlock, LLMMessage } from "@nap/shared/ports/llm-provider";
-import type { Memory } from "@nap/shared/ports/memory-provider";
+} from "@vibe-vr/shared/ports/context-engine";
+import type { LLMContentBlock, LLMMessage } from "@vibe-vr/shared/ports/llm-provider";
+import type { Memory } from "@vibe-vr/shared/ports/memory-provider";
 import { buildFileTreeDigest } from "./file-tree.ts";
 import { renderJobBrief } from "./job-brief.ts";
 import { SYSTEM_PROMPT } from "./system-prompt.ts";

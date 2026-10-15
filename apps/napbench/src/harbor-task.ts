@@ -4,7 +4,7 @@
  * Harbor's unit of work is a directory — an instruction, a container definition, a verifier
  * and some metadata — and this turns a `BenchTask` into that directory's contents. Generated
  * rather than hand-written, because the registry it produces is a projection of
- * `@nap/bench/suite` and a hand-maintained copy would be a second list of what the benchmark
+ * `@vibe-vr/bench/suite` and a hand-maintained copy would be a second list of what the benchmark
  * measures, drifting quietly from the first.
  *
  * **Everything here is layout and nothing here is evaluation.** No check, no gate, no weight
@@ -18,7 +18,7 @@
  * directory into and to run a verifier in; it holds a Bun runtime and one bundled file.
  */
 
-import type { BenchTask } from "@nap/bench/task";
+import type { BenchTask } from "@vibe-vr/bench/task";
 
 /** Where the generated registry goes, relative to the repository root. */
 export const HARBOR_TASKS_DIR = "harbor/tasks";
@@ -128,7 +128,7 @@ function tomlString(value: string): string {
  * What the agent is handed when the harness starts a trial.
  *
  * The prompts are reproduced for a person reading the registry, and are *not* how the agent
- * learns them: the trial entrypoint reads the task out of `@nap/bench/suite`, so what the
+ * learns them: the trial entrypoint reads the task out of `@vibe-vr/bench/suite`, so what the
  * model is asked comes from the same place it comes from under `bun run napbench`. Only the
  * marker is load-bearing.
  */

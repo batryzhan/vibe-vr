@@ -11,9 +11,9 @@
  * that is not known when the agent is built.
  */
 
-import type { NapEventType } from "@nap/shared/events";
-import type { AgentService, AgentTurnRequest } from "@nap/shared/ports/agent-service";
-import type { PendingEvent } from "@nap/shared/ports/event-store";
+import type { NapEventType } from "@vibe-vr/shared/events";
+import type { AgentService, AgentTurnRequest } from "@vibe-vr/shared/ports/agent-service";
+import type { PendingEvent } from "@vibe-vr/shared/ports/event-store";
 
 /** A turn as the events it emits. Deliberately loose: tests script malformed turns on purpose. */
 export type AgentScript = (request: AgentTurnRequest) => { type: NapEventType; payload: unknown }[];

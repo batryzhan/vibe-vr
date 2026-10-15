@@ -8,9 +8,9 @@
  * fake's declared cold start rather than the deployment — see `docs/scaling-cluster.md`.
  */
 
-import { describeSandboxManagerConformance } from "@nap/sandbox/testing/conformance";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import { describeSandboxManagerConformance } from "@vibe-vr/sandbox/testing/conformance";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 import { describe, expect, it } from "vitest";
 import {
   type SharedSandboxRecord,

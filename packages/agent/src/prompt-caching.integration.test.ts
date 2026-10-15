@@ -21,7 +21,7 @@
  */
 
 import type Anthropic from "@anthropic-ai/sdk";
-import type { LLMRequest } from "@nap/shared/ports/llm-provider";
+import type { LLMRequest } from "@vibe-vr/shared/ports/llm-provider";
 import { expect, it } from "vitest";
 import { type AnthropicClient, type AnthropicMessage, ClaudeProvider } from "./claude-provider.ts";
 import { createOpenRouterClient, toOpenRouterModel } from "./openrouter.ts";
@@ -34,7 +34,7 @@ if (!process.env.OPENROUTER_API_KEY) {
 }
 
 /**
- * Pinned to Claude rather than to whatever `NAP_MODEL` currently is, because *this* is the
+ * Pinned to Claude rather than to whatever `VIBE_VR_MODEL` currently is, because *this* is the
  * claim being tested: explicit `cache_control` breakpoints, whose minimum prefix and 5-minute
  * TTL are Anthropic's semantics. Other vendors cache automatically and by their own rules, so
  * pointing this at one would leave the breakpoints unexercised and still pass.
@@ -154,7 +154,7 @@ it("caches the real prompt, not just a synthetic one long enough to qualify", as
   // caching. A non-zero cache counter *is* the thing being claimed. Our local 4-chars-per-token
   // rule estimated this prefix at ~1188 against a 1024 minimum, which is far too thin a margin
   // to trust to an estimate.
-  const { SYSTEM_PROMPT } = await import("@nap/context/system-prompt");
+  const { SYSTEM_PROMPT } = await import("@vibe-vr/context/system-prompt");
   const { TOOL_DEFINITIONS } = await import("./tools/definitions.ts");
 
   const client = recordingClient();

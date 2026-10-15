@@ -37,7 +37,7 @@ describe("what you get", () => {
     // this used to be — `[scale:calc(100cqw/880)]`, `aspect-[880/492]` — compile to nothing at
     // all, and the section rendered at 1:1 and overflowed its column for a whole session.
     const { container } = render(<Capabilities />);
-    const host = container.querySelector(".nap-space-host-md");
+    const host = container.querySelector(".vibe-vr-space-host-md");
 
     expect(host).toHaveStyle({ "--space-w": `${SPACE.w}`, "--space-h": `${SPACE.h}` });
   });

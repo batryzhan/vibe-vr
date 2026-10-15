@@ -21,7 +21,7 @@
  * and no sandbox can be handed.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { z } from "zod";
 import { AccessibilityCheckSchema } from "./accessibility-check.ts";
 import { BrowserCheckSchema } from "./browser-check.ts";

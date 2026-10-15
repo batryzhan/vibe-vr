@@ -7,7 +7,7 @@
  * definition, a verifier script and the bundled trial entrypoint the verifier runs. Generated
  * rather than committed, for the reason `napbench-results/` is not committed: it is derived
  * from something already in the tree, and a stale copy of it would answer questions about the
- * benchmark wrongly. `@nap/bench/suite` is the registry; this is a projection of it.
+ * benchmark wrongly. `@vibe-vr/bench/suite` is the registry; this is a projection of it.
  *
  * The bundle is the only interesting part. It is `napbench-trial.ts` compiled to a single
  * file, so the generated container needs a Bun runtime and nothing else — no checkout, no
@@ -18,7 +18,7 @@
 import { spawnSync } from "node:child_process";
 import { chmod, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { BENCH_TASKS } from "@nap/bench/suite";
+import { BENCH_TASKS } from "@vibe-vr/bench/suite";
 import { HARBOR_TASKS_DIR, HARBOR_VERIFIER_FILE, harborTaskFiles } from "../src/harbor-task.ts";
 
 const REPO_ROOT = join(import.meta.dirname, "..", "..", "..");

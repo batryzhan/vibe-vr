@@ -28,8 +28,8 @@
  * since been reclaimed; there is nothing here to keep secret.
  */
 
-import { NapEventSchema } from "@nap/shared/events";
-import type { StoredEvent } from "@nap/shared/ports/event-store";
+import { NapEventSchema } from "@vibe-vr/shared/events";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
 import raw from "./audit-session.json" with { type: "json" };
 
 /**

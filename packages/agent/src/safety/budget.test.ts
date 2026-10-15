@@ -1,4 +1,4 @@
-import { NapEventSchema } from "@nap/shared/events";
+import { NapEventSchema } from "@vibe-vr/shared/events";
 import { describe, expect, it } from "vitest";
 import { DEFAULT_MAX_STEPS, DEFAULT_MAX_TOKENS, TurnBudget } from "./budget.ts";
 

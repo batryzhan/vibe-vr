@@ -12,8 +12,8 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { BENCH_TASKS } from "@nap/bench/suite";
-import { benchReport } from "@nap/bench/testing/bench-report";
+import { BENCH_TASKS } from "@vibe-vr/bench/suite";
+import { benchReport } from "@vibe-vr/bench/testing/bench-report";
 import { describe, expect, it } from "vitest";
 import { taskMarker } from "./harbor-task.ts";
 

@@ -5,11 +5,11 @@
  * package is that the composition it performs can be driven from a test this cheap.
  */
 
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { InMemorySandboxManager } from "@nap/sandbox/testing/in-memory-sandbox-manager";
-import { PROJECT_ROOT_PATH } from "@nap/shared/files-protocol";
-import type { Runtime, TurnOutcome } from "@nap/shared/ports/runtime";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { InMemorySandboxManager } from "@vibe-vr/sandbox/testing/in-memory-sandbox-manager";
+import { PROJECT_ROOT_PATH } from "@vibe-vr/shared/files-protocol";
+import type { Runtime, TurnOutcome } from "@vibe-vr/shared/ports/runtime";
 import { describe, expect, it } from "vitest";
 import type { BrowserStep } from "./browser-check.ts";
 import { DEFAULT_CATEGORY_WEIGHTS } from "./category.ts";
@@ -873,7 +873,7 @@ describe("runBenchTask — browser checks", () => {
       ...(await deps(scriptedRuntime(completed), serving())),
       browser: async () => ({
         ok: false as const,
-        error: { code: "unavailable" as const, message: "no Chrome at NAP_CHROME_PATH" },
+        error: { code: "unavailable" as const, message: "no Chrome at VIBE_VR_CHROME_PATH" },
       }),
     });
 

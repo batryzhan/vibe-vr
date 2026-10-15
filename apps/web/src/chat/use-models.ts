@@ -16,7 +16,7 @@
  * theirs, so the tests drive every branch without going near a network.
  */
 
-import { type ModelList, ModelListSchema } from "@nap/shared/models-protocol";
+import { type ModelList, ModelListSchema } from "@vibe-vr/shared/models-protocol";
 import { useEffect, useState } from "react";
 import { credentialedFetch } from "../api/credentialed-fetch.ts";
 import type { FetchJson } from "../files/use-project-files.ts";

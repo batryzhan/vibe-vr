@@ -3,14 +3,14 @@
 /**
  * The front page's first screen: the positioning, the way in, and the chair.
  *
- * The headline states the thesis — Threepod is a conversational construction
+ * The headline states the thesis — Vibe-VR is a conversational construction
  * layer for editable scenes, not a text-to-3D generator — and the visual
  * beside it is a sample chair standing in for the editable objects the
  * product works on. Two CTAs: start building (primary) and see how it works
  * (secondary, an anchor into the pipeline row one screen down).
  *
  * The small print under the CTAs is a scope note, not marketing: the chair is
- * a sample model, not something Threepod generated, and the signed-in
+ * a sample model, not something Vibe-VR generated, and the signed-in
  * workbench is where live scenes happen.
  *
  * Two quiet background layers keep the white stage alive: hand-drawn doodles
@@ -26,14 +26,14 @@ import { HeroViewport } from "./hero-viewport.tsx";
 
 const LINES = ["Describe 3D scenes.", "Build, edit, iterate."] as const;
 const SUB =
-  "Threepod is a conversational procedural construction layer for editable 3D scenes — validated proposals, deterministic geometry, and revision history, in your browser.";
+  "Vibe-VR is a conversational procedural construction layer for editable 3D scenes — validated proposals, deterministic geometry, and revision history, in your browser.";
 const EMPHASIS = "edit";
 
 export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="threepod-grid relative overflow-hidden px-6 pt-28 pb-20 sm:pt-32 sm:pb-28"
+      className="vibe-vr-grid relative overflow-hidden px-6 pt-28 pb-20 sm:pt-32 sm:pb-28"
     >
       <Doodles />
       <BadgeTrail />
@@ -55,7 +55,7 @@ export function Hero() {
               aria-hidden="true"
               className="inline-block size-1.5 rounded-full bg-[var(--s-accent)]"
             />
-            Threepod — AI-native 3D workspace
+            Vibe-VR — AI-native 3D workspace
           </p>
           <div className="mt-5 text-left [&_h1]:text-left [&_p]:mx-0 [&_p]:text-left">
             <Headline lines={LINES} sub={SUB} emphasis={EMPHASIS} />

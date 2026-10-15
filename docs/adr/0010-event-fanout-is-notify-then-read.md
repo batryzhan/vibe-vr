@@ -24,7 +24,7 @@ in-process bus keeps working.
 receiving pod reads the events out of the durable log, and a catch-up poll runs the same read
 unconditionally every two seconds.**
 
-`packages/db/src/postgres-notify-event-bus.ts`, behind `NAP_EVENT_BUS=postgres`. Nothing above the
+`packages/db/src/postgres-notify-event-bus.ts`, behind `VIBE_VR_EVENT_BUS=postgres`. Nothing above the
 `EventBus` port changed: `EventSink` still appends then publishes, `openEventStream` still
 subscribes, replays and gates on `lastSentSeq`.
 
@@ -91,7 +91,7 @@ lets `infra/k8s/proof` submit a turn to one API pod and stream it from another.
 operational as well as architectural, so the version somebody debugging at 2am needs is in
 `docs/GOTCHAS.md` under API, auth and logging; what follows is why the design accepted it.)* It cannot go through
 a transaction pooler — the `LISTEN` lands on a backend that is returned to the pool and the process
-then hears nothing while every query it runs keeps working. Hence `NAP_LISTEN_DATABASE_URL`
+then hears nothing while every query it runs keeps working. Hence `VIBE_VR_LISTEN_DATABASE_URL`
 pointing at a direct endpoint, and hence `/readyz` growing a `listener` check that fails: a pod
 whose fanout has degraded to the 2s poll should leave the rotation while a healthy pod's has not.
 `/livez` deliberately does not fail on it — the connection reconnects on its own, and restarting
@@ -109,6 +109,6 @@ in-process to **17ms** on the cluster (`docs/scaling-cluster.md`). The reason is
 beats a function call: the single process was doing the fanout *and* running every turn on one
 event loop.
 
-**`NAP_EVENT_BUS` still defaults to `in-process`**, so the Railway deployment keeps the v1 behaviour
+**`VIBE_VR_EVENT_BUS` still defaults to `in-process`**, so the Railway deployment keeps the v1 behaviour
 until it is switched. The worker and the reaper refuse to boot without `postgres`, because for them
 the wrong setting is not a degradation — it is turns running perfectly while nobody can see them.

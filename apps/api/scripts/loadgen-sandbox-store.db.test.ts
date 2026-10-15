@@ -8,7 +8,7 @@
  * it went in as. All three are how a cluster run fails at minute two rather than at minute zero.
  */
 
-import { createDatabase } from "@nap/db/client";
+import { createDatabase } from "@vibe-vr/db/client";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { afterAll, beforeAll, describe, expect, inject, it } from "vitest";
 import { createSharedSandboxTable, PostgresSharedSandboxStore } from "./loadgen-sandbox-store.ts";

@@ -49,7 +49,7 @@ export function Dashboard({
           are the page, and both work without it. */}
       <div className="hidden md:block">{sidebar}</div>
 
-      <main className="nap-scroll-hidden relative min-h-0 overflow-y-auto">
+      <main className="vibe-vr-scroll-hidden relative min-h-0 overflow-y-auto">
         {hero}
         {grid}
       </main>

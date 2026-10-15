@@ -83,7 +83,7 @@ export function DurableJobs() {
             term: "One function decides all of it",
             body: (
               <>
-                <Code>foldJobs</Code> in <Code>@nap/shared</Code> — pure, over the event list, with
+                <Code>foldJobs</Code> in <Code>@vibe-vr/shared</Code> — pure, over the event list, with
                 no I/O and nothing to mock.
               </>
             ),

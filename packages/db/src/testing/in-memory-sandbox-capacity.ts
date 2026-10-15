@@ -17,8 +17,8 @@ import type {
   CapacityRefusal,
   Reservation,
   SandboxCapacity,
-} from "@nap/shared/ports/sandbox-capacity";
-import type { Result, VoidResult } from "@nap/shared/result";
+} from "@vibe-vr/shared/ports/sandbox-capacity";
+import type { Result, VoidResult } from "@vibe-vr/shared/result";
 
 export type FakeCapacityLimits = { perUser?: number; total?: number };
 

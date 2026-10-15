@@ -28,26 +28,26 @@ export function TranscriptSkeleton() {
     >
       <div aria-hidden="true" className="flex flex-col gap-5">
         <div className="flex justify-end">
-          <span className="nap-skeleton h-8 w-[55%] rounded-2xl rounded-br-md" />
+          <span className="vibe-vr-skeleton h-8 w-[55%] rounded-2xl rounded-br-md" />
         </div>
 
         <div className="flex flex-col gap-2">
           {PROSE.slice(0, 3).map((width) => (
-            <span key={width} className={`nap-skeleton h-3 rounded-md ${width}`} />
+            <span key={width} className={`vibe-vr-skeleton h-3 rounded-md ${width}`} />
           ))}
         </div>
 
         {/* Where the folded run of tool calls sits — the one block with a border, since that
             card is the only bordered thing in the transcript. */}
-        <span className="nap-skeleton h-11 w-full rounded-xl border border-edge" />
+        <span className="vibe-vr-skeleton h-11 w-full rounded-xl border border-edge" />
 
         <div className="flex justify-end">
-          <span className="nap-skeleton h-8 w-[38%] rounded-2xl rounded-br-md" />
+          <span className="vibe-vr-skeleton h-8 w-[38%] rounded-2xl rounded-br-md" />
         </div>
 
         <div className="flex flex-col gap-2">
           {PROSE.slice(1).map((width) => (
-            <span key={width} className={`nap-skeleton h-3 rounded-md ${width}`} />
+            <span key={width} className={`vibe-vr-skeleton h-3 rounded-md ${width}`} />
           ))}
         </div>
       </div>

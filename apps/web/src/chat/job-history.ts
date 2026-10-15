@@ -19,14 +19,14 @@
  * that reads `Out of repairs` in the strip must not read `Exhausted` one line below it.
  */
 
-import type { VerifiedCheck } from "@nap/shared/events";
+import type { VerifiedCheck } from "@vibe-vr/shared/events";
 import {
   isJobFailed,
   isJobOpen,
   type JobPhase,
   type JobState,
   type SessionJobs,
-} from "@nap/shared/job-state";
+} from "@vibe-vr/shared/job-state";
 import { PHASE_LABELS, repairsLabel, shortSha } from "./job-summary.ts";
 
 export type JobHistoryEntry = {

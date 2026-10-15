@@ -1,8 +1,8 @@
-import { InMemoryEventBus } from "@nap/db/testing/in-memory-event-bus";
-import { InMemoryEventStore } from "@nap/db/testing/in-memory-event-store";
-import { FAKE_OWNER } from "@nap/db/testing/in-memory-project-store";
-import { InMemorySessionStore } from "@nap/db/testing/in-memory-session-store";
-import { VERSION } from "@nap/shared/version";
+import { InMemoryEventBus } from "@vibe-vr/db/testing/in-memory-event-bus";
+import { InMemoryEventStore } from "@vibe-vr/db/testing/in-memory-event-store";
+import { FAKE_OWNER } from "@vibe-vr/db/testing/in-memory-project-store";
+import { InMemorySessionStore } from "@vibe-vr/db/testing/in-memory-session-store";
+import { VERSION } from "@vibe-vr/shared/version";
 import { WSContext, type WSEvents } from "hono/ws";
 import { describe, expect, it } from "vitest";
 import { type AppDeps, createApp } from "./app.ts";

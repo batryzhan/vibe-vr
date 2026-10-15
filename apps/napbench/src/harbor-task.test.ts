@@ -1,4 +1,4 @@
-import { BENCH_TASKS } from "@nap/bench/suite";
+import { BENCH_TASKS } from "@vibe-vr/bench/suite";
 import { describe, expect, it } from "vitest";
 import {
   HARBOR_TEST_SCRIPT,

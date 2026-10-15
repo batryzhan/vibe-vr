@@ -11,7 +11,7 @@ real generated application had ever been put in front of it.
 
 **Configuration.** `bun run napbench --real --suite=product`, 2026-08-26, harness commit
 `448460a`, tree clean, verification on. Agent `openai/gpt-5.6-luna` via OpenRouter at medium
-effort, 40 steps, 120k context. Judge `openai/gpt-5.6-terra` via `NAP_JUDGE_MODEL`, rubric
+effort, 40 steps, 120k context. Judge `openai/gpt-5.6-terra` via `VIBE_VR_JUDGE_MODEL`, rubric
 `product-2`. Real E2B sandboxes, real Chrome. Three tasks, serially, one turn each.
 
 **Spend ≈ $0.09.** Agent **$0.0123** measured (`$0.0048` + `$0.0045` + `$0.0030`, price table
@@ -124,7 +124,7 @@ dimension whose failure lives below the fold can only be graded on what the fold
 
 **The judge's tokens are not accounted anywhere.** `estimatedCost` on a report prices the *agent's*
 usage against the table in `pricing.ts`; the vision judge is a separate `fetch` in
-`vision-judge.ts` that deliberately reuses none of `@nap/agent`, so its spend appears in no report,
+`vision-judge.ts` that deliberately reuses none of `@vibe-vr/agent`, so its spend appears in no report,
 no summary and no total. The agent figure for this run is $0.0123 and the true bill is roughly
 seven times that. On a corpus pass this was invisible because there was no agent to compare
 against; on a funded suite run the report now understates the cost by most of the cost.
@@ -132,7 +132,7 @@ against; on a funded suite run the report now understates the cost by most of th
 That is a real gap and it is not fixed here. It is worth knowing before anybody quotes a
 `product` run's cost from its reports, and worth fixing before anybody funds a large one.
 
-**The `NAP_JUDGE_MODEL` warning cries wolf.** It fires on every overridden judge, unconditionally,
+**The `VIBE_VR_JUDGE_MODEL` warning cries wolf.** It fires on every overridden judge, unconditionally,
 including immediately after `napbench:vision-spike` has confirmed that exact model — the check has
 no memory of its own verification. It was correct to run the spike (terra answered, schema-valid,
 $0.014) and the warning was noise both before and after.

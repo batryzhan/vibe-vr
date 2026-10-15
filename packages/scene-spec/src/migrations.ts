@@ -7,7 +7,7 @@
  * current-version spec, and it fails closed on anything it does not recognize.
  */
 
-import type { Result } from "@nap/shared/result";
+import type { Result } from "@vibe-vr/shared/result";
 import { SCENE_SPEC_VERSION } from "./limits.ts";
 import { type SceneSpec, validateSceneSpec } from "./schema.ts";
 

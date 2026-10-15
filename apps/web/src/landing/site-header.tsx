@@ -18,7 +18,7 @@
  */
 
 import type { ReactNode } from "react";
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 import { GithubButton } from "./github-button.tsx";
 
 export function SiteHeader({
@@ -45,8 +45,8 @@ export function SiteHeader({
         href="/"
         className="flex items-center gap-0.5 font-semibold text-[var(--s-text-primary)] text-sm tracking-tight focus-visible:outline focus-visible:outline-1 focus-visible:outline-[var(--s-text-primary)]"
       >
-        <NapMark className="size-10" />
-        nap
+        <VibeVrMark className="size-10" />
+        Vibe-VR
       </a>
 
       <span data-no-trail className="flex items-center gap-4">

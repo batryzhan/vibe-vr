@@ -14,7 +14,7 @@
  * list it itself.
  */
 
-import type { SandboxManager } from "@nap/shared/ports/sandbox-manager";
+import type { SandboxManager } from "@vibe-vr/shared/ports/sandbox-manager";
 
 /**
  * Never worth showing the model: vendored dependencies and build products it must not edit,

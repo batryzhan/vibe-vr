@@ -51,7 +51,7 @@ describe("what the page says it is", () => {
     unmount();
 
     setup({ mode: "sign-up" });
-    expect(screen.getByRole("heading", { level: 1, name: "Start a nap." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Create with Vibe-VR" })).toBeInTheDocument();
   });
 
   it("offers a way back out", () => {
@@ -59,7 +59,7 @@ describe("what the page says it is", () => {
     // people already expect to be a link home.
     setup();
 
-    expect(screen.getByRole("link", { name: /^nap/ })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: /^Vibe-VR/ })).toHaveAttribute("href", "/");
   });
 });
 
@@ -213,7 +213,7 @@ describe("when something goes wrong", () => {
     setup({ submitting: true });
 
     const button = screen.getByRole("button", { name: "One moment…" });
-    expect(button.querySelector(".nap-spin")).not.toBeNull();
+    expect(button.querySelector(".vibe-vr-spin")).not.toBeNull();
   });
 });
 

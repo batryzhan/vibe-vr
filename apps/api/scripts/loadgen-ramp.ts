@@ -25,17 +25,17 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { loadavg } from "node:os";
 import { join, resolve } from "node:path";
-import { firstDegradation } from "@nap/loadgen/degradation";
-import { parseK6Summary, rollupOf, stageRollups } from "@nap/loadgen/k6-summary";
-import { hashCollisions, pollCost } from "@nap/loadgen/probes";
+import { firstDegradation } from "@vibe-vr/loadgen/degradation";
+import { parseK6Summary, rollupOf, stageRollups } from "@vibe-vr/loadgen/k6-summary";
+import { hashCollisions, pollCost } from "@vibe-vr/loadgen/probes";
 import {
   RAMP_DEGRADATION,
   RAMP_SUBMIT_THRESHOLDS,
   RAMP_THRESHOLDS,
-} from "@nap/loadgen/ramp-thresholds";
-import { evaluateThresholds } from "@nap/loadgen/report";
-import { rollupSamples, type SampleWindow, type ServerSample } from "@nap/loadgen/server-samples";
-import { recommendWorkerConcurrency } from "@nap/loadgen/worker-concurrency";
+} from "@vibe-vr/loadgen/ramp-thresholds";
+import { evaluateThresholds } from "@vibe-vr/loadgen/report";
+import { rollupSamples, type SampleWindow, type ServerSample } from "@vibe-vr/loadgen/server-samples";
+import { recommendWorkerConcurrency } from "@vibe-vr/loadgen/worker-concurrency";
 import postgres from "postgres";
 import { z } from "zod";
 import { bootLoadgenApi } from "./loadgen-composition.ts";
@@ -267,9 +267,9 @@ async function main(): Promise<void> {
   const k6 = Bun.spawn(["k6", "run", join(import.meta.dir, "..", "k6", "ramp.js")], {
     env: {
       ...process.env,
-      NAP_LOADGEN_BASE: api.base,
-      NAP_LOADGEN_PROFILE: PROFILE,
-      NAP_LOADGEN_SUMMARY: summaryPath,
+      VIBE_VR_LOADGEN_BASE: api.base,
+      VIBE_VR_LOADGEN_PROFILE: PROFILE,
+      VIBE_VR_LOADGEN_SUMMARY: summaryPath,
     },
     stdout: "inherit",
     stderr: "inherit",

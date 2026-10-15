@@ -79,7 +79,7 @@ its life idle; it is not evidence of anything good. The flat line is the finding
 
 ## The three questions §24 left open
 
-### 1. A starting value for `NAP_WORKER_CONCURRENCY` (§24 item 1)
+### 1. A starting value for `VIBE_VR_WORKER_CONCURRENCY` (§24 item 1)
 
 The design calls 5 a guess. Little's law on the measured numbers: at the 100-VU plateau the
 process completed **1,078 turns in 300 seconds (3.59/s)** with a **mean turn of 25.3s**, which is
@@ -94,7 +94,7 @@ ramp in is the wrong answer: it includes the minutes spent at ten users. The `ex
 
 With 1.5× headroom over that:
 
-| Workers | Recommended `NAP_WORKER_CONCURRENCY` |
+| Workers | Recommended `VIBE_VR_WORKER_CONCURRENCY` |
 |---:|---:|
 | 1 | 137 |
 | 2 | 69 |

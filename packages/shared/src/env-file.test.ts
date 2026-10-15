@@ -2,8 +2,16 @@ import { describe, expect, it } from "vitest";
 import { loadEnvFile, parseEnvFile } from "./env-file.ts";
 
 describe("parseEnvFile", () => {
+  it("reads Windows CRLF assignments", () => {
+    expect(parseEnvFile("DATABASE_URL=postgres://localhost/nap\r\nPORT=3001\r\n")).toEqual({
+      DATABASE_URL: "postgres://localhost/nap",
+      PORT: "3001",
+    });
+  });
   it("reads plain assignments", () => {
-    expect(parseEnvFile("E2B_API_KEY=abc123")).toStrictEqual({ E2B_API_KEY: "abc123" });
+    expect(parseEnvFile("OPENROUTER_API_KEY=abc123")).toStrictEqual({
+      OPENROUTER_API_KEY: "abc123",
+    });
   });
 
   it("strips surrounding quotes, which a shell would have removed", () => {

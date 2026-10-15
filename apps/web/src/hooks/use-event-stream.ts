@@ -17,8 +17,8 @@
  * milliseconds against a fake, with no network anywhere near the suite.
  */
 
-import type { StoredEvent } from "@nap/shared/ports/event-store";
-import { ServerFrameSchema } from "@nap/shared/ws-protocol";
+import type { StoredEvent } from "@vibe-vr/shared/ports/event-store";
+import { ServerFrameSchema } from "@vibe-vr/shared/ws-protocol";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -41,7 +41,7 @@ export const BACKOFF = { initialMs: 500, maxMs: 10_000, factor: 2 } as const;
 
 export type StreamStatus = "idle" | "connecting" | "open" | "reconnecting";
 
-import type { TurnStreamEvent } from "@nap/shared/ws-protocol";
+import type { TurnStreamEvent } from "@vibe-vr/shared/ws-protocol";
 
 export type EventStreamOptions = {
   /** No session means no connection — what the shell renders before one exists. */

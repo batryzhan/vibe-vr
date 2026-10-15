@@ -25,7 +25,7 @@
  * mark's own animations rather than in inline styles here.
  */
 
-import { NapMark } from "../brand/nap-mark.tsx";
+import { VibeVrMark } from "../brand/vibe-vr-mark.tsx";
 
 const PEN = {
   fill: "none",
@@ -34,16 +34,16 @@ const PEN = {
   strokeLinejoin: "round",
 } as const;
 
-export function NapStickers() {
+export function VibeVrStickers() {
   return (
     <div
       aria-hidden="true"
-      data-testid="nap-stickers"
+      data-testid="vibe-vr-stickers"
       className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block"
     >
       {/* Nap, headphones on, eyes shut, nodding along while an idea lands. */}
       <Sticker kind="music" className="top-[15%] left-[5%] -rotate-6" awake>
-        <NapMark className="size-20" />
+        <VibeVrMark className="size-20" />
         <svg
           aria-hidden="true"
           viewBox="0 0 96 96"
@@ -71,9 +71,13 @@ export function NapStickers() {
             z's, so they leave one at a time. One shared animation moves them in lockstep, which
             reads as a decoration blinking rather than as music coming out of somebody's head.
           */}
-          <g className="nap-notes" strokeWidth="2">
-            <path className="nap-note" d="M70 20v-9l7-2v9" style={{ animationDelay: "0ms" }} />
-            <path className="nap-note" d="M82 14v-7l6-2v7" style={{ animationDelay: "900ms" }} />
+          <g className="vibe-vr-notes" strokeWidth="2">
+            <path className="vibe-vr-note" d="M70 20v-9l7-2v9" style={{ animationDelay: "0ms" }} />
+            <path
+              className="vibe-vr-note"
+              d="M82 14v-7l6-2v7"
+              style={{ animationDelay: "900ms" }}
+            />
           </g>
         </svg>
       </Sticker>
@@ -102,8 +106,8 @@ export function NapStickers() {
           the jitter's `transform` outranks the slide's — so leaving the sticker snapped him back
           to the keyboard the instant the animation resumed, instead of letting him climb.
         */}
-        <div className="nap-hider -translate-y-2 translate-x-[0.36rem]">
-          <NapMark className="size-[4.4rem]" />
+        <div className="vibe-vr-hider -translate-y-2 translate-x-[0.36rem]">
+          <VibeVrMark className="size-[4.4rem]" />
         </div>
 
         <svg
@@ -130,7 +134,7 @@ export function NapStickers() {
             behind it and reads as a paw. Drawn last so the lid's stroke passes underneath and
             they look like they are gripping.
           */}
-          <g className="nap-paws fill-ink stroke-panel" strokeWidth="2.4">
+          <g className="vibe-vr-paws fill-ink stroke-panel" strokeWidth="2.4">
             <rect x="14" y="-7" width="17" height="15" rx="7.5" />
             <rect x="69" y="-7" width="17" height="15" rx="7.5" />
           </g>
@@ -148,7 +152,7 @@ export function NapStickers() {
           {...PEN}
           strokeWidth="2.8"
         >
-          <g className="nap-screen">
+          <g className="vibe-vr-screen">
             <path d="m14 8-7 8 7 8M34 8l7 8-7 8M28 5l-8 22" />
           </g>
         </svg>
@@ -162,7 +166,7 @@ export function NapStickers() {
         for, and dimming him on top of that says "unavailable", which is a different word.
       */}
       <Sticker kind="sleep" className="bottom-[16%] left-[10%] rotate-3">
-        <NapMark className="size-[4.8rem]" />
+        <VibeVrMark className="size-[4.8rem]" />
         <svg
           aria-hidden="true"
           viewBox="0 0 112 94"
@@ -170,7 +174,7 @@ export function NapStickers() {
           {...PEN}
           strokeWidth="2"
         >
-          <g className="nap-blanket">
+          <g className="vibe-vr-blanket">
             <path d="M18 72c15 3 30 3 45 0 12-3 22-2 31 2" />
             <path d="M25 78c18 4 37 4 57 0" />
           </g>
@@ -179,7 +183,7 @@ export function NapStickers() {
 
       {/* Nap making something: a little spark is enough to imply the next project. */}
       <Sticker kind="spark" className="right-[12%] bottom-[15%] -rotate-8" awake>
-        <NapMark className="size-[4.5rem]" />
+        <VibeVrMark className="size-[4.5rem]" />
 
         {/*
           The vein: the comic shorthand for somebody's patience running out, popped **on his
@@ -191,7 +195,7 @@ export function NapStickers() {
         <svg
           aria-hidden="true"
           viewBox="0 0 24 24"
-          className="nap-anger absolute top-[1.6rem] left-[1.2rem] w-[1.05rem] text-danger"
+          className="vibe-vr-anger absolute top-[1.6rem] left-[1.2rem] w-[1.05rem] text-danger"
         >
           {/*
             Four arms around a hollow middle, drawn as one closed outline. Filled it was a solid
@@ -213,10 +217,10 @@ export function NapStickers() {
           {...PEN}
           strokeWidth="2.1"
         >
-          <g className="nap-star">
+          <g className="vibe-vr-star">
             <path d="M45 8c1 10 1 20-1 30M29 23c10 1 20 1 30-1M34 12c7 7 13 14 18 22" />
           </g>
-          <g className="nap-wand">
+          <g className="vibe-vr-wand">
             <path d="m21 64 15-16 7 7-15 16-10 3 3-10Z" />
             <path d="m37 47 7 7M18 78l-4 5" />
           </g>
@@ -240,8 +244,8 @@ function Sticker({
 }) {
   return (
     <div
-      className={`nap-sticker nap-sticker-${kind} pointer-events-auto absolute grid size-24 place-items-center rounded-[1.5rem] border border-edge/70 bg-panel/45 shadow-card backdrop-blur-[1px] ${
-        awake ? "nap-sticker-awake" : ""
+      className={`vibe-vr-sticker vibe-vr-sticker-${kind} pointer-events-auto absolute grid size-24 place-items-center rounded-[1.5rem] border border-edge/70 bg-panel/45 shadow-card backdrop-blur-[1px] ${
+        awake ? "vibe-vr-sticker-awake" : ""
       } ${className}`}
     >
       {children}

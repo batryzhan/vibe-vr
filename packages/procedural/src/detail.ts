@@ -21,7 +21,7 @@
  *   one spec, `footedPost` exactly two with documented derived ids.
  */
 
-import type { SceneMaterial } from "@nap/scene-spec/schema";
+import type { SceneMaterial } from "@vibe-vr/scene-spec/schema";
 import type { ComponentSpec } from "./component.ts";
 
 /** Collar tessellation: smooth enough to read round, fixed like bevel arcs. */
