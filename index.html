@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Деревянный Стул с Three.js</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+        canvas { display: block; }
+        #info { position: absolute; top: 10px; width: 100%; text-align: center; color: #333; pointer-events: none;}
+    </style>
+</head>
+<body>
+
+<div id="info">Управление: ЛКМ - вращение, Колесо - зум</div>
+
+<!-- Подключаем Three.js и OrbitControls через CDN -->
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // --- 1. НАСТРОЙКА СЦЕНЫ ---
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xe8e8e8); // Светло-серый фон
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(3, 2.5, 5); // Позиция камеры для хорошего обзора стула
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // --- 2. СВЕТ ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    dirLight.position.set(5, 10, 7);
+    dirLight.castShadow = true; // Тени добавят объемности
+    scene.add(dirLight);
+
+    // --- 3. МАТЕРИАЛЫ (Имитация дерева) ---
+    // Создаем простую процедурную текстуру или используем базовый цвет для примера
+    const woodMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0x8B4513, // Коричневый цвет 'saddle brown'
+        roughness: 0.6,
+        metalness: 0.1 
+    });
+
+    const varnishMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x8B4513,
+        clearcoat: true,
+        clearcoatRoughness: 0.05 // Эффект глянцевого лака
+    });
+
+    // --- 4. ПОДЛОЖКА ---
+    const floorGeometry = new THREE.PlaneGeometry(10, 10);
+    const floorMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
+
+    // --- 5. СОЗДАНИЕ СТУЛА ---
+    
+    // Глобальные размеры для масштабирования стула
+    const scale = 1.0; 
+
+    function createChair() {
+        const chairGroup = new THREE.Group();
+
+        // A. Квадратное сиденье
+        const seatGeo = new THREE.BoxGeometry(2, 0.5 * scale, 2);
+        const seat = new THREE.Mesh(seatGeo, varnishMaterial);
+        // Чуть приподнимаем сиденье над полом (y + 0.5/2)
+        seat.position.y = 0.75; 
+        chairGroup.add(seat);
+
+        // B. Спинка с тремя перекладинами
+        // Создаем группу, которая будет представлять саму спинку
+        const backrestGroup = new THREE.Group();
+        
+        // Рисуем три вертикальных доски
+        for (let i = 0; i < 3; i++) {
+            const plankGeo = new THREE.BoxGeometry(0.15 * scale, 2.5 * scale, 0.5 * scale);
+            const plank = new THREE.Mesh(plankGeo, varnishMaterial);
+            
+            // Позиционируем доски симметрично
+            const offset = (i - 1) * 0.5; // Расстояние между досками: -0.5, 0, 0.5
+            plank.position.set(offset + (i===0 ? -0.2 : i === 1 ? 0.2 : 0), 2.75, 0); 
+            
+            backrestGroup.add(plank);
+        }
+
+        // Центрируем спинку над сиденьем
+        backrestGroup.position.set(0, seat.position.y + 1, 0); 
+        chairGroup.add(backrestGroup);
+
+        // C. Четыре ножки
+        const legGeo = new THREE.BoxGeometry(0.2 * scale, 4 * scale, 0.2 * scale);
+        
+        // Функция для добавления ножек
+        function addLeg(x, z) {
+            const leg = new THREE.Mesh(legGeo, varnishMaterial);
+            leg.position.set(x, 1.5 * scale, z); // Высота ножки ~3 единицы
+            return leg;
+        }
+
+        const legFrontLeft = addLeg( -1.0 * scale, 1.0 * scale);
+        const legFrontRight = addLeg( 1.0 * scale, 1.0 * scale);
+        const legBackLeft = addLeg( -1.0 * scale, -1.0 * scale);
+        const legBackRight = addLeg( 1.0 * scale, -1.0 * scale);
+
+        chairGroup.add(legFrontLeft, legFrontRight, legBackLeft, legBackRight);
+
+        return chairGroup;
+    }
+
+    // Создаем стул и помещаем в центр сцены
+    const myChair = createChair();
+    myChair.position.set(0, 0.25 * scale, 0); // Устанавливаем Y так, чтобы стул стоял на полу (пол у нас при y=0)
+
+    scene.add(myChair);
+
+    // --- 6. УПРАВЛЕНИЕ КАМЕРОЙ ---
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; // Плавное вращения
+    controls.dampingFactor = 0.05;
+
+    // --- 7. АНИМАЦИЯ ---
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        
+        renderer.render(scene, camera);
+    }
+
+    // Обработка изменения размера окна
+    window.addEventListener('resize', onWindowResize, false);
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    animate();
+
+</script>
+</body>
+</html>
+```
